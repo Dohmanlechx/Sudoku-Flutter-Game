@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
+import 'package:sudoku_game/widgets/game_screen/tile.dart';
 
-class TileGroup extends StatefulWidget {
+class TileGroup extends StatelessWidget {
   const TileGroup();
 
   @override
-  _TileGroupState createState() => _TileGroupState();
-}
-
-class _TileGroupState extends State<TileGroup> {
-  final List<List<int>> _tileRows = [
-    [0, 1, 2],
-    [0, 1, 2],
-    [0, 1, 2],
-  ];
-
-  @override
   Widget build(BuildContext context) {
+    const _tileRows = <List<int>>[
+      [0, 1, 2],
+      [0, 1, 2],
+      [0, 1, 2],
+    ];
+
+    List<int> _numbers;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -25,8 +23,8 @@ class _TileGroupState extends State<TileGroup> {
       ),
       child: NonScrollableGridView(
         children: List.generate(9, (i) {
-          return Center(
-            child: Text(i.toString()),
+          return const Center(
+            child: Tile(),
           );
         }),
       ),
