@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/util/device_info.dart';
+import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile_group.dart';
 
 class GameScreen extends StatefulWidget {
@@ -24,19 +25,11 @@ class _GameScreenState extends State<GameScreen> {
             height: DeviceInfo.width(context),
             child: Center(
               child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: GridView.count(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 3,
-                  children: [
-                    ...List.generate(9, (i) {
-                      return const TileGroup();
-                    })
-                  ],
+                decoration: BoxDecoration(border: Border.all()),
+                child: NonScrollableGridView(
+                  children: List.generate(9, (i) {
+                    return const TileGroup();
+                  }),
                 ),
               ),
             ),
