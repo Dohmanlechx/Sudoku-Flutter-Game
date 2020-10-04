@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/app/typography.dart';
 
@@ -44,6 +45,7 @@ class _TileState extends State<Tile> {
       child: TextField(
         controller: _controller,
         buildCounter: (BuildContext context, {int currentLength, int maxLength, bool isFocused}) => null,
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
         keyboardType: TextInputType.number,
         maxLength: 1,
         maxLengthEnforced: false,
