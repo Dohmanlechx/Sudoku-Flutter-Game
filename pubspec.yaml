@@ -11,12 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
-
-  pedantic: ^1.9.2
+  analyzer: ^0.40.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.9.2
 
 flutter:
   uses-material-design: true
