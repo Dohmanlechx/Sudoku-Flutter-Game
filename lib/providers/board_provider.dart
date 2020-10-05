@@ -3,18 +3,66 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 class BoardProvider with ChangeNotifier {
-  final board = List<List<int>>.generate(
-    9,
-    (int a) => List<int>.generate(9, (int b) {
-      final random = Random();
-      return random.nextInt(9);
-    }),
-  );
+  List<List<int>> _board;
+
+  List<List<int>> get board => _board;
+
+  BoardProvider() {
+    _initBoard();
+  }
+
+  void _initBoard() {
+    final randomizer = Random();
+
+    _board = List<List<int>>.generate(9, (int a) {
+      return List<int>.generate(9, (int b) {
+        return randomizer.nextInt(9);
+      });
+    });
+
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        final groupIndex = getIndexOf(i, j);
+      }
+    }
+
+    // final index = 8;
+    // boardByGroup[index].forEach((element) {
+    //   print("group $index, number $element");
+    // });
+  }
+
+  int getIndexOf(int a, int b) {
+    int res;
+
+    if (a >= 0 && a <= 2 && b >= 0 && b <= 2) {
+      res = 0;
+    } else if (a >= 0 && a <= 2 && b >= 3 && b <= 5) {
+      res = 1;
+    } else if (a >= 0 && a <= 2 && b >= 6 && b <= 8) {
+      res = 2;
+    } else if (a >= 3 && a <= 5 && b >= 0 && b <= 2) {
+      res = 3;
+    } else if (a >= 3 && a <= 5 && b >= 3 && b <= 5) {
+      res = 4;
+    } else if (a >= 3 && a <= 5 && b >= 6 && b <= 8) {
+      res = 5;
+    } else if (a >= 6 && a <= 8 && b >= 0 && b <= 2) {
+      res = 6;
+    } else if (a >= 6 && a <= 8 && b >= 3 && b <= 5) {
+      res = 7;
+    } else if (a >= 6 && a <= 8 && b >= 6 && b <= 8) {
+      res = 8;
+    }
+
+    assert(res != null);
+    return res;
+  }
 
   List<List<int>> get boardByGroup {
     // TODO: Refactor and create test
     return [
-      // A
+      // 0
       [
         board[0][0],
         board[0][1],
@@ -26,7 +74,7 @@ class BoardProvider with ChangeNotifier {
         board[2][1],
         board[2][2],
       ],
-      // B
+      // 1
       [
         board[0][3],
         board[0][4],
@@ -38,7 +86,7 @@ class BoardProvider with ChangeNotifier {
         board[2][4],
         board[2][5],
       ],
-      // C
+      // 2
       [
         board[0][6],
         board[0][7],
@@ -50,7 +98,7 @@ class BoardProvider with ChangeNotifier {
         board[2][7],
         board[2][8],
       ],
-      // D
+      // 3
       [
         board[3][0],
         board[3][1],
@@ -62,7 +110,7 @@ class BoardProvider with ChangeNotifier {
         board[5][1],
         board[5][2],
       ],
-      // E
+      // 4
       [
         board[3][3],
         board[3][4],
@@ -74,7 +122,7 @@ class BoardProvider with ChangeNotifier {
         board[5][4],
         board[5][5],
       ],
-      // F
+      // 5
       [
         board[3][6],
         board[3][7],
@@ -86,7 +134,7 @@ class BoardProvider with ChangeNotifier {
         board[5][7],
         board[5][8],
       ],
-      // G
+      // 6
       [
         board[6][0],
         board[6][1],
@@ -98,7 +146,7 @@ class BoardProvider with ChangeNotifier {
         board[8][1],
         board[8][2],
       ],
-      // H
+      // 7
       [
         board[6][3],
         board[6][4],
@@ -110,7 +158,7 @@ class BoardProvider with ChangeNotifier {
         board[8][4],
         board[8][5],
       ],
-      // I
+      // 8
       [
         board[6][6],
         board[6][7],
