@@ -6,8 +6,8 @@ class BoardProvider with ChangeNotifier {
   List<List<int>> get board => _board;
 
   List<List<int>> get boardByGroup {
-    return List.generate(9, (index) {
-      return coordinates(index).map((e) => board[e[0]][e[1]]).toList();
+    return List.generate(9, (i) {
+      return getCoordinates(i).map((e) => board[e[0]][e[1]]).toList();
     });
   }
 
@@ -24,11 +24,11 @@ class BoardProvider with ChangeNotifier {
 
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
-        final groupIndex = getIndexOf(i, j);
+        final groupIndex = getGroupIndexOf(i, j);
         var shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]..shuffle();
 
         while (shuffledNumbers.isNotEmpty) {
-          coordinates(groupIndex).forEach((List<int> pos) {
+          getCoordinates(groupIndex).forEach((List<int> pos) {
             _board[pos[0]][pos[1]] = shuffledNumbers[0];
             shuffledNumbers.removeAt(0);
           });
@@ -37,8 +37,60 @@ class BoardProvider with ChangeNotifier {
     }
   }
 
+  void setNumber({int groupIndex, int index, int number}) {
+    final coordinates = getCoordinates(groupIndex)[index];
+    _board[coordinates[0]][coordinates[1]] = number;
+    notifyListeners();
+  }
+
+  int _getRowInGroup(int i) {
+    if (i <= 2) {
+      return 0;
+    } else if (i <= 5) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  int _getColumnInGroup(int i) {
+    if (i == 0 || i == 3 || i == 6) {
+      return 0;
+    } else if (i == 1 || i == 4 || i == 7) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  List<int> boardByRow(int row, int groupIndex) {
+    if (groupIndex > 2 && groupIndex <= 5) {
+      row += 3;
+    } else if (groupIndex > 5) {
+      row += 6;
+    }
+
+    return List.generate(9, (i) => _board[row][i]);
+  }
+
+  List<int> boardByColumn(int column, int groupIndex) {
+    if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
+      column += 3;
+    } else if (groupIndex == 3 || groupIndex == 5 || groupIndex == 8) {
+      column += 6;
+    }
+
+    return List.generate(9, (i) => _board[i][column]);
+  }
+
+  bool isOccupiedNumber({int index, int number, int groupIndex}) {
+    return boardByGroup[groupIndex].where((int num) => num == number).length > 1 ||
+        boardByRow(_getRowInGroup(index), groupIndex).where((int num) => num == number).length > 1 ||
+        boardByColumn(_getColumnInGroup(index), groupIndex).where((int num) => num == number).length > 1;
+  }
+
   @visibleForTesting
-  int getIndexOf(int a, int b) {
+  int getGroupIndexOf(int a, int b) {
     int res;
 
     if (a >= 0 && a <= 2 && b >= 0 && b <= 2) {
@@ -65,10 +117,10 @@ class BoardProvider with ChangeNotifier {
     return res;
   }
 
-  List<List<int>> coordinates(int pointer) {
+  List<List<int>> getCoordinates(int groupIndex) {
     var res = List<List<int>>();
 
-    switch (pointer) {
+    switch (groupIndex) {
       case 0:
         for (int i = 0; i < 3; i++) {
           for (int j = 0; j < 3; j++) {
