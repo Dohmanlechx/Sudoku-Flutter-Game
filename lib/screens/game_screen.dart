@@ -27,7 +27,7 @@ class _GameScreenState extends State<GameScreen> {
               child: Container(
                 decoration: BoxDecoration(border: Border.all()),
                 child: NonScrollableGridView(
-                  children: List.generate(9, (i) {
+                  children: List<Widget>.generate(9, (int i) {
                     return const TileGroup();
                   }),
                 ),

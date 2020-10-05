@@ -59,8 +59,7 @@ class _TileState extends State<Tile> {
           ),
         ),
         onChanged: (String s) {
-          final numberOrNull = s.isEmpty ? null : int.parse(s[0]);
-          widget.onSubmit(numberOrNull);
+          widget.onSubmit(s.isEmpty ? null : int.parse(s[0]));
         },
       ),
     );

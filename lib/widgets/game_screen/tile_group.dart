@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/app/colors.dart';
+import 'package:sudoku_game/util/extensions.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile.dart';
-import 'package:sudoku_game/util/extensions.dart';
 
 class TileGroup extends StatefulWidget {
   const TileGroup();
@@ -22,7 +22,7 @@ class _TileGroupState extends State<TileGroup> {
         border: Border.all(),
       ),
       child: NonScrollableGridView(
-        children: List.generate(9, (i) {
+        children: List<Widget>.generate(9, (int i) {
           return Center(
             child: Tile(
               number: _numbers[i],
