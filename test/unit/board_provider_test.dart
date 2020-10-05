@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 
 void main() {
-  test('Board should contain 81 elements', () {
+  test('The board should contain 81 elements', () {
     final board = BoardProvider().board;
     var count = 0;
 
