@@ -39,7 +39,7 @@ class _TileState extends State<Tile> {
 
     return Container(
       decoration: BoxDecoration(
-        color: widget.isInvalid ? AppColors.red.withOpacity(0.2) : null,
+        color: widget.isInvalid ? AppColors.red.withOpacity(0.1) : null,
         border: Border.all(width: 0.5),
       ),
       child: TextField(

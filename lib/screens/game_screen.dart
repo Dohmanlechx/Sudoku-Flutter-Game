@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/colors.dart';
+import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/util/device_info.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile_group.dart';
@@ -28,7 +30,9 @@ class _GameScreenState extends State<GameScreen> {
                 decoration: BoxDecoration(border: Border.all()),
                 child: NonScrollableGridView(
                   children: List<Widget>.generate(9, (int i) {
-                    return const TileGroup();
+                    return TileGroup(
+                      numbers: Provider.of<BoardProvider>(context, listen: false).boardByGroup[i],
+                    );
                   }),
                 ),
               ),

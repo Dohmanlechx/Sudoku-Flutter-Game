@@ -5,14 +5,22 @@ import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile.dart';
 
 class TileGroup extends StatefulWidget {
-  const TileGroup();
+  final List<int> numbers;
+
+  const TileGroup({this.numbers});
 
   @override
   _TileGroupState createState() => _TileGroupState();
 }
 
 class _TileGroupState extends State<TileGroup> {
-  final List<int> _numbers = List(9);
+  List<int> _numbers;
+
+  @override
+  void initState() {
+    _numbers = widget.numbers;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
