@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 
 class BoardProvider with ChangeNotifier {
@@ -12,24 +10,25 @@ class BoardProvider with ChangeNotifier {
   }
 
   void _initBoard() {
-    final randomizer = Random();
-
     _board = List<List<int>>.generate(9, (int a) {
       return List<int>.generate(9, (int b) {
-        return randomizer.nextInt(9);
+        return 0;
       });
     });
 
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
         final groupIndex = getIndexOf(i, j);
+        var shuffledNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9]..shuffle();
+
+        while (shuffledNumber.isNotEmpty) {
+          positions(groupIndex).forEach((List<int> position) {
+            _board[position[0]][position[1]] = shuffledNumber[0];
+            shuffledNumber.removeAt(0);
+          });
+        }
       }
     }
-
-    // final index = 8;
-    // boardByGroup[index].forEach((element) {
-    //   print("group $index, number $element");
-    // });
   }
 
   int getIndexOf(int a, int b) {
@@ -57,6 +56,121 @@ class BoardProvider with ChangeNotifier {
 
     assert(res != null);
     return res;
+  }
+
+  List<List<int>> positions(int pointer) {
+    switch (pointer) {
+      case 0:
+        return [
+          [0, 0],
+          [0, 1],
+          [0, 2],
+          [1, 0],
+          [1, 1],
+          [1, 2],
+          [2, 0],
+          [2, 1],
+          [2, 2],
+        ];
+      case 1:
+        return [
+          [0, 3],
+          [0, 4],
+          [0, 5],
+          [1, 3],
+          [1, 4],
+          [1, 5],
+          [2, 3],
+          [2, 4],
+          [2, 5],
+        ];
+      case 2:
+        return [
+          [0, 6],
+          [0, 7],
+          [0, 8],
+          [1, 6],
+          [1, 7],
+          [1, 8],
+          [2, 6],
+          [2, 7],
+          [2, 8],
+        ];
+      case 3:
+        return [
+          [3, 0],
+          [3, 1],
+          [3, 2],
+          [4, 0],
+          [4, 1],
+          [4, 2],
+          [5, 0],
+          [5, 1],
+          [5, 2],
+        ];
+      case 4:
+        return [
+          [3, 3],
+          [3, 4],
+          [3, 5],
+          [4, 3],
+          [4, 4],
+          [4, 5],
+          [5, 3],
+          [5, 4],
+          [5, 5],
+        ];
+      case 5:
+        return [
+          [3, 6],
+          [3, 7],
+          [3, 8],
+          [4, 6],
+          [4, 7],
+          [4, 8],
+          [5, 6],
+          [5, 7],
+          [5, 8],
+        ];
+      case 6:
+        return [
+          [6, 0],
+          [6, 1],
+          [6, 2],
+          [7, 0],
+          [7, 1],
+          [7, 2],
+          [8, 0],
+          [8, 1],
+          [8, 2],
+        ];
+      case 7:
+        return [
+          [6, 3],
+          [6, 4],
+          [6, 5],
+          [7, 3],
+          [7, 4],
+          [7, 5],
+          [8, 3],
+          [8, 4],
+          [8, 5],
+        ];
+      case 8:
+        return [
+          [6, 6],
+          [6, 7],
+          [6, 8],
+          [7, 6],
+          [7, 7],
+          [7, 8],
+          [8, 6],
+          [8, 7],
+          [8, 8],
+        ];
+      default:
+        throw Exception();
+    }
   }
 
   List<List<int>> get boardByGroup {
