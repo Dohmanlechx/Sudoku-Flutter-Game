@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:sudoku_game/util/custom_exceptions.dart';
 
 class BoardProvider with ChangeNotifier {
   List<List<int>> _board;
@@ -67,13 +66,12 @@ class BoardProvider with ChangeNotifier {
   List<int> _bannedNumbers = [];
 
   Future<void> initBoard() async {
-    final int startingTimeStamp = DateTime.now().millisecondsSinceEpoch;
-
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
         return 0;
       });
     });
+    notifyListeners();
 
     i = 0;
     j = 0;
@@ -95,11 +93,15 @@ class BoardProvider with ChangeNotifier {
     }
 
     // Row 2 and further
-
     bool abort = false;
     _bannedNumbers.clear();
 
     while (!isBoardFilled()) {
+      // if (timeSinceStartingTimeStamp() >= 1000) {
+      //   initBoard(); // Can be removed and optimized (successfully generating the board every time)
+      //   break;
+      // }
+
       abort = false;
 
       shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -120,7 +122,6 @@ class BoardProvider with ChangeNotifier {
             shuffledNumbers.remove(number());
 
             if (shuffledNumbers.isEmpty) {
-              //_bannedNumbers.clear();
               abort = true;
               break;
             }
@@ -141,15 +142,9 @@ class BoardProvider with ChangeNotifier {
         });
       }
     }
-
-    final int timeSinceStartingTimeStamp = DateTime.now().millisecondsSinceEpoch - startingTimeStamp;
-
-    print("***** ms: $timeSinceStartingTimeStamp");
-
     notifyListeners();
   }
 
-  @visibleForTesting
   bool isBoardFilled() {
     for (final list in _board) {
       for (final number in list) {
@@ -158,10 +153,6 @@ class BoardProvider with ChangeNotifier {
     }
 
     return true;
-  }
-
-  void update() {
-    notifyListeners();
   }
 
   bool isConflict(int num, int i, int j) {

@@ -40,7 +40,8 @@ class _GameScreenState extends State<GameScreen> {
               ),
               FlatButton(
                 onPressed: () {
-                  Provider.of<BoardProvider>(context, listen: false).initBoard();
+                  context.read<BoardProvider>().initBoard();
+                  context.read<BoardProvider>().initBoard();
                 },
                 child: Text("Init"),
               ),

@@ -10,7 +10,7 @@ class SudokuGameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<BoardProvider>.value(value: BoardProvider()),
+        ChangeNotifierProvider(create: (_) => BoardProvider()),
       ],
       child: const MaterialApp(
         home: GameScreen(),
