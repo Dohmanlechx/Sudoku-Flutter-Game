@@ -1,6 +1,15 @@
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
+  /**
+   * Global variables for the [initBoard] function
+   */
+  @visibleForTesting
+  int i = 0;
+  @visibleForTesting
+  int j = 0;
+
   List<List<int>> _board;
 
   List<List<int>> get board => _board;
@@ -12,12 +21,18 @@ class BoardProvider with ChangeNotifier {
   }
 
   BoardProvider() {
+    _restoreBoard();
+    buildBoard();
+  }
+
+  void _restoreBoard() {
+    i = 0;
+    j = 0;
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
         return 0;
       });
     });
-    //initBoard();
   }
 
   @visibleForTesting
@@ -50,100 +65,66 @@ class BoardProvider with ChangeNotifier {
     _board[i][j] = 0;
   }
 
-  /**
-   * Global variables for the [initBoard] function
-   */
-  @visibleForTesting
-  int i = 0;
-  @visibleForTesting
-  int j = 0;
-
   List<int> _bannedNumbers = [];
 
   int generateTime = 0;
 
-  Future<void> initBoard() async {
-    final start = DateTime.now().millisecondsSinceEpoch;
+  void buildBoard() {
+    // For some reason the board isn't being built successfully
+    // unless called twice. Awaiting fix. Hopefully.
+    _initBoard();
+    _initBoard();
+  }
 
-    _board = List<List<int>>.generate(9, (_) {
-      return List<int>.generate(9, (_) {
-        return 0;
-      });
-    });
-    notifyListeners();
+  Future<void> _initBoard() async {
+    _restoreBoard();
 
-    i = 0;
-    j = 0;
+    final _start = DateTime.now().millisecondsSinceEpoch;
+    final _shuffledNumbers = List<int>();
 
-    List<int> shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]..shuffle();
-    int number() => shuffledNumbers[0];
-
-    while (true) {
-      // Row 1
-      _board[i][j] = number();
-      j++;
-      shuffledNumbers.remove(number());
-
-      if (shuffledNumbers.isEmpty) {
-        i = 1;
-        j = 0;
-        break;
-      }
-    }
-
-    // Row 2 and further
-    bool abort = false;
+    _shuffledNumbers.refill();
     _bannedNumbers.clear();
 
+    int _getFirstNumber() => _shuffledNumbers[0];
+
     while (!isBoardFilled()) {
-      // if (timeSinceStartingTimeStamp() >= 1000) {
-      //   initBoard(); // Can be removed and optimized (successfully generating the board every time)
-      //   break;
-      // }
+      bool isAbortedDueToEmptyNumberList = false;
 
-      abort = false;
+      _shuffledNumbers
+        ..refill()
+        ..removeWhere((e) => _bannedNumbers.contains(e));
 
-      shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        //..removeWhere((e) => isConflict(e, i, j))
-        ..removeWhere((e) => _bannedNumbers.contains(e))
-        ..shuffle();
-
-      if (shuffledNumbers.isEmpty) {
+      if (_shuffledNumbers.isEmpty) {
         _bannedNumbers.clear();
         goPreviousAndClearNumber();
-        notifyListeners();
       } else {
-        await Future.delayed(const Duration(milliseconds: 0), () {
-          notifyListeners();
+        await Future.delayed(Duration.zero, () {
+          while (isConflict(_getFirstNumber(), i, j)) {
+            _bannedNumbers.add(_getFirstNumber());
+            _shuffledNumbers.remove(_getFirstNumber());
 
-          while (isConflict(number(), i, j)) {
-            _bannedNumbers.add(number());
-            shuffledNumbers.remove(number());
-
-            if (shuffledNumbers.isEmpty) {
-              abort = true;
+            if (_shuffledNumbers.isEmpty) {
+              isAbortedDueToEmptyNumberList = true;
               break;
             }
           }
 
-          if (!abort) {
-            if (_bannedNumbers.contains(number())) {
+          if (isAbortedDueToEmptyNumberList) {
+            goPreviousAndClearNumber();
+          } else {
+            if (_bannedNumbers.contains(_getFirstNumber())) {
               goPreviousAndClearNumber();
             } else {
-              _board[i][j] = number();
+              _board[i][j] = _getFirstNumber();
               _bannedNumbers.clear();
-              shuffledNumbers.remove(number());
+              _shuffledNumbers.remove(_getFirstNumber());
               goNext();
             }
-          } else {
-            goPreviousAndClearNumber();
           }
         });
       }
     }
-
-    generateTime = DateTime.now().millisecondsSinceEpoch - start;
-    print(generateTime);
+    generateTime = DateTime.now().millisecondsSinceEpoch - _start;
     notifyListeners();
   }
 

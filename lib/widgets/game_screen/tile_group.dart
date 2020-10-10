@@ -17,8 +17,8 @@ class TileGroup extends StatefulWidget {
 class _TileGroupState extends State<TileGroup> {
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<BoardProvider>(context, listen: true);
-    final _numbers = _provider.boardByGroup[widget.groupIndex];
+    final _provider = context.watch<BoardProvider>();
+    final _numbers = context.watch<BoardProvider>().boardByGroup[widget.groupIndex];
 
     return Container(
       decoration: BoxDecoration(

@@ -1,3 +1,6 @@
-extension IntExtensions on int {
-  bool isEqualTo(int other) => other != null && this == other;
+extension IntListExtensions on List<int> {
+  void refill() => this
+    ..clear()
+    ..addAll([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ..shuffle();
 }

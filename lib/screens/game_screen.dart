@@ -41,8 +41,7 @@ class _GameScreenState extends State<GameScreen> {
             FlatButton(
               color: AppColors.white,
               onPressed: () {
-                context.read<BoardProvider>().initBoard();
-                context.read<BoardProvider>().initBoard();
+                context.read<BoardProvider>().buildBoard();
               },
               child: Text("Generate board!"),
             ),
