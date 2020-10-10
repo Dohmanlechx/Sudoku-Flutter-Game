@@ -27,14 +27,15 @@ class _TileGroupState extends State<TileGroup> {
       ),
       child: NonScrollableGridView(
         children: List<Widget>.generate(9, (int i) {
+          final isOccupied = _provider.isOccupiedNumber(
+            index: i,
+            number: _numbers[i],
+            groupIndex: widget.groupIndex,
+          );
           return Center(
             child: Tile(
               number: _numbers[i],
-              isInvalid: _provider.isOccupiedNumber(
-                index: i,
-                number: _numbers[i],
-                groupIndex: widget.groupIndex,
-              ),
+              isInvalid: isOccupied,
               onSubmit: (int num) {
                 assert(num <= 9);
                 setState(() {

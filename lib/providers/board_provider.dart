@@ -12,29 +12,141 @@ class BoardProvider with ChangeNotifier {
   }
 
   BoardProvider() {
-    _initBoard();
+    _board = List<List<int>>.generate(9, (_) {
+      return List<int>.generate(9, (_) {
+        return 0;
+      });
+    });
+    //initBoard();
   }
 
-  void _initBoard() {
+  @visibleForTesting
+  void goNext() {
+    if (j < 8) {
+      j++;
+    } else {
+      i++;
+      j = 0;
+    }
+  }
+
+  @visibleForTesting
+  void goPreviousAndClearNumber() {
+    if (j > 0) {
+      j--;
+    } else {
+      i--;
+      j = 8;
+    }
+    _bannedNumbers.add(_board[i][j]);
+    _board[i][j] = 0;
+  }
+
+  /**
+   * Global variables for the [initBoard] function
+   */
+  @visibleForTesting
+  int i = 0;
+  @visibleForTesting
+  int j = 0;
+
+  List<int> _bannedNumbers = [];
+
+  Future<void> initBoard() async {
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
         return 0;
       });
     });
 
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
-        final groupIndex = getGroupIndexOf(i, j);
-        var shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]..shuffle();
+    i = 0;
+    j = 0;
 
-        while (shuffledNumbers.isNotEmpty) {
-          getCoordinates(groupIndex).forEach((List<int> pos) {
-            _board[pos[0]][pos[1]] = shuffledNumbers[0];
-            shuffledNumbers.removeAt(0);
-          });
-        }
+    List<int> shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]..shuffle();
+    int number() => shuffledNumbers[0];
+
+    while (true) {
+      // Row 1
+      _board[i][j] = number();
+      j++;
+      shuffledNumbers.remove(number());
+
+      if (shuffledNumbers.isEmpty) {
+        i = 1;
+        j = 0;
+        break;
       }
     }
+
+    // Row 2 and further
+
+    bool abort = false;
+
+    do {
+      abort = false;
+
+      shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        //..removeWhere((e) => isConflict(e, i, j))
+        ..removeWhere((e) => _bannedNumbers.contains(e))
+        ..shuffle();
+
+      if (shuffledNumbers.isEmpty) {
+        _bannedNumbers.clear();
+        goPreviousAndClearNumber();
+        notifyListeners();
+      } else {
+        await Future.delayed(const Duration(milliseconds: 0), () {
+          notifyListeners();
+
+          while (isConflict(number(), i, j)) {
+            _bannedNumbers.add(number());
+            shuffledNumbers.remove(number());
+
+            if (shuffledNumbers.isEmpty) {
+              _bannedNumbers.clear();
+              abort = true;
+              break;
+            }
+          }
+
+          if (!abort) {
+            if (_bannedNumbers.contains(number())) {
+              goPreviousAndClearNumber();
+            } else {
+              _board[i][j] = number();
+              _bannedNumbers.clear();
+              shuffledNumbers.remove(number());
+              goNext();
+            }
+          } else {
+            goPreviousAndClearNumber();
+          }
+        });
+      }
+    } while (!isBoardFilled());
+
+    notifyListeners();
+  }
+
+  @visibleForTesting
+  bool isBoardFilled() {
+    for (final list in _board) {
+      for (final number in list) {
+        if (number == 0) return false;
+      }
+    }
+
+    return true;
+  }
+
+  void update() {
+    notifyListeners();
+  }
+
+  bool isConflict(int num, int i, int j) {
+    return boardByGroup[getGroupIndexOf(i, j)].where((e) => e == num).length >= 1 ||
+        List.generate(9, (row) => _board[i][row]).where((e) => e == num).length >= 1 ||
+        List.generate(9, (col) => _board[col][j]).where((e) => e == num).length >= 1;
   }
 
   void setNumber({int groupIndex, int index, int number}) {

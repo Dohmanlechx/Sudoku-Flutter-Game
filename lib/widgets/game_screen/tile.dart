@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/app/typography.dart';
+import 'package:sudoku_game/providers/board_provider.dart';
 
 class Tile extends StatefulWidget {
   final int number;

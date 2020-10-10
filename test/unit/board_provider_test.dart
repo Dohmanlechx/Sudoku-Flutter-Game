@@ -2,6 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 
 void main() {
+  test('Generating the board count', () {
+    final board = BoardProvider();
+    print(board.board);
+  });
+
   test('The board should contain 81 elements', () {
     final board = BoardProvider().board;
     var count = 0;
@@ -57,5 +62,42 @@ void main() {
     expect(actual6, expected6);
     expect(actual7, expected7);
     expect(actual8, expected8);
+  });
+
+  test('goNext tests', () {
+    final provider = BoardProvider();
+
+    provider.goNext();
+
+    expect(provider.i, 0);
+    expect(provider.j, 1);
+
+    provider.i = 6;
+    provider.j = 8;
+
+    provider.goNext();
+
+    expect(provider.i, 7);
+    expect(provider.j, 0);
+  });
+
+  test('goPrevious tests', () {
+    final provider = BoardProvider();
+
+    provider.i = 3;
+    provider.j = 5;
+
+    provider.goPreviousAndClearNumber();
+
+    expect(provider.i, 3);
+    expect(provider.j, 4);
+
+    provider.i = 8;
+    provider.j = 0;
+
+    provider.goPreviousAndClearNumber();
+
+    expect(provider.i, 7);
+    expect(provider.j, 8);
   });
 }
