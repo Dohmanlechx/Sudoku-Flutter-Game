@@ -2,11 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/util/custom_exceptions.dart';
 
-void main() {
-  test('Generating the board count', () {
-    final board = BoardProvider();
-  });
+import '../test_resources.dart';
 
+void main() {
   test('The board should contain 81 elements', () {
     final board = BoardProvider().board;
     var count = 0;
@@ -23,7 +21,7 @@ void main() {
     expect(boardByGroup.length, 9);
   });
 
-  test('BoardGroup index tests', () {
+  test('getGroupIndexOf tests', () {
     final provider = BoardProvider();
 
     const expected0 = 0;
@@ -62,6 +60,19 @@ void main() {
     expect(actual6, expected6);
     expect(actual7, expected7);
     expect(actual8, expected8);
+  });
+
+  test('boardByGroup tests', () {
+    final provider = BoardProvider();
+
+    provider.setBoard(TestResources.mockedValidBoard);
+
+    for (int i = 0; i < 9; i++) {
+      expect(
+        provider.boardByGroup[i],
+        TestResources.getExpectedBoardByGroup(groupIndex: i),
+      );
+    }
   });
 
   test('goNext tests', () {
@@ -139,5 +150,16 @@ void main() {
     provider.setBoard(testBoard);
 
     expect(provider.isBoardFilled(), false);
+  });
+
+  test('getCoordinates test', () {
+    final provider = BoardProvider();
+
+    for (int i = 0; i < 9; i++) {
+      expect(
+        provider.getCoordinates(i),
+        TestResources.getExpectedOf(groupIndex: i),
+      );
+    }
   });
 }

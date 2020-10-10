@@ -11,11 +11,6 @@ class BoardProvider with ChangeNotifier {
     });
   }
 
-  @visibleForTesting
-  void setBoard(List<List<int>> testBoard) {
-    _board = testBoard;
-  }
-
   BoardProvider() {
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
@@ -65,7 +60,11 @@ class BoardProvider with ChangeNotifier {
 
   List<int> _bannedNumbers = [];
 
+  int generateTime = 0;
+
   Future<void> initBoard() async {
+    final start = DateTime.now().millisecondsSinceEpoch;
+
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
         return 0;
@@ -142,6 +141,9 @@ class BoardProvider with ChangeNotifier {
         });
       }
     }
+
+    generateTime = DateTime.now().millisecondsSinceEpoch - start;
+    print(generateTime);
     notifyListeners();
   }
 
@@ -187,6 +189,7 @@ class BoardProvider with ChangeNotifier {
     }
   }
 
+  @visibleForTesting
   List<int> boardByRow(int row, int groupIndex) {
     if (groupIndex > 2 && groupIndex <= 5) {
       row += 3;
@@ -197,6 +200,7 @@ class BoardProvider with ChangeNotifier {
     return List.generate(9, (i) => _board[row][i]);
   }
 
+  @visibleForTesting
   List<int> boardByColumn(int column, int groupIndex) {
     if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
       column += 3;
@@ -241,6 +245,7 @@ class BoardProvider with ChangeNotifier {
     return res;
   }
 
+  @visibleForTesting
   List<List<int>> getCoordinates(int groupIndex) {
     var res = List<List<int>>();
 
@@ -311,5 +316,10 @@ class BoardProvider with ChangeNotifier {
     }
 
     return res;
+  }
+
+  @visibleForTesting
+  void setBoard(List<List<int>> testBoard) {
+    _board = testBoard;
   }
 }

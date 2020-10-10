@@ -20,33 +20,35 @@ class _GameScreenState extends State<GameScreen> {
       backgroundColor: AppColors.background,
       body: InteractiveViewer(
         minScale: 1.0,
-        child: Center(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                width: DeviceInfo.width(context),
-                height: DeviceInfo.width(context),
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(border: Border.all()),
-                    child: NonScrollableGridView(
-                      children: List<Widget>.generate(9, (int i) {
-                        return TileGroup(groupIndex: i);
-                      }),
-                    ),
+        child: Column(
+          children: [
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              width: DeviceInfo.width(context),
+              height: DeviceInfo.width(context),
+              child: Center(
+                child: Container(
+                  decoration: BoxDecoration(border: Border.all()),
+                  child: NonScrollableGridView(
+                    children: List<Widget>.generate(9, (int i) {
+                      return TileGroup(groupIndex: i);
+                    }),
                   ),
                 ),
               ),
-              FlatButton(
-                onPressed: () {
-                  context.read<BoardProvider>().initBoard();
-                  context.read<BoardProvider>().initBoard();
-                },
-                child: Text("Init"),
-              ),
-            ],
-          ),
+            ),
+            FlatButton(
+              color: AppColors.white,
+              onPressed: () {
+                context.read<BoardProvider>().initBoard();
+                context.read<BoardProvider>().initBoard();
+              },
+              child: Text("Generate board!"),
+            ),
+            Text(context.watch<BoardProvider>().generateTime.toString() + " ms", style: TextStyle(fontSize: 22),),
+            const Spacer(),
+          ],
         ),
       ),
     );
