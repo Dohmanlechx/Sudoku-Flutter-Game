@@ -3,7 +3,7 @@ import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
   /**
-   * Global variables for the [initBoard] function
+   * Global variables for the [_initBoard] function
    */
   @visibleForTesting
   int i = 0;
@@ -19,6 +19,8 @@ class BoardProvider with ChangeNotifier {
       return getCoordinates(i).map((e) => board[e[0]][e[1]]).toList();
     });
   }
+
+  int get generateTime => _generateTime;
 
   BoardProvider() {
     _restoreBoard();
@@ -67,7 +69,8 @@ class BoardProvider with ChangeNotifier {
 
   List<int> _bannedNumbers = [];
 
-  int generateTime = 0;
+  int _timerStart = 0;
+  int _generateTime = 0;
 
   void buildBoard() {
     // For some reason the board isn't being built successfully
@@ -79,13 +82,13 @@ class BoardProvider with ChangeNotifier {
   Future<void> _initBoard() async {
     _restoreBoard();
 
-    final _start = DateTime.now().millisecondsSinceEpoch;
+    _timerStart = DateTime.now().millisecondsSinceEpoch;
     final _shuffledNumbers = List<int>();
 
     _shuffledNumbers.refill();
     _bannedNumbers.clear();
 
-    int _getFirstNumber() => _shuffledNumbers[0];
+    int _currentNumber() => _shuffledNumbers[0];
 
     while (!isBoardFilled()) {
       bool isAbortedDueToEmptyNumberList = false;
@@ -99,9 +102,9 @@ class BoardProvider with ChangeNotifier {
         goPreviousAndClearNumber();
       } else {
         await Future.delayed(Duration.zero, () {
-          while (isConflict(_getFirstNumber(), i, j)) {
-            _bannedNumbers.add(_getFirstNumber());
-            _shuffledNumbers.remove(_getFirstNumber());
+          while (_isConflict(_currentNumber(), i, j)) {
+            _bannedNumbers.add(_currentNumber());
+            _shuffledNumbers.remove(_currentNumber());
 
             if (_shuffledNumbers.isEmpty) {
               isAbortedDueToEmptyNumberList = true;
@@ -112,19 +115,56 @@ class BoardProvider with ChangeNotifier {
           if (isAbortedDueToEmptyNumberList) {
             goPreviousAndClearNumber();
           } else {
-            if (_bannedNumbers.contains(_getFirstNumber())) {
+            if (_bannedNumbers.contains(_currentNumber())) {
               goPreviousAndClearNumber();
             } else {
-              _board[i][j] = _getFirstNumber();
+              _board[i][j] = _currentNumber();
               _bannedNumbers.clear();
-              _shuffledNumbers.remove(_getFirstNumber());
+              _shuffledNumbers.remove(_currentNumber());
               goNext();
             }
           }
         });
       }
     }
-    generateTime = DateTime.now().millisecondsSinceEpoch - _start;
+    _removePositionsWithOnlyOneSolution();
+  }
+
+  void _removePositionsWithOnlyOneSolution() {
+    final List<List<int>> _allPositions = [];
+
+    List<int> _currentPosition() => _allPositions[0];
+
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        _allPositions.add([i, j]);
+      }
+    }
+
+    _allPositions.shuffle();
+
+    while (_allPositions.isNotEmpty) {
+      int _oldNumber = _board[_currentPosition()[0]][_currentPosition()[1]];
+      _board[_currentPosition()[0]][_currentPosition()[1]] = 0;
+
+      int _solutionCount = 0;
+
+      for (int k = 1; k < 10; k++) {
+        if (!_isConflict(k, _currentPosition()[0], _currentPosition()[1])) {
+          _solutionCount++;
+        }
+      }
+      assert(_solutionCount > 0);
+
+      if (_solutionCount > 1) {
+        _board[_currentPosition()[0]][_currentPosition()[1]] = _oldNumber;
+      }
+
+      _allPositions.removeAt(0);
+    }
+
+    print("DONE!!!");
+    _generateTime = DateTime.now().millisecondsSinceEpoch - _timerStart;
     notifyListeners();
   }
 
@@ -138,7 +178,7 @@ class BoardProvider with ChangeNotifier {
     return true;
   }
 
-  bool isConflict(int num, int i, int j) {
+  bool _isConflict(int num, int i, int j) {
     return boardByGroup[getGroupIndexOf(i, j)].where((e) => e == num).length >= 1 ||
         List.generate(9, (row) => _board[i][row]).where((e) => e == num).length >= 1 ||
         List.generate(9, (col) => _board[col][j]).where((e) => e == num).length >= 1;
