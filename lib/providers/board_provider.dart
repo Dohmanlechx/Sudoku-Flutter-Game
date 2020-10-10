@@ -204,7 +204,7 @@ class BoardProvider with ChangeNotifier {
   List<int> boardByColumn(int column, int groupIndex) {
     if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
       column += 3;
-    } else if (groupIndex == 3 || groupIndex == 5 || groupIndex == 8) {
+    } else if (groupIndex == 2 || groupIndex == 5 || groupIndex == 8) {
       column += 6;
     }
 
