@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/util/custom_exceptions.dart';
 
 class BoardProvider with ChangeNotifier {
   List<List<int>> _board;
@@ -9,6 +10,11 @@ class BoardProvider with ChangeNotifier {
     return List.generate(9, (i) {
       return getCoordinates(i).map((e) => board[e[0]][e[1]]).toList();
     });
+  }
+
+  @visibleForTesting
+  void setBoard(List<List<int>> testBoard) {
+    _board = testBoard;
   }
 
   BoardProvider() {
@@ -22,6 +28,10 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goNext() {
+    // if (i == 8 && j == 8) {
+    //   throw IteratorException("Tried to go next outside the bounds");
+    // }
+
     if (j < 8) {
       j++;
     } else {
@@ -32,6 +42,10 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goPreviousAndClearNumber() {
+    // if (i == 0 && j == 0) {
+    //   throw IteratorException("Tried to go previous outside the bounds");
+    // }
+
     if (j > 0) {
       j--;
     } else {
@@ -53,6 +67,8 @@ class BoardProvider with ChangeNotifier {
   List<int> _bannedNumbers = [];
 
   Future<void> initBoard() async {
+    final int startingTimeStamp = DateTime.now().millisecondsSinceEpoch;
+
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
         return 0;
@@ -81,8 +97,9 @@ class BoardProvider with ChangeNotifier {
     // Row 2 and further
 
     bool abort = false;
+    _bannedNumbers.clear();
 
-    do {
+    while (!isBoardFilled()) {
       abort = false;
 
       shuffledNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -103,7 +120,7 @@ class BoardProvider with ChangeNotifier {
             shuffledNumbers.remove(number());
 
             if (shuffledNumbers.isEmpty) {
-              _bannedNumbers.clear();
+              //_bannedNumbers.clear();
               abort = true;
               break;
             }
@@ -123,7 +140,11 @@ class BoardProvider with ChangeNotifier {
           }
         });
       }
-    } while (!isBoardFilled());
+    }
+
+    final int timeSinceStartingTimeStamp = DateTime.now().millisecondsSinceEpoch - startingTimeStamp;
+
+    print("***** ms: $timeSinceStartingTimeStamp");
 
     notifyListeners();
   }

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/util/custom_exceptions.dart';
 
 void main() {
   test('Generating the board count', () {
     final board = BoardProvider();
-    print(board.board);
   });
 
   test('The board should contain 81 elements', () {
@@ -79,6 +79,11 @@ void main() {
 
     expect(provider.i, 7);
     expect(provider.j, 0);
+
+    provider.i = 8;
+    provider.j = 8;
+
+    expect(provider.goNext, throwsA(isInstanceOf<IteratorException>()));
   });
 
   test('goPrevious tests', () {
@@ -99,5 +104,40 @@ void main() {
 
     expect(provider.i, 7);
     expect(provider.j, 8);
+
+    provider.i = 0;
+    provider.j = 0;
+
+    expect(provider.goPreviousAndClearNumber, throwsA(isInstanceOf<IteratorException>()));
+  });
+
+  test('Check if board is completely filled', () {
+    final provider = BoardProvider();
+
+    final testBoard = List<List<int>>.generate(9, (_) {
+      return List<int>.generate(9, (_) {
+        return 1;
+      });
+    });
+
+    provider.setBoard(testBoard);
+
+    expect(provider.isBoardFilled(), true);
+  });
+
+  test('Check if it returns false when the board is not completely filled', () {
+    final provider = BoardProvider();
+
+    final testBoard = List<List<int>>.generate(9, (_) {
+      return List<int>.generate(9, (_) {
+        return 1;
+      });
+    });
+
+    testBoard[8][8] = 0;
+
+    provider.setBoard(testBoard);
+
+    expect(provider.isBoardFilled(), false);
   });
 }
