@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/colors.dart';
+import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/util/device_info.dart';
+import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile_group.dart';
 
@@ -17,6 +19,11 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppTranslations.appTitle),
+        elevation: 50,
+      ),
+      drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
       body: InteractiveViewer(
         minScale: 1.0,
@@ -24,13 +31,6 @@ class _GameScreenState extends State<GameScreen> {
           children: [
             const Spacer(),
             _buildSudokuGrid(),
-            FlatButton(
-              color: AppColors.white,
-              onPressed: () {
-                context.read<BoardProvider>().buildBoard();
-              },
-              child: const Text("Generate board!"),
-            ),
             Text(
               context.watch<BoardProvider>().latestGenerateTime.toString() + " ms",
               style: const TextStyle(fontSize: 22),
