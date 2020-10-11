@@ -14,6 +14,7 @@ class SudokuGameApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BoardProvider()),
       ],
       child: MaterialApp(
+        key: const Key('sudoku_game'),
         home: const GameScreen(),
         theme: appTheme,
       ),

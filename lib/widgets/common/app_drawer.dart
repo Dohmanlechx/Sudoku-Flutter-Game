@@ -17,10 +17,14 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      key: const Key('app_drawer'),
       child: Column(
         children: [
           AppBar(
-            title: const Text(AppTranslations.mainMenu),
+            title: const Text(
+              AppTranslations.mainMenu,
+              key: ValueKey('drawer_headline_text'),
+            ),
             leading: const Icon(Icons.menu),
             backgroundColor: AppColors.accent,
           ),
