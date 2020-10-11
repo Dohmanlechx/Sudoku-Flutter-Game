@@ -42,10 +42,6 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goNext() {
-    // if (i == 8 && j == 8) {
-    //   throw IteratorException("Tried to go next outside the bounds");
-    // }
-
     if (j < 8) {
       j++;
     } else {
@@ -56,10 +52,6 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goPreviousAndClearNumber() {
-    // if (i == 0 && j == 0) {
-    //   throw IteratorException("Tried to go previous outside the bounds");
-    // }
-
     if (j > 0) {
       j--;
     } else {
@@ -71,9 +63,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   List<int> _bannedNumbers = [];
-
   int _timerStart = 0;
-  int _generateTime = 0;
 
   void buildBoard() {
     // For some reason the board isn't being built successfully
@@ -105,26 +95,28 @@ class BoardProvider with ChangeNotifier {
         goPreviousAndClearNumber();
       } else {
         await Future.delayed(Duration.zero, () {
-          while (_isConflict(_currentNumber(), i, j)) {
-            _bannedNumbers.add(_currentNumber());
-            _shuffledNumbers.remove(_currentNumber());
+          if (i < 9) { // TODO: Try to remove this check and solve the issue
+            while (_isConflict(_currentNumber(), i, j)) {
+              _bannedNumbers.add(_currentNumber());
+              _shuffledNumbers.remove(_currentNumber());
 
-            if (_shuffledNumbers.isEmpty) {
-              isAbortedDueToEmptyNumberList = true;
-              break;
+              if (_shuffledNumbers.isEmpty) {
+                isAbortedDueToEmptyNumberList = true;
+                break;
+              }
             }
-          }
 
-          if (isAbortedDueToEmptyNumberList) {
-            goPreviousAndClearNumber();
-          } else {
-            if (_bannedNumbers.contains(_currentNumber())) {
+            if (isAbortedDueToEmptyNumberList) {
               goPreviousAndClearNumber();
             } else {
-              _board[i][j] = _currentNumber();
-              _bannedNumbers.clear();
-              _shuffledNumbers.remove(_currentNumber());
-              goNext();
+              if (_bannedNumbers.contains(_currentNumber())) {
+                goPreviousAndClearNumber();
+              } else {
+                _board[i][j] = _currentNumber();
+                _bannedNumbers.clear();
+                _shuffledNumbers.remove(_currentNumber());
+                goNext();
+              }
             }
           }
         });

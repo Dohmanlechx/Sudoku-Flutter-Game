@@ -111,11 +111,6 @@ void main() {
 
     expect(provider.i, 7);
     expect(provider.j, 0);
-
-    provider.i = 8;
-    provider.j = 8;
-
-    // expect(provider.goNext, throwsA(isInstanceOf<IteratorException>()));
   });
 
   test('goPrevious tests', () {
@@ -136,11 +131,6 @@ void main() {
 
     expect(provider.i, 7);
     expect(provider.j, 8);
-
-    provider.i = 0;
-    provider.j = 0;
-
-    // expect(provider.goPreviousAndClearNumber, throwsA(isInstanceOf<IteratorException>()));
   });
 
   test('Check if board is completely filled', () {
