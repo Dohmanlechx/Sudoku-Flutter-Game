@@ -38,6 +38,7 @@ class BoardProvider with ChangeNotifier {
         return 0;
       });
     });
+    notifyListeners();
   }
 
   @visibleForTesting

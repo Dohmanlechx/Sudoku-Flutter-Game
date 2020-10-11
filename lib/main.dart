@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/screens/game_screen.dart';
 
@@ -12,8 +13,12 @@ class SudokuGameApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => BoardProvider()),
       ],
-      child: const MaterialApp(
-        home: GameScreen(),
+      child: MaterialApp(
+        home: const GameScreen(),
+        theme: ThemeData(
+          backgroundColor: AppColors.primary,
+          accentColor: AppColors.accent,
+        ),
       ),
     );
   }

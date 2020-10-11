@@ -17,7 +17,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: InteractiveViewer(
         minScale: 1.0,
         child: Column(
@@ -48,18 +48,19 @@ class _GameScreenState extends State<GameScreen> {
       width: DeviceInfo.width(context),
       height: DeviceInfo.width(context),
       child: Center(
-        child: AnimatedOpacity(
-          duration: const Duration(seconds: 1),
-          opacity: context.watch<BoardProvider>().isBoardFilled() ? 1 : 0,
-          child: Container(
-            decoration: BoxDecoration(border: Border.all()),
-            child: NonScrollableGridView(
-              children: List<Widget>.generate(9, (int i) {
-                return TileGroup(groupIndex: i);
-              }),
-            ),
-          ),
-        ),
+        child: context.watch<BoardProvider>().isBoardFilled()
+            ? Container(
+                decoration: BoxDecoration(border: Border.all()),
+                child: NonScrollableGridView(
+                  children: List<Widget>.generate(9, (int i) {
+                    return TileGroup(groupIndex: i);
+                  }),
+                ),
+              )
+            : const CircularProgressIndicator(
+                strokeWidth: 5,
+                backgroundColor: Colors.grey,
+              ),
       ),
     );
   }
