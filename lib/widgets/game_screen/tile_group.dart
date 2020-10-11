@@ -17,39 +17,43 @@ class TileGroup extends StatefulWidget {
 class _TileGroupState extends State<TileGroup> {
   @override
   Widget build(BuildContext context) {
-    final _provider = context.watch<BoardProvider>();
-    final _numbers = context.watch<BoardProvider>().boardByGroup[widget.groupIndex];
-
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
         border: Border.all(),
       ),
-      child: NonScrollableGridView(
-        children: List<Widget>.generate(9, (int i) {
-          final isOccupied = _provider.isOccupiedNumber(
-            index: i,
+      child: _buildTileGroupGrid(context),
+    );
+  }
+
+  Widget _buildTileGroupGrid(BuildContext context) {
+    final _provider = context.watch<BoardProvider>();
+    final _numbers = _provider.boardByGroup[widget.groupIndex];
+
+    return NonScrollableGridView(
+      children: List<Widget>.generate(9, (int i) {
+        final isOccupied = _provider.isOccupiedNumber(
+          index: i,
+          number: _numbers[i],
+          groupIndex: widget.groupIndex,
+        );
+        return Center(
+          child: Tile(
             number: _numbers[i],
-            groupIndex: widget.groupIndex,
-          );
-          return Center(
-            child: Tile(
-              number: _numbers[i],
-              isInvalid: isOccupied,
-              onSubmit: (int num) {
-                assert(num <= 9);
-                setState(() {
-                  _provider.setNumber(
-                    groupIndex: widget.groupIndex,
-                    index: i,
-                    number: num == 0 ? null : num,
-                  );
-                });
-              },
-            ),
-          );
-        }),
-      ),
+            isInvalid: isOccupied,
+            onSubmit: (int num) {
+              assert(num <= 9);
+              setState(() {
+                _provider.setNumber(
+                  groupIndex: widget.groupIndex,
+                  index: i,
+                  number: num == 0 ? null : num,
+                );
+              });
+            },
+          ),
+        );
+      }),
     );
   }
 }

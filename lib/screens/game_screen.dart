@@ -23,25 +23,7 @@ class _GameScreenState extends State<GameScreen> {
         child: Column(
           children: [
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              width: DeviceInfo.width(context),
-              height: DeviceInfo.width(context),
-              child: Center(
-                child: AnimatedOpacity(
-                  duration: const Duration(seconds: 1),
-                  opacity: context.watch<BoardProvider>().isBoardFilled() ? 1 : 0,
-                  child: Container(
-                    decoration: BoxDecoration(border: Border.all()),
-                    child: NonScrollableGridView(
-                      children: List<Widget>.generate(9, (int i) {
-                        return TileGroup(groupIndex: i);
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            _buildSudokuGrid(),
             FlatButton(
               color: AppColors.white,
               onPressed: () {
@@ -55,6 +37,28 @@ class _GameScreenState extends State<GameScreen> {
             ),
             const Spacer(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSudokuGrid() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      width: DeviceInfo.width(context),
+      height: DeviceInfo.width(context),
+      child: Center(
+        child: AnimatedOpacity(
+          duration: const Duration(seconds: 1),
+          opacity: context.watch<BoardProvider>().isBoardFilled() ? 1 : 0,
+          child: Container(
+            decoration: BoxDecoration(border: Border.all()),
+            child: NonScrollableGridView(
+              children: List<Widget>.generate(9, (int i) {
+                return TileGroup(groupIndex: i);
+              }),
+            ),
+          ),
         ),
       ),
     );

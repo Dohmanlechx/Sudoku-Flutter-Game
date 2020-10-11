@@ -46,26 +46,30 @@ class _TileState extends State<Tile> {
                 : null,
         border: Border.all(width: 0.5),
       ),
-      child: TextField(
-        controller: _controller,
-        buildCounter: (BuildContext context, {int currentLength, int maxLength, bool isFocused}) => null,
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
-        keyboardType: TextInputType.number,
-        maxLength: 1,
-        maxLengthEnforced: false,
-        showCursor: false,
-        enableInteractiveSelection: false,
-        textAlign: TextAlign.center,
-        style: AppTypography.number,
-        decoration: const InputDecoration(
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.red, width: 3),
-          ),
+      child: _buildNumberTextField(),
+    );
+  }
+
+  Widget _buildNumberTextField() {
+    return TextField(
+      controller: _controller,
+      buildCounter: (BuildContext context, {int currentLength, int maxLength, bool isFocused}) => null,
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
+      keyboardType: TextInputType.number,
+      maxLength: 1,
+      maxLengthEnforced: false,
+      showCursor: false,
+      enableInteractiveSelection: false,
+      textAlign: TextAlign.center,
+      style: AppTypography.number,
+      decoration: const InputDecoration(
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.red, width: 3),
         ),
-        onChanged: (String s) {
-          widget.onSubmit(s.isEmpty ? null : int.parse(s[0]));
-        },
       ),
+      onChanged: (String s) {
+        widget.onSubmit(s.isEmpty ? null : int.parse(s[0]));
+      },
     );
   }
 }
