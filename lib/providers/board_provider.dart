@@ -2,6 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
+  static const initNumber = -1;
+
+  @visibleForTesting
+  bool isTesting = false;
+
   /**
    * Global variables for the [_initBoard] function
    */
@@ -12,20 +17,23 @@ class BoardProvider with ChangeNotifier {
 
   List<List<int>> _board;
 
+  @visibleForTesting
   List<List<int>> get board => _board;
 
   List<List<int>> get boardByGroup {
     return List.generate(9, (i) {
-      return getCoordinates(i).map((e) => board[e[0]][e[1]]).toList();
+      return getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList();
     });
   }
 
   int get latestGenerateTime => DateTime.now().millisecondsSinceEpoch - _timerStart;
 
   BoardProvider({bool isCalledFromTest = false}) {
+    isTesting = isCalledFromTest;
+
     _restoreBoard();
 
-    if (!isCalledFromTest) {
+    if (!isTesting) {
       buildBoard();
     }
   }
@@ -35,7 +43,7 @@ class BoardProvider with ChangeNotifier {
     j = 0;
     _board = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
-        return 0;
+        return BoardProvider.initNumber;
       });
     });
     notifyListeners();
@@ -84,7 +92,7 @@ class BoardProvider with ChangeNotifier {
 
     int _currentNumber() => _shuffledNumbers[0];
 
-    while (!isBoardFilled()) {
+    while (!isBoardDoneBuilt()) {
       bool isAbortedDueToEmptyNumberList = false;
 
       _shuffledNumbers
@@ -96,7 +104,8 @@ class BoardProvider with ChangeNotifier {
         goPreviousAndClearNumber();
       } else {
         await Future.delayed(Duration.zero, () {
-          if (i < 9) { // TODO: Try to remove this check and solve the issue
+          if (i < 9) {
+            // TODO: Try to remove this check and solve the issue
             while (_isConflict(_currentNumber(), i, j)) {
               _bannedNumbers.add(_currentNumber());
               _shuffledNumbers.remove(_currentNumber());
@@ -123,7 +132,10 @@ class BoardProvider with ChangeNotifier {
         });
       }
     }
-    _removePositionsWithOnlyOneSolution();
+
+    if (!isTesting) {
+      _removePositionsWithOnlyOneSolution();
+    }
   }
 
   void _removePositionsWithOnlyOneSolution() {
@@ -162,10 +174,10 @@ class BoardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isBoardFilled() {
+  bool isBoardDoneBuilt() {
     for (final list in _board) {
       for (final number in list) {
-        if (number == 0) return false;
+        if (number == BoardProvider.initNumber) return false;
       }
     }
 
@@ -226,7 +238,7 @@ class BoardProvider with ChangeNotifier {
     return List.generate(9, (i) => _board[i][column]);
   }
 
-  bool isOccupiedNumber({int index, int number, int groupIndex}) {
+  bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
     return boardByGroup[groupIndex].where((int num) => num == number).length > 1 ||
         boardByRow(_getRowInGroup(index), groupIndex).where((int num) => num == number).length > 1 ||
         boardByColumn(_getColumnInGroup(index), groupIndex).where((int num) => num == number).length > 1;

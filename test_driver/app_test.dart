@@ -7,7 +7,7 @@ import 'package:test/test.dart';
  */
 
 void main() {
-  group('AppDrawer test', () {
+  group('App Integration Tests', () {
     FlutterDriver driver;
 
     setUpAll(() async {

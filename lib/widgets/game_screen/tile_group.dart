@@ -32,7 +32,7 @@ class _TileGroupState extends State<TileGroup> {
 
     return NonScrollableGridView(
       children: List<Widget>.generate(9, (int i) {
-        final isOccupied = _provider.isOccupiedNumber(
+        final isOccupied = _provider.isOccupiedNumberInGroup(
           index: i,
           number: _numbers[i],
           groupIndex: widget.groupIndex,

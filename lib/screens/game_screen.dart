@@ -30,44 +30,46 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildSudokuGrid() {
-    return Container(
-      margin: const EdgeInsets.only(top: 32),
-      padding: const EdgeInsets.all(8),
-      width: DeviceInfo.width(context),
-      height: DeviceInfo.width(context),
-      child: Center(
-        child: context.watch<BoardProvider>().isBoardFilled()
-            ? Container(
+    return context.watch<BoardProvider>().isBoardDoneBuilt()
+        ? Container(
+            margin: const EdgeInsets.only(top: 32),
+            padding: const EdgeInsets.all(8),
+            width: DeviceInfo.width(context),
+            height: DeviceInfo.width(context),
+            child: Center(
+              child: Container(
                 decoration: BoxDecoration(border: Border.all()),
                 child: NonScrollableGridView(
                   children: List<Widget>.generate(9, (int i) {
                     return TileGroup(groupIndex: i);
                   }),
                 ),
-              )
-            : _buildCircleLoader(),
-      ),
-    );
+              ),
+            ),
+          )
+        : _buildCircleLoader();
   }
 
   Widget _buildCircleLoader() {
     const double _progressSize = 70;
-    return Stack(
-      children: [
-        Container(
-          width: _progressSize,
-          height: _progressSize,
-          child: const CircularProgressIndicator(
-            strokeWidth: 5,
-            backgroundColor: Colors.grey,
+    return Center(
+      child: Stack(
+        children: [
+          Container(
+            width: _progressSize,
+            height: _progressSize,
+            child: const CircularProgressIndicator(
+              strokeWidth: 5,
+              backgroundColor: Colors.grey,
+            ),
           ),
-        ),
-        Container(
-          width: _progressSize,
-          height: _progressSize,
-          child: const Center(child: Text(AppTranslations.loading)),
-        ),
-      ],
+          Container(
+            width: _progressSize,
+            height: _progressSize,
+            child: const Center(child: Text(AppTranslations.loading)),
+          ),
+        ],
+      ),
     );
   }
 }

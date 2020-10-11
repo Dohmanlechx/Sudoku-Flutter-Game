@@ -144,7 +144,7 @@ void main() {
 
     provider.setBoard(testBoard);
 
-    expect(provider.isBoardFilled(), true);
+    expect(provider.isBoardDoneBuilt(), true);
   });
 
   test('Check if it returns false when the board is not completely filled', () {
@@ -156,11 +156,11 @@ void main() {
       });
     });
 
-    testBoard[8][8] = 0;
+    testBoard[8][8] = BoardProvider.initNumber;
 
     provider.setBoard(testBoard);
 
-    expect(provider.isBoardFilled(), false);
+    expect(provider.isBoardDoneBuilt(), false);
   });
 
   test('getCoordinates test', () {
