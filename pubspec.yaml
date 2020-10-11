@@ -20,6 +20,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_native_splash: ^0.1.9
+  flutter_launcher_icons: ^0.8.1
 
 flutter:
   uses-material-design: true
@@ -28,6 +29,13 @@ flutter:
       fonts:
         - asset: assets/fonts/Coolvetica-Regular.ttf
 
+# Splash Screen
 flutter_native_splash:
   image: assets/images/splash_screen_small.png
   color: "D6E4EE"
+
+# Launcher Icon
+flutter_icons:
+  android: launcher_icon
+  ios: true
+  image_path: assets/images/splash_screen_small.png
