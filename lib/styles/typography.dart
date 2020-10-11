@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sudoku_game/styles/colors.dart';
 
 class AppTypography {
   static const number = TextStyle(
@@ -8,5 +9,10 @@ class AppTypography {
 
   static const appDrawerEntry = TextStyle(
     fontSize: 22,
+  );
+
+  static const dividerTitle = TextStyle(
+    fontSize: 20,
+    color: AppColors.grey,
   );
 }

@@ -25,22 +25,14 @@ class _GameScreenState extends State<GameScreen> {
       ),
       drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
-      body: Column(
-        children: [
-          const SizedBox(height: 32),
-          _buildSudokuGrid(),
-          Text(
-            context.watch<BoardProvider>().latestGenerateTime.toString() + " ms",
-            style: const TextStyle(fontSize: 22),
-          ),
-        ],
-      ),
+      body: _buildSudokuGrid(),
     );
   }
 
   Widget _buildSudokuGrid() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.only(top: 32),
+      padding: const EdgeInsets.all(8),
       width: DeviceInfo.width(context),
       height: DeviceInfo.width(context),
       child: Center(
