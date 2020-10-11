@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_game/app/colors.dart';
+import 'package:sudoku_game/styles/colors.dart';
 
 final appTheme = ThemeData(
   fontFamily: 'Coolvetica',

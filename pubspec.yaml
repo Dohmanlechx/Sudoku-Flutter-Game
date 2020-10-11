@@ -27,3 +27,7 @@ flutter:
     - family: Coolvetica
       fonts:
         - asset: assets/fonts/Coolvetica-Regular.ttf
+
+flutter_native_splash:
+  image: assets/images/splash_screen_small.png
+  color: "D6E4EE"

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/app/strings.dart';
-import 'package:sudoku_game/app/typography.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/styles/typography.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -19,7 +19,7 @@ class AppDrawer extends StatelessWidget {
           const SizedBox(height: 16),
           ListTile(
             leading: const Icon(Icons.add, color: AppColors.black),
-            title: Text(
+            title: const Text(
               AppTranslations.newGame,
               style: AppTypography.appDrawerEntry,
             ),
