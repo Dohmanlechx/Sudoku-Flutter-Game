@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/app/strings.dart';
+import 'package:sudoku_game/app/typography.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -20,7 +21,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.add, color: AppColors.black),
             title: Text(
               AppTranslations.newGame,
-              style: Theme.of(context).textTheme.headline6,
+              style: AppTypography.appDrawerEntry,
             ),
             onTap: () {
               context.read<BoardProvider>().buildBoard();
