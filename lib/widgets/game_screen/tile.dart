@@ -40,7 +40,7 @@ class _TileState extends State<Tile> {
     return Container(
       decoration: BoxDecoration(
         color: widget.number == null
-            ? AppColors.emptyTile
+            ? AppColors.white
             : widget.isInvalid
                 ? AppColors.red.withOpacity(0.1)
                 : null,

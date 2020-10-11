@@ -19,7 +19,7 @@ class _TileGroupState extends State<TileGroup> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.lightGrey,
         border: Border.all(),
       ),
       child: _buildTileGroupGrid(context),

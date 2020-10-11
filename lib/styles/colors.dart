@@ -8,5 +8,5 @@ class AppColors {
   static const white = Color(0xFFFFFFFF);
   static const grey = Color(0xFFC2C2C2);
   static const red = Color(0xFFFF0000);
-  static const emptyTile = Color(0xFFEBEBEB);
+  static const lightGrey = Color(0xFFF0F0F0);
 }

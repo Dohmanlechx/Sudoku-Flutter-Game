@@ -25,19 +25,15 @@ class _GameScreenState extends State<GameScreen> {
       ),
       drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
-      body: InteractiveViewer(
-        minScale: 1.0,
-        child: Column(
-          children: [
-            const Spacer(),
-            _buildSudokuGrid(),
-            Text(
-              context.watch<BoardProvider>().latestGenerateTime.toString() + " ms",
-              style: const TextStyle(fontSize: 22),
-            ),
-            const Spacer(),
-          ],
-        ),
+      body: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildSudokuGrid(),
+          Text(
+            context.watch<BoardProvider>().latestGenerateTime.toString() + " ms",
+            style: const TextStyle(fontSize: 22),
+          ),
+        ],
       ),
     );
   }
@@ -57,11 +53,29 @@ class _GameScreenState extends State<GameScreen> {
                   }),
                 ),
               )
-            : const CircularProgressIndicator(
-                strokeWidth: 5,
-                backgroundColor: Colors.grey,
-              ),
+            : _buildCircleLoader(),
       ),
+    );
+  }
+
+  Widget _buildCircleLoader() {
+    const double _progressSize = 70;
+    return Stack(
+      children: [
+        Container(
+          width: _progressSize,
+          height: _progressSize,
+          child: const CircularProgressIndicator(
+            strokeWidth: 5,
+            backgroundColor: Colors.grey,
+          ),
+        ),
+        Container(
+          width: _progressSize,
+          height: _progressSize,
+          child: const Center(child: Text(AppTranslations.loading)),
+        ),
+      ],
     );
   }
 }
