@@ -20,11 +20,14 @@ class BoardProvider with ChangeNotifier {
     });
   }
 
-  int get generateTime => _generateTime;
+  int get latestGenerateTime => DateTime.now().millisecondsSinceEpoch - _timerStart;
 
-  BoardProvider() {
+  BoardProvider({bool isCalledFromTest = false}) {
     _restoreBoard();
-    buildBoard();
+
+    if (!isCalledFromTest) {
+      buildBoard();
+    }
   }
 
   void _restoreBoard() {
@@ -145,7 +148,7 @@ class BoardProvider with ChangeNotifier {
 
     while (_allPositions.isNotEmpty) {
       int _oldNumber = _board[_currentPosition()[0]][_currentPosition()[1]];
-      _board[_currentPosition()[0]][_currentPosition()[1]] = 0;
+      _board[_currentPosition()[0]][_currentPosition()[1]] = null;
 
       int _solutionCount = 0;
 
@@ -163,8 +166,6 @@ class BoardProvider with ChangeNotifier {
       _allPositions.removeAt(0);
     }
 
-    print("DONE!!!");
-    _generateTime = DateTime.now().millisecondsSinceEpoch - _timerStart;
     notifyListeners();
   }
 

@@ -6,8 +6,10 @@ import 'package:sudoku_game/providers/board_provider.dart';
 import '../test_resources.dart';
 
 void main() {
+  BoardProvider _newBoardProvider() => BoardProvider(isCalledFromTest: true);
+
   test('The board should contain 81 elements', () {
-    final board = BoardProvider().board;
+    final board = _newBoardProvider().board;
     var count = 0;
 
     for (final row in board) {
@@ -18,11 +20,11 @@ void main() {
   });
 
   test('The tileGroups should contain 9 elements', () {
-    expect(BoardProvider().boardByGroup.length, 9);
+    expect(_newBoardProvider().boardByGroup.length, 9);
   });
 
   test('boardByRow tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
@@ -42,7 +44,7 @@ void main() {
   });
 
   test('boardByColumn tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
@@ -62,7 +64,7 @@ void main() {
   });
 
   test('getGroupIndexOf tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     final Map<int, int> tests = {
       0: provider.getGroupIndexOf(1, 2),
@@ -82,7 +84,7 @@ void main() {
   });
 
   test('boardByGroup tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
@@ -95,7 +97,7 @@ void main() {
   });
 
   test('goNext tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     provider.goNext();
 
@@ -117,7 +119,7 @@ void main() {
   });
 
   test('goPrevious tests', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     provider.i = 3;
     provider.j = 5;
@@ -142,7 +144,7 @@ void main() {
   });
 
   test('Check if board is completely filled', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     final testBoard = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
@@ -156,7 +158,7 @@ void main() {
   });
 
   test('Check if it returns false when the board is not completely filled', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     final testBoard = List<List<int>>.generate(9, (_) {
       return List<int>.generate(9, (_) {
@@ -172,7 +174,7 @@ void main() {
   });
 
   test('getCoordinates test', () {
-    final provider = BoardProvider();
+    final provider = _newBoardProvider();
 
     for (int i = 0; i < 9; i++) {
       expect(

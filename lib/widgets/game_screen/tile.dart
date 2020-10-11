@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudoku_game/app/colors.dart';
 import 'package:sudoku_game/app/typography.dart';
-import 'package:sudoku_game/providers/board_provider.dart';
 
 class Tile extends StatefulWidget {
   final int number;
@@ -40,7 +39,11 @@ class _TileState extends State<Tile> {
 
     return Container(
       decoration: BoxDecoration(
-        color: widget.isInvalid ? AppColors.red.withOpacity(0.1) : null,
+        color: widget.number == null
+            ? AppColors.emptyTile
+            : widget.isInvalid
+                ? AppColors.red.withOpacity(0.1)
+                : null,
         border: Border.all(width: 0.5),
       ),
       child: TextField(

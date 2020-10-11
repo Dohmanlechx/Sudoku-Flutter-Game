@@ -45,7 +45,7 @@ class _GameScreenState extends State<GameScreen> {
               },
               child: Text("Generate board!"),
             ),
-            Text(context.watch<BoardProvider>().generateTime.toString() + " ms", style: TextStyle(fontSize: 22),),
+            Text(context.watch<BoardProvider>().latestGenerateTime.toString() + " ms", style: TextStyle(fontSize: 22),),
             const Spacer(),
           ],
         ),
