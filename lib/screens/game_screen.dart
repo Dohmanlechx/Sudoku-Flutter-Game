@@ -26,39 +26,39 @@ class _GameScreenState extends State<GameScreen> {
       ),
       drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildSudokuGrid(),
-            const SizedBox(height: 32),
-            _buildNumbersKeyboard(),
-          ],
-        ),
-      ),
+      body: context.watch<BoardProvider>().isBoardDoneBuilt()
+          ? SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildSudokuGrid(),
+                  const SizedBox(height: 32),
+                  _buildNumbersKeyboard(),
+                ],
+              ),
+            )
+          : _buildCircleLoader(),
     );
   }
 
   Widget _buildSudokuGrid() {
-    return context.watch<BoardProvider>().isBoardDoneBuilt()
-        ? Container(
-            child: Container(
-              margin: const EdgeInsets.only(top: 32),
-              padding: const EdgeInsets.all(8),
-              width: DeviceInfo.width(context),
-              height: DeviceInfo.width(context),
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: NonScrollableGridView(
-                    children: List<Widget>.generate(9, (int i) {
-                      return TileGroup(groupIndex: i);
-                    }),
-                  ),
-                ),
-              ),
+    return Container(
+      child: Container(
+        margin: const EdgeInsets.only(top: 32),
+        padding: const EdgeInsets.all(8),
+        width: DeviceInfo.width(context),
+        height: DeviceInfo.width(context),
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(border: Border.all()),
+            child: NonScrollableGridView(
+              children: List<Widget>.generate(9, (int i) {
+                return TileGroup(groupIndex: i);
+              }),
             ),
-          )
-        : _buildCircleLoader();
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildCircleLoader() {
@@ -101,12 +101,14 @@ class _GameScreenState extends State<GameScreen> {
             ),
             child: Material(
               child: InkWell(
-                onTap: () {},
+                onTap: () => context.read<BoardProvider>().setNumber(number < 10 ? number : null),
                 child: Center(
-                  child: Text(
-                    number.toString(),
-                    style: AppTypography.number.copyWith(fontSize: 40),
-                  ),
+                  child: number < 10
+                      ? Text(
+                          number.toString(),
+                          style: AppTypography.number.copyWith(fontSize: 40),
+                        )
+                      : const Icon(Icons.delete, size: 40),
                 ),
               ),
             ),

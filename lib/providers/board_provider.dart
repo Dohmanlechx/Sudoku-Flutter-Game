@@ -15,6 +15,8 @@ class BoardProvider with ChangeNotifier {
   @visibleForTesting
   int j = 0;
 
+  List<int> selectedCoordinates = [-1, -1];
+
   List<List<int>> _board;
 
   @visibleForTesting
@@ -190,12 +192,6 @@ class BoardProvider with ChangeNotifier {
         List.generate(9, (col) => _board[col][j]).where((e) => e == num).length >= 1;
   }
 
-  void setNumber({int groupIndex, int index, int number}) {
-    final coordinates = getCoordinates(groupIndex)[index];
-    _board[coordinates[0]][coordinates[1]] = number;
-    notifyListeners();
-  }
-
   int _getRowInGroup(int i) {
     if (i <= 2) {
       return 0;
@@ -272,7 +268,16 @@ class BoardProvider with ChangeNotifier {
     return res;
   }
 
-  @visibleForTesting
+  void setNumber(int number) {
+    _board[selectedCoordinates[0]][selectedCoordinates[1]] = number;
+    notifyListeners();
+  }
+
+  void setSelectedCoordinates(int groupIndex, int index) {
+    selectedCoordinates = getCoordinates(groupIndex)[index];
+    notifyListeners();
+  }
+
   List<List<int>> getCoordinates(int groupIndex) {
     var res = List<List<int>>();
 

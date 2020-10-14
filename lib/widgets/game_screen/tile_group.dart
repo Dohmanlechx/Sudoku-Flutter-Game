@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
@@ -31,26 +32,21 @@ class _TileGroupState extends State<TileGroup> {
     final _numbers = _provider.boardByGroup[widget.groupIndex];
 
     return NonScrollableGridView(
-      children: List<Widget>.generate(9, (int i) {
-        final isOccupied = _provider.isOccupiedNumberInGroup(
-          index: i,
-          number: _numbers[i],
+      children: List<Widget>.generate(9, (int index) {
+        final _isOccupied = _provider.isOccupiedNumberInGroup(
+          index: index,
+          number: _numbers[index],
           groupIndex: widget.groupIndex,
         );
+        final _coordinates = _provider.getCoordinates(widget.groupIndex)[index];
+
         return Center(
           child: Tile(
-            number: _numbers[i],
-            isInvalid: isOccupied,
-            onSubmit: (int num) {
-              assert(num <= 9);
-              setState(() {
-                _provider.setNumber(
-                  groupIndex: widget.groupIndex,
-                  index: i,
-                  number: num == 0 ? null : num,
-                );
-              });
-            },
+            number: _numbers[index],
+            isInvalid: _isOccupied,
+            coordinates: _coordinates,
+            isSelected: listEquals(_provider.selectedCoordinates, _coordinates),
+            onSubmit: () => _provider.setSelectedCoordinates(widget.groupIndex, index),
           ),
         );
       }),
