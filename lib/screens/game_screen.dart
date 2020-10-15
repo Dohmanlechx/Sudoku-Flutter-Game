@@ -26,7 +26,7 @@ class _GameScreenState extends State<GameScreen> {
       ),
       drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
-      body: true //context.watch<BoardProvider>().isBoardDoneBuilt()
+      body: context.watch<BoardProvider>().isBoardFilled()
           ? SingleChildScrollView(
               child: Column(
                 children: [

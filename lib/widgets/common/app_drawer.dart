@@ -52,7 +52,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   void _triggerNewGame(BuildContext context) {
-    context.read<BoardProvider>().buildBoard();
+    context.read<BoardProvider>().initBoard();
     Navigator.of(context).pop();
   }
 

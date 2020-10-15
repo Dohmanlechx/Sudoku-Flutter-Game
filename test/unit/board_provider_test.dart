@@ -6,7 +6,7 @@ import 'package:sudoku_game/providers/board_provider.dart';
 import '../test_resources.dart';
 
 void main() {
-  BoardProvider _newBoardProvider() => BoardProvider(isCalledFromTest: true);
+  BoardProvider _newBoardProvider() => BoardProvider();
 
   test('The board should contain 81 elements', () {
     final board = _newBoardProvider().board;
@@ -99,6 +99,7 @@ void main() {
   test('goNext tests', () {
     final provider = _newBoardProvider();
 
+    provider.restoreCurrentIndexes();
     provider.goNext();
 
     expect(provider.i, 0);
@@ -144,7 +145,7 @@ void main() {
 
     provider.setBoard(testBoard);
 
-    expect(provider.isBoardDoneBuilt(), true);
+    expect(provider.isBoardFilled(), true);
   });
 
   test('Check if it returns false when the board is not completely filled', () {
@@ -156,11 +157,11 @@ void main() {
       });
     });
 
-    testBoard[8][8] = BoardProvider.initNumber;
+    testBoard[8][8] = 0;
 
     provider.setBoard(testBoard);
 
-    expect(provider.isBoardDoneBuilt(), false);
+    expect(provider.isBoardFilled(), false);
   });
 
   test('getCoordinates test', () {

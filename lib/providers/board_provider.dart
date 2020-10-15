@@ -2,56 +2,56 @@ import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
-  static const initNumber = -1;
-
-  @visibleForTesting
-  bool isTesting = false;
-
   /**
-   * Global variables for the [_initBoard] function
+   * Current global indexes
    */
   @visibleForTesting
   int i = 0;
   @visibleForTesting
   int j = 0;
 
+  /**
+   * Currently selected coordinated by the user
+   * can be from [0][0] to [8][8]
+   */
   List<int> selectedCoordinates = [-1, -1];
 
-  List<List<int>> _board;
+  /**
+   * Each tile holds all 1-9 numbers, shuffled
+   * and are being removed if there's a conflict
+   */
+  var _availableNumbersForEveryTile =
+      List<List<List<int>>>.generate(9, (_) => List.generate(9, (_) => List()..refill()));
 
-  List<List<List<int>>> _availableNumbersForEveryTile =
-      List.generate(9, (_) => List.generate(9, (_) => List()..refill()));
+  int get _currentNumber => _availableNumbersForEveryTile[i][j][0];
+
+  /**
+   * The Main Board
+   */
+  var _board = List<List<int>>()..clearAllTiles();
 
   @visibleForTesting
   List<List<int>> get board => _board;
 
   List<List<int>> get boardByGroup {
-    return List.generate(9, (i) {
-      return getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList();
-    });
+    return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
   }
 
-  int get latestGenerateTime => DateTime.now().millisecondsSinceEpoch - _timerStart;
-
-  BoardProvider({bool isCalledFromTest = false}) {
-    isTesting = isCalledFromTest;
-
-    _restoreBoard();
-
-    if (!isTesting) {
-      buildBoard();
-    }
+  /**
+   * Constructor
+   */
+  BoardProvider() {
+    restoreCurrentIndexes();
+    initBoard();
   }
 
-  void _restoreBoard() {
+  /**
+   * Functions
+   */
+  @visibleForTesting
+  void restoreCurrentIndexes() {
     i = 0;
     j = 0;
-    _board = List<List<int>>.generate(9, (_) {
-      return List<int>.generate(9, (_) {
-        return BoardProvider.initNumber;
-      });
-    });
-    notifyListeners();
   }
 
   @visibleForTesting
@@ -66,7 +66,7 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goPreviousAndClearNumber() {
-    _board[i][j] = BoardProvider.initNumber;
+    _board[i][j] = 0;
 
     if (j > 0) {
       j--;
@@ -74,41 +74,27 @@ class BoardProvider with ChangeNotifier {
       i--;
       j = 8;
     }
-    // _bannedNumbers.add(_board[i][j]);
   }
 
-  List<int> _bannedNumbers = [];
-  int _timerStart = 0;
+  void initBoard() async {
+    restoreCurrentIndexes();
+    _board.clearAllTiles();
 
-  void buildBoard() {
-    // For some reason the board isn't being built successfully
-    // unless called twice. Awaiting fix. Hopefully.
-    _initBoard();
-    // _initBoard();
-  }
-
-  Future<void> _initBoard() async {
-    _restoreBoard();
-
-    int _currentNumber() => _availableNumbersForEveryTile[i][j][0];
-
-    while (!isBoardDoneBuilt()) {
+    while (!isBoardFilled()) {
       if (_availableNumbersForEveryTile[i][j].isEmpty) {
         _availableNumbersForEveryTile[i][j].refill();
         goPreviousAndClearNumber();
       } else {
-        if (_isConflict(_currentNumber(), i, j)) {
-          _availableNumbersForEveryTile[i][j].remove(_currentNumber());
+        if (_isConflict(_currentNumber, i, j)) {
+          _availableNumbersForEveryTile[i][j].remove(_currentNumber);
         } else {
-          _board[i][j] = _currentNumber();
+          _board[i][j] = _currentNumber;
           goNext();
         }
       }
     }
 
-    if (!isTesting) {
-      _removePositionsWithOnlyOneSolution();
-    }
+    _removePositionsWithOnlyOneSolution();
   }
 
   void _removePositionsWithOnlyOneSolution() {
@@ -147,10 +133,10 @@ class BoardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isBoardDoneBuilt() {
+  bool isBoardFilled() {
     for (final list in _board) {
       for (final number in list) {
-        if (number == BoardProvider.initNumber) return false;
+        if (number == 0) return false;
       }
     }
 
