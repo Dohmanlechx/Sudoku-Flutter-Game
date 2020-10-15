@@ -19,6 +19,9 @@ class BoardProvider with ChangeNotifier {
 
   List<List<int>> _board;
 
+  List<List<List<int>>> _availableNumbersForEveryTile =
+      List.generate(9, (_) => List.generate(9, (_) => List()..refill()));
+
   @visibleForTesting
   List<List<int>> get board => _board;
 
@@ -63,14 +66,15 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void goPreviousAndClearNumber() {
+    _board[i][j] = BoardProvider.initNumber;
+
     if (j > 0) {
       j--;
     } else {
       i--;
       j = 8;
     }
-    _bannedNumbers.add(_board[i][j]);
-    _board[i][j] = 0;
+    // _bannedNumbers.add(_board[i][j]);
   }
 
   List<int> _bannedNumbers = [];
@@ -80,58 +84,25 @@ class BoardProvider with ChangeNotifier {
     // For some reason the board isn't being built successfully
     // unless called twice. Awaiting fix. Hopefully.
     _initBoard();
-    _initBoard();
+    // _initBoard();
   }
 
   Future<void> _initBoard() async {
     _restoreBoard();
 
-    _timerStart = DateTime.now().millisecondsSinceEpoch;
-    final _shuffledNumbers = List<int>();
-
-    _shuffledNumbers.refill();
-    _bannedNumbers.clear();
-
-    int _currentNumber() => _shuffledNumbers[0];
+    int _currentNumber() => _availableNumbersForEveryTile[i][j][0];
 
     while (!isBoardDoneBuilt()) {
-      bool isAbortedDueToEmptyNumberList = false;
-
-      _shuffledNumbers
-        ..refill()
-        ..removeWhere((e) => _bannedNumbers.contains(e));
-
-      if (_shuffledNumbers.isEmpty) {
-        _bannedNumbers.clear();
+      if (_availableNumbersForEveryTile[i][j].isEmpty) {
+        _availableNumbersForEveryTile[i][j].refill();
         goPreviousAndClearNumber();
       } else {
-        await Future.delayed(Duration.zero, () {
-          if (i < 9) {
-            // TODO: Try to remove this check and solve the issue
-            while (_isConflict(_currentNumber(), i, j)) {
-              _bannedNumbers.add(_currentNumber());
-              _shuffledNumbers.remove(_currentNumber());
-
-              if (_shuffledNumbers.isEmpty) {
-                isAbortedDueToEmptyNumberList = true;
-                break;
-              }
-            }
-
-            if (isAbortedDueToEmptyNumberList) {
-              goPreviousAndClearNumber();
-            } else {
-              if (_bannedNumbers.contains(_currentNumber())) {
-                goPreviousAndClearNumber();
-              } else {
-                _board[i][j] = _currentNumber();
-                _bannedNumbers.clear();
-                _shuffledNumbers.remove(_currentNumber());
-                goNext();
-              }
-            }
-          }
-        });
+        if (_isConflict(_currentNumber(), i, j)) {
+          _availableNumbersForEveryTile[i][j].remove(_currentNumber());
+        } else {
+          _board[i][j] = _currentNumber();
+          goNext();
+        }
       }
     }
 
