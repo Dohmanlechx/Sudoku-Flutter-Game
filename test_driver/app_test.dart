@@ -24,12 +24,13 @@ void main() {
       final app = find.byValueKey('sudoku_game');
       final drawerOpenButton = find.byTooltip('Open navigation menu');
 
-      await driver.tap(drawerOpenButton);
       await Future.delayed(const Duration(seconds: 1));
+      await driver.tap(drawerOpenButton);
 
       final newGameText = find.byValueKey('drawer_headline_text');
       expect(await driver.getText(newGameText), 'Main Menu');
 
+      await Future.delayed(const Duration(seconds: 1));
       await driver.scroll(app, -300, 0, const Duration(seconds: 3));
       await Future.delayed(const Duration(seconds: 1));
     });

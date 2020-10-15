@@ -100,7 +100,7 @@ void main() {
     final provider = _newBoardProvider();
 
     provider.restoreCurrentIndexes();
-    provider.goNext();
+    provider.goNextTile();
 
     expect(provider.i, 0);
     expect(provider.j, 1);
@@ -108,7 +108,7 @@ void main() {
     provider.i = 6;
     provider.j = 8;
 
-    provider.goNext();
+    provider.goNextTile();
 
     expect(provider.i, 7);
     expect(provider.j, 0);
@@ -120,7 +120,7 @@ void main() {
     provider.i = 3;
     provider.j = 5;
 
-    provider.goPreviousAndClearNumber();
+    provider.clearCurrentTileAndGoPrevious();
 
     expect(provider.i, 3);
     expect(provider.j, 4);
@@ -128,7 +128,7 @@ void main() {
     provider.i = 8;
     provider.j = 0;
 
-    provider.goPreviousAndClearNumber();
+    provider.clearCurrentTileAndGoPrevious();
 
     expect(provider.i, 7);
     expect(provider.j, 8);

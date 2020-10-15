@@ -62,7 +62,7 @@ class _TileState extends State<Tile> {
     return Container(
       decoration: widget.isSelected
           ? BoxDecoration(
-              border: Border.all(color: AppColors.red, width: 2),
+              border: Border.all(color: AppColors.red, width: 3),
               borderRadius: const BorderRadius.all(Radius.circular(50)),
             )
           : null,

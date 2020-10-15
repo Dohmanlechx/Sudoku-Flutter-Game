@@ -55,7 +55,8 @@ class BoardProvider with ChangeNotifier {
   }
 
   @visibleForTesting
-  void goNext() {
+  void goNextTile() {
+    assert(i < 9);
     if (j < 8) {
       j++;
     } else {
@@ -65,7 +66,8 @@ class BoardProvider with ChangeNotifier {
   }
 
   @visibleForTesting
-  void goPreviousAndClearNumber() {
+  void clearCurrentTileAndGoPrevious() {
+    assert(i >= 0);
     _board[i][j] = 0;
 
     if (j > 0) {
@@ -83,13 +85,13 @@ class BoardProvider with ChangeNotifier {
     while (!isBoardFilled()) {
       if (_availableNumbersForEveryTile[i][j].isEmpty) {
         _availableNumbersForEveryTile[i][j].refill();
-        goPreviousAndClearNumber();
+        clearCurrentTileAndGoPrevious();
       } else {
         if (_isConflict(_currentNumber, i, j)) {
           _availableNumbersForEveryTile[i][j].remove(_currentNumber);
         } else {
           _board[i][j] = _currentNumber;
-          goNext();
+          goNextTile();
         }
       }
     }
@@ -121,6 +123,7 @@ class BoardProvider with ChangeNotifier {
           _solutionCount++;
         }
       }
+
       assert(_solutionCount > 0);
 
       if (_solutionCount > 1) {

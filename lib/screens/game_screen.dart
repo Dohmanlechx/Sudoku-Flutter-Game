@@ -9,38 +9,28 @@ import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/tile_group.dart';
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends StatelessWidget {
   const GameScreen();
 
   @override
-  _GameScreenState createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppTranslations.appTitle),
-        elevation: 50,
-      ),
+      appBar: AppBar(title: const Text(AppTranslations.appTitle)),
       drawer: AppDrawer(),
       backgroundColor: AppColors.primary,
-      body: context.watch<BoardProvider>().isBoardFilled()
-          ? SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildSudokuGrid(),
-                  const SizedBox(height: 32),
-                  _buildNumbersKeyboard(),
-                ],
-              ),
-            )
-          : _buildCircleLoader(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildSudokuGrid(context),
+            const SizedBox(height: 32),
+            _buildNumbersKeyboard(context),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildSudokuGrid() {
+  Widget _buildSudokuGrid(BuildContext context) {
     return Container(
       child: Container(
         margin: const EdgeInsets.only(top: 32),
@@ -61,30 +51,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildCircleLoader() {
-    const double _progressSize = 70;
-    return Center(
-      child: Stack(
-        children: [
-          Container(
-            width: _progressSize,
-            height: _progressSize,
-            child: const CircularProgressIndicator(
-              strokeWidth: 5,
-              backgroundColor: Colors.grey,
-            ),
-          ),
-          Container(
-            width: _progressSize,
-            height: _progressSize,
-            child: const Center(child: Text(AppTranslations.loading)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNumbersKeyboard() {
+  Widget _buildNumbersKeyboard(BuildContext context) {
     return Container(
       color: AppColors.lightGrey,
       padding: const EdgeInsets.all(8),
