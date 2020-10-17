@@ -68,7 +68,9 @@ class GameScreen extends StatelessWidget {
             ),
             child: Material(
               child: InkWell(
-                onTap: () => context.read<BoardProvider>().setNumber(number < 10 ? number : null),
+                onTap: context.watch<BoardProvider>().areCoordinatesSelected
+                    ? () => context.read<BoardProvider>().setNumber(number < 10 ? number : null)
+                    : null,
                 child: Center(
                   child: number < 10
                       ? Text(

@@ -22,6 +22,8 @@ class BoardProvider with ChangeNotifier {
    */
   List<int> selectedCoordinates = [-1, -1];
 
+  bool get areCoordinatesSelected => !listEquals(selectedCoordinates, [-1, -1]);
+
   /**
    * Each cell holds all 1-9 numbers, shuffled
    * and are being removed if there's a conflict
