@@ -2,7 +2,6 @@ linter:
   rules:
     - unnecessary_statements
     - unnecessary_lambdas
-    - avoid_classes_with_only_static_members
     - avoid_renaming_method_parameters
     - camel_case_types
     - constant_identifier_names

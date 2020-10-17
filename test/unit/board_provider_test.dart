@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 
 import '../test_resources.dart';
@@ -38,7 +40,14 @@ void main() {
       final expected = TestResources.getExpectedBoardByRow(row, groupIndex);
       final actual = provider.boardByRow(row, groupIndex);
 
-      expect(actual, expected);
+      expect(
+          listEquals(
+            actual.map((cell) => cell.number).toList(),
+            expected.map((cell) => cell.number).toList(),
+          ),
+          isTrue
+      );
+
       testCount++;
     }
   });
@@ -58,7 +67,14 @@ void main() {
       final expected = TestResources.getExpectedBoardByColumn(column, groupIndex);
       final actual = provider.boardByColumn(column, groupIndex);
 
-      expect(actual, expected);
+      expect(
+        listEquals(
+          actual.map((cell) => cell.number).toList(),
+          expected.map((cell) => cell.number).toList(),
+        ),
+        isTrue
+      );
+
       testCount++;
     }
   });
@@ -89,9 +105,15 @@ void main() {
     provider.setBoard(TestResources.mockedValidBoard);
 
     for (int i = 0; i < 9; i++) {
+      final actual = provider.boardByGroup[i];
+      final expected = TestResources.getExpectedBoardByGroup(groupIndex: i);
+
       expect(
-        provider.boardByGroup[i],
-        TestResources.getExpectedBoardByGroup(groupIndex: i),
+        listEquals(
+          actual.map((cell) => cell.number).toList(),
+          expected.map((cell) => cell.number).toList(),
+        ),
+        isTrue,
       );
     }
   });
@@ -137,9 +159,9 @@ void main() {
   test('Check if board is completely filled', () {
     final provider = _newBoardProvider();
 
-    final testBoard = List<List<int>>.generate(9, (_) {
-      return List<int>.generate(9, (_) {
-        return 1;
+    final testBoard = List<List<Cell>>.generate(9, (_) {
+      return List<Cell>.generate(9, (_) {
+        return Cell(number: 1);
       });
     });
 
@@ -151,13 +173,13 @@ void main() {
   test('Check if it returns false when the board is not completely filled', () {
     final provider = _newBoardProvider();
 
-    final testBoard = List<List<int>>.generate(9, (_) {
-      return List<int>.generate(9, (_) {
-        return 1;
+    final testBoard = List<List<Cell>>.generate(9, (_) {
+      return List<Cell>.generate(9, (_) {
+        return Cell(number: 1);
       });
     });
 
-    testBoard[8][8] = 0;
+    testBoard[8][8].number = 0;
 
     provider.setBoard(testBoard);
 

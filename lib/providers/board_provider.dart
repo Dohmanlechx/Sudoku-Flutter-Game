@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
@@ -11,29 +12,26 @@ class BoardProvider with ChangeNotifier {
   int j = 0;
 
   /**
+   * The Main Board
+   */
+  var _board = List<List<Cell>>()..clearAllTiles();
+
+  /**
    * Currently selected coordinated by the user
    * can be from [0][0] to [8][8]
    */
   List<int> selectedCoordinates = [-1, -1];
 
   /**
-   * Each tile holds all 1-9 numbers, shuffled
+   * Each cell holds all 1-9 numbers, shuffled
    * and are being removed if there's a conflict
    */
-  var _availableNumbersForEveryTile =
-      List<List<List<int>>>.generate(9, (_) => List.generate(9, (_) => List()..refill()));
-
-  int get _currentNumber => _availableNumbersForEveryTile[i][j][0];
-
-  /**
-   * The Main Board
-   */
-  var _board = List<List<int>>()..clearAllTiles();
+  int get _currentNumber => _board[i][j].availableNumbers[0];
 
   @visibleForTesting
-  List<List<int>> get board => _board;
+  List<List<Cell>> get board => _board;
 
-  List<List<int>> get boardByGroup {
+  List<List<Cell>> get boardByGroup {
     return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
   }
 
@@ -68,7 +66,7 @@ class BoardProvider with ChangeNotifier {
   @visibleForTesting
   void clearCurrentTileAndGoPrevious() {
     assert(i >= 0);
-    _board[i][j] = 0;
+    _board[i][j].number = 0;
 
     if (j > 0) {
       j--;
@@ -83,14 +81,14 @@ class BoardProvider with ChangeNotifier {
     _board.clearAllTiles();
 
     while (!isBoardFilled()) {
-      if (_availableNumbersForEveryTile[i][j].isEmpty) {
-        _availableNumbersForEveryTile[i][j].refill();
+      if (_board[i][j].availableNumbers.isEmpty) {
+        _board[i][j].refillAvailableNumbers();
         clearCurrentTileAndGoPrevious();
       } else {
         if (_isConflict(_currentNumber, i, j)) {
-          _availableNumbersForEveryTile[i][j].remove(_currentNumber);
+          _board[i][j].availableNumbers.remove(_currentNumber);
         } else {
-          _board[i][j] = _currentNumber;
+          _board[i][j].number = _currentNumber;
           goNextTile();
         }
       }
@@ -113,8 +111,8 @@ class BoardProvider with ChangeNotifier {
     _allPositions.shuffle();
 
     while (_allPositions.isNotEmpty) {
-      int _oldNumber = _board[_currentPosition()[0]][_currentPosition()[1]];
-      _board[_currentPosition()[0]][_currentPosition()[1]] = null;
+      int _oldNumber = _board[_currentPosition()[0]][_currentPosition()[1]].number;
+      _board[_currentPosition()[0]][_currentPosition()[1]].number = null;
 
       int _solutionCount = 0;
 
@@ -127,7 +125,7 @@ class BoardProvider with ChangeNotifier {
       assert(_solutionCount > 0);
 
       if (_solutionCount > 1) {
-        _board[_currentPosition()[0]][_currentPosition()[1]] = _oldNumber;
+        _board[_currentPosition()[0]][_currentPosition()[1]].number = _oldNumber;
       }
 
       _allPositions.removeAt(0);
@@ -137,9 +135,9 @@ class BoardProvider with ChangeNotifier {
   }
 
   bool isBoardFilled() {
-    for (final list in _board) {
-      for (final number in list) {
-        if (number == 0) return false;
+    for (final List<Cell> cells in _board) {
+      for (final cell in cells) {
+        if (cell.isNotFilled) return false;
       }
     }
 
@@ -147,9 +145,9 @@ class BoardProvider with ChangeNotifier {
   }
 
   bool _isConflict(int num, int i, int j) {
-    return boardByGroup[getGroupIndexOf(i, j)].where((e) => e == num).length >= 1 ||
-        List.generate(9, (row) => _board[i][row]).where((e) => e == num).length >= 1 ||
-        List.generate(9, (col) => _board[col][j]).where((e) => e == num).length >= 1;
+    return boardByGroup[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (row) => _board[i][row]).where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (col) => _board[col][j]).where((cell) => cell.number == num).length >= 1;
   }
 
   int _getRowInGroup(int i) {
@@ -173,7 +171,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   @visibleForTesting
-  List<int> boardByRow(int row, int groupIndex) {
+  List<Cell> boardByRow(int row, int groupIndex) {
     if (groupIndex > 2 && groupIndex <= 5) {
       row += 3;
     } else if (groupIndex > 5) {
@@ -184,7 +182,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   @visibleForTesting
-  List<int> boardByColumn(int column, int groupIndex) {
+  List<Cell> boardByColumn(int column, int groupIndex) {
     if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
       column += 3;
     } else if (groupIndex == 2 || groupIndex == 5 || groupIndex == 8) {
@@ -195,9 +193,9 @@ class BoardProvider with ChangeNotifier {
   }
 
   bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
-    return boardByGroup[groupIndex].where((int num) => num == number).length > 1 ||
-        boardByRow(_getRowInGroup(index), groupIndex).where((int num) => num == number).length > 1 ||
-        boardByColumn(_getColumnInGroup(index), groupIndex).where((int num) => num == number).length > 1;
+    return boardByGroup[groupIndex].where((cell) => cell.number == number).length > 1 ||
+        boardByRow(_getRowInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1 ||
+        boardByColumn(_getColumnInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1;
   }
 
   @visibleForTesting
@@ -229,7 +227,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setNumber(int number) {
-    _board[selectedCoordinates[0]][selectedCoordinates[1]] = number;
+    _board[selectedCoordinates[0]][selectedCoordinates[1]].number = number;
     notifyListeners();
   }
 
@@ -311,7 +309,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   @visibleForTesting
-  void setBoard(List<List<int>> testBoard) {
+  void setBoard(List<List<Cell>> testBoard) {
     _board = testBoard;
   }
 }

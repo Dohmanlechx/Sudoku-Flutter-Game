@@ -7,7 +7,7 @@ import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_info.dart';
 import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
-import 'package:sudoku_game/widgets/game_screen/tile_group.dart';
+import 'package:sudoku_game/widgets/game_screen/cell_group_view.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen();
@@ -42,7 +42,7 @@ class GameScreen extends StatelessWidget {
             decoration: BoxDecoration(border: Border.all()),
             child: NonScrollableGridView(
               children: List<Widget>.generate(9, (int i) {
-                return TileGroup(groupIndex: i);
+                return CellGroupView(groupIndex: i);
               }),
             ),
           ),

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
 
-class Tile extends StatefulWidget {
+class CellView extends StatefulWidget {
   final int number;
   final bool isInvalid;
   final List<int> coordinates;
   final bool isSelected;
   final Function onSubmit;
 
-  const Tile({
+  const CellView({
     this.number,
     this.isInvalid,
     this.coordinates,
@@ -18,10 +18,10 @@ class Tile extends StatefulWidget {
   });
 
   @override
-  _TileState createState() => _TileState();
+  _CellViewState createState() => _CellViewState();
 }
 
-class _TileState extends State<Tile> {
+class _CellViewState extends State<CellView> {
   TextEditingController _controller;
 
   @override
