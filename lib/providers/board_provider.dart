@@ -125,7 +125,9 @@ class BoardProvider with ChangeNotifier {
       assert(_solutionCount > 0);
 
       if (_solutionCount > 1) {
-        _board[_currentPosition()[0]][_currentPosition()[1]].number = _oldNumber;
+        _board[_currentPosition()[0]][_currentPosition()[1]]
+          ..number = _oldNumber
+          ..isClickable = false;
       }
 
       _allPositions.removeAt(0);
@@ -232,8 +234,12 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setSelectedCoordinates(int groupIndex, int index) {
-    selectedCoordinates = getCoordinates(groupIndex)[index];
-    notifyListeners();
+    final clickedCoordinates = getCoordinates(groupIndex)[index];
+
+    if (_board[clickedCoordinates[0]][clickedCoordinates[1]].isClickable) {
+      selectedCoordinates = getCoordinates(groupIndex)[index];
+      notifyListeners();
+    }
   }
 
   List<List<int>> getCoordinates(int groupIndex) {

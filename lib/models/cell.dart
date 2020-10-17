@@ -4,7 +4,7 @@ class Cell {
   Cell({
     this.number = 0,
     this.solutionNumber,
-    this.isClickable,
+    this.isClickable = true,
     this.coordinates,
     this.availableNumbers,
   }) {
