@@ -39,14 +39,16 @@ class _CellGroupViewState extends State<CellGroupView> {
           number: _cells[index].number,
           groupIndex: widget.groupIndex,
         );
-        final _coordinates = _provider.getCoordinates(widget.groupIndex)[index];
+
+        //final _coordinates = _provider.getCoordinates(widget.groupIndex)[index];
 
         return Center(
           child: CellView(
-            number: _cells[index].number,
+            cell: _cells[index],
+            // number: _cells[index].number,
             isInvalid: _isOccupied,
-            coordinates: _coordinates,
-            isSelected: listEquals(_provider.selectedCoordinates, _coordinates),
+            // coordinates: _coordinates,
+            // isSelected: listEquals(_provider.selectedCoordinates, _coordinates),
             onSubmit: () => _provider.setSelectedCoordinates(widget.groupIndex, index),
           ),
         );

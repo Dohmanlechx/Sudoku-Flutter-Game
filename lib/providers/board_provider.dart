@@ -17,12 +17,11 @@ class BoardProvider with ChangeNotifier {
   var _board = List<List<Cell>>()..clearAllTiles();
 
   /**
-   * Currently selected coordinated by the user
-   * can be from [0][0] to [8][8]
+   * Currently selected cell by the user
    */
-  List<int> selectedCoordinates = [-1, -1];
+  Cell selectedCell = Cell();
 
-  bool get areCoordinatesSelected => !listEquals(selectedCoordinates, [-1, -1]);
+  bool get areCoordinatesSelected => !listEquals(selectedCell.coordinates, [-1, -1]);
 
   /**
    * Each cell holds all 1-9 numbers, shuffled
@@ -90,7 +89,11 @@ class BoardProvider with ChangeNotifier {
         if (_isConflict(_currentNumber, i, j)) {
           _board[i][j].availableNumbers.remove(_currentNumber);
         } else {
-          _board[i][j].number = _currentNumber;
+          _board[i][j]
+            ..number = _currentNumber
+            ..solutionNumber = _currentNumber
+            ..coordinates = [i, j];
+          ;
           goNextTile();
         }
       }
@@ -231,15 +234,23 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setNumber(int number) {
-    _board[selectedCoordinates[0]][selectedCoordinates[1]].number = number;
+    _board[selectedCell.coordinates[0]][selectedCell.coordinates[1]].number = number;
     notifyListeners();
   }
 
   void setSelectedCoordinates(int groupIndex, int index) {
-    final clickedCoordinates = getCoordinates(groupIndex)[index];
+    final _clickedCoordinates = getCoordinates(groupIndex)[index];
+    final _clickedCell = _board[_clickedCoordinates[0]][_clickedCoordinates[1]];
 
-    if (_board[clickedCoordinates[0]][clickedCoordinates[1]].isClickable) {
-      selectedCoordinates = getCoordinates(groupIndex)[index];
+    if (_clickedCell.isClickable) {
+      _board.forEach((List<Cell> row) {
+        return row.forEach((Cell cell) {
+          cell.isSelected = false;
+        });
+      });
+
+      _clickedCell.isSelected = true;
+      selectedCell = _clickedCell;
       notifyListeners();
     }
   }

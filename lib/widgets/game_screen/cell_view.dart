@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
 
 class CellView extends StatefulWidget {
-  final int number;
+  final Cell cell;
   final bool isInvalid;
-  final List<int> coordinates;
-  final bool isSelected;
   final Function onSubmit;
 
   const CellView({
-    this.number,
+    this.cell,
     this.isInvalid,
-    this.coordinates,
-    this.isSelected,
     this.onSubmit,
   });
 
@@ -38,7 +35,7 @@ class _CellViewState extends State<CellView> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.text = (widget.number ?? '').toString();
+    _controller.text = (widget.cell.number ?? '').toString();
 
     return GestureDetector(
       onTap: () {
@@ -46,7 +43,7 @@ class _CellViewState extends State<CellView> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: widget.number == null
+          color: widget.cell.number == null || (widget.cell.isClickable && !widget.isInvalid)
               ? AppColors.white
               : widget.isInvalid
                   ? AppColors.red.withOpacity(0.1)
@@ -60,7 +57,7 @@ class _CellViewState extends State<CellView> {
 
   Widget _buildNumber() {
     return Container(
-      decoration: widget.isSelected
+      decoration: widget.cell.isSelected
           ? BoxDecoration(
               border: Border.all(color: AppColors.red, width: 3),
               borderRadius: const BorderRadius.all(Radius.circular(50)),
@@ -68,7 +65,7 @@ class _CellViewState extends State<CellView> {
           : null,
       child: Center(
         child: Text(
-          (widget.number ?? '').toString(),
+          (widget.cell.number ?? '').toString(),
           style: AppTypography.number,
         ),
       ),

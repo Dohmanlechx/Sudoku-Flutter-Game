@@ -5,18 +5,25 @@ class Cell {
     this.number = 0,
     this.solutionNumber,
     this.isClickable = true,
+    this.isSelected = false,
     this.coordinates,
     this.availableNumbers,
   }) {
-    availableNumbers = [];
-    refillAvailableNumbers();
+    _initCell();
   }
 
   int number;
   int solutionNumber;
   bool isClickable;
+  bool isSelected;
   List<int> coordinates;
   List<int> availableNumbers;
 
   bool get isNotFilled => number == 0;
+
+  void _initCell() {
+    coordinates = [];
+    availableNumbers = [];
+    refillAvailableNumbers();
+  }
 }
