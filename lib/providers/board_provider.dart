@@ -4,22 +4,13 @@ import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
-  /**
-   * Current global indexes
-   */
   @visibleForTesting
   int i = 0;
   @visibleForTesting
   int j = 0;
 
-  /**
-   * The Main Board
-   */
   var _board = List<List<Cell>>()..clearAllTiles();
 
-  /**
-   * Get currently selected cell
-   */
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
@@ -33,12 +24,6 @@ class BoardProvider with ChangeNotifier {
     return Cell();
   }
 
-  /**
-   * Each cell holds all 1-9 numbers, shuffled
-   * and are being removed if there's a conflict
-   */
-  int get _currentNumber => _board[i][j].availableNumbers[0];
-
   @visibleForTesting
   List<List<Cell>> get board => _board;
 
@@ -46,17 +31,13 @@ class BoardProvider with ChangeNotifier {
     return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
   }
 
-  /**
-   * Constructor
-   */
+  int get _currentNumber => _board[i][j].availableNumbers[0];
+
   BoardProvider() {
     restoreCurrentIndexes();
     initBoard();
   }
 
-  /**
-   * Functions
-   */
   @visibleForTesting
   void restoreCurrentIndexes() {
     i = 0;
