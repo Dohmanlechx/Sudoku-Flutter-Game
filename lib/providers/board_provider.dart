@@ -90,51 +90,40 @@ class BoardProvider with ChangeNotifier {
       }
     }
 
-    _removePositionsWithOnlyOneSolution();
+    _removeCellsWithOnlyOneSolution();
   }
 
-  void _removePositionsWithOnlyOneSolution() {
-    final List<List<int>> _allPositions = [];
+  void _removeCellsWithOnlyOneSolution() {
+    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
 
-    List<int> _currentPosition() => _allPositions[0];
-
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
-        _allPositions.add([i, j]);
-      }
-    }
-
-    _allPositions.shuffle();
-
-    while (_allPositions.isNotEmpty) {
-      int _oldNumber = _board[_currentPosition()[0]][_currentPosition()[1]].number;
-      _board[_currentPosition()[0]][_currentPosition()[1]].number = null;
+    while (_boardCopy.isNotEmpty) {
+      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
+      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
 
       int _solutionCount = 0;
 
       for (int k = 1; k < 10; k++) {
-        if (!_isConflict(k, _currentPosition()[0], _currentPosition()[1])) {
+        if (!_isConflict(k, _boardCopy[0].i, _boardCopy[0].j)) {
           _solutionCount++;
         }
       }
-
       assert(_solutionCount > 0);
 
       if (_solutionCount > 1) {
-        _board[_currentPosition()[0]][_currentPosition()[1]]
+        _board[_boardCopy[0].i][_boardCopy[0].j]
           ..number = _oldNumber
           ..isClickable = false;
       }
 
-      _allPositions.removeAt(0);
+      _boardCopy.removeAt(0);
     }
 
     notifyListeners();
   }
 
   bool isBoardFilled() {
-    for (final List<Cell> cells in _board) {
-      for (final cell in cells) {
+    for (final List<Cell> row in _board) {
+      for (final cell in row) {
         if (cell.isNotFilled) return false;
       }
     }
@@ -225,7 +214,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setNumber({int number, bool isDelete = false}) {
-    final cell = _board[selectedCell.coordinates[0]][selectedCell.coordinates[1]]..number = number;
+    final cell = _board[selectedCell.i][selectedCell.j]..number = number;
 
     if (cell.solutionNumber != number && !isDelete) {
       DeviceUtil.vibrate();

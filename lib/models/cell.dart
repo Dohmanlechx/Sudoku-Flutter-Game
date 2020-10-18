@@ -21,6 +21,10 @@ class Cell {
 
   bool get isNotFilled => number == 0;
 
+  int get i => coordinates[0];
+
+  int get j => coordinates[1];
+
   void _initCell() {
     coordinates = [];
     availableNumbers = [];
