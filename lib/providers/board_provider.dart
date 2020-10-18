@@ -17,9 +17,20 @@ class BoardProvider with ChangeNotifier {
   var _board = List<List<Cell>>()..clearAllTiles();
 
   /**
-   * Currently selected cell by the user
+   * Get currently selected cell
    */
-  Cell selectedCell = Cell();
+  Cell get selectedCell {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        final cell = _board[i][j];
+        if (cell.isSelected) {
+          return cell;
+        }
+      }
+    }
+
+    return Cell();
+  }
 
   bool get areCoordinatesSelected => !listEquals(selectedCell.coordinates, [-1, -1]);
 
@@ -250,7 +261,6 @@ class BoardProvider with ChangeNotifier {
       });
 
       _clickedCell.isSelected = true;
-      selectedCell = _clickedCell;
       notifyListeners();
     }
   }
