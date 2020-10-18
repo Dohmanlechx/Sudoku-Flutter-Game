@@ -32,19 +32,17 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildSudokuGrid(BuildContext context) {
     return Container(
-      child: Container(
-        margin: const EdgeInsets.only(top: 32),
-        padding: const EdgeInsets.all(8),
-        width: DeviceInfo.width(context),
-        height: DeviceInfo.width(context),
-        child: Center(
-          child: Container(
-            decoration: BoxDecoration(border: Border.all()),
-            child: NonScrollableGridView(
-              children: List<Widget>.generate(9, (int i) {
-                return CellGroupView(groupIndex: i);
-              }),
-            ),
+      margin: const EdgeInsets.only(top: 32),
+      padding: const EdgeInsets.all(8),
+      width: DeviceInfo.width(context),
+      height: DeviceInfo.width(context),
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(border: Border.all()),
+          child: NonScrollableGridView(
+            children: List<Widget>.generate(9, (int i) {
+              return CellGroupView(groupIndex: i);
+            }),
           ),
         ),
       ),
