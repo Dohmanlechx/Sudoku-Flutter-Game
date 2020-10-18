@@ -4,6 +4,7 @@ import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
+import 'package:sudoku_game/util/device_info.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -11,9 +12,6 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  // TODO: Create SettingsProvider
-  bool isRumbleEnabled = false;
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -40,9 +38,9 @@ class _AppDrawerState extends State<AppDrawer> {
               icon: Icons.app_settings_alt,
               title: AppTranslations.rumble,
               trailing: Switch.adaptive(
-                value: isRumbleEnabled,
+                value: DeviceUtil.isRumbleEnabled,
                 onChanged: (bool isToggled) {
-                  setState(() => isRumbleEnabled = isToggled);
+                  setState(() => DeviceUtil.isRumbleEnabled = isToggled);
                 },
               )),
           const SizedBox(height: 16),

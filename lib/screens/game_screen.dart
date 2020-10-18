@@ -34,8 +34,8 @@ class GameScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.all(8),
-      width: DeviceInfo.width(context),
-      height: DeviceInfo.width(context),
+      width: DeviceUtil.width(context),
+      height: DeviceUtil.width(context),
       child: Center(
         child: Container(
           decoration: BoxDecoration(border: Border.all()),
@@ -67,7 +67,10 @@ class GameScreen extends StatelessWidget {
             child: Material(
               child: InkWell(
                 onTap: context.watch<BoardProvider>().areCoordinatesSelected
-                    ? () => context.read<BoardProvider>().setNumber(number < 10 ? number : null)
+                    ? () => context.read<BoardProvider>().setNumber(
+                          number: number < 10 ? number : null,
+                          isDelete: number == 10,
+                        )
                     : null,
                 child: Center(
                   child: number < 10

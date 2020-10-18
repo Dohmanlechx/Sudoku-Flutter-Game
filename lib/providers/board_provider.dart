@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/models/cell.dart';
+import 'package:sudoku_game/util/device_info.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
@@ -244,8 +245,13 @@ class BoardProvider with ChangeNotifier {
     return res;
   }
 
-  void setNumber(int number) {
-    _board[selectedCell.coordinates[0]][selectedCell.coordinates[1]].number = number;
+  void setNumber({int number, bool isDelete = false}) {
+    final cell = _board[selectedCell.coordinates[0]][selectedCell.coordinates[1]]..number = number;
+
+    if (cell.solutionNumber != number && !isDelete) {
+      DeviceUtil.vibrate();
+    }
+
     notifyListeners();
   }
 
