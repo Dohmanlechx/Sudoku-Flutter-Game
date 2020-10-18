@@ -4,7 +4,7 @@ import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
-import 'package:sudoku_game/util/device_info.dart';
+import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/cell_group_view.dart';
@@ -66,7 +66,7 @@ class GameScreen extends StatelessWidget {
             ),
             child: Material(
               child: InkWell(
-                onTap: context.watch<BoardProvider>().areCoordinatesSelected
+                onTap: context.watch<BoardProvider>().selectedCell.coordinates.isNotEmpty
                     ? () => context.read<BoardProvider>().setNumber(
                           number: number < 10 ? number : null,
                           isDelete: number == 10,
@@ -76,7 +76,7 @@ class GameScreen extends StatelessWidget {
                   child: number < 10
                       ? Text(
                           number.toString(),
-                          style: AppTypography.number.copyWith(fontSize: 40),
+                          style: AppTypography.body.copyWith(fontSize: 40),
                         )
                       : const Icon(Icons.delete, size: 40),
                 ),

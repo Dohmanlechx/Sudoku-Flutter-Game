@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/models/cell.dart';
-import 'package:sudoku_game/util/device_info.dart';
+import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardProvider with ChangeNotifier {
@@ -32,8 +32,6 @@ class BoardProvider with ChangeNotifier {
 
     return Cell();
   }
-
-  bool get areCoordinatesSelected => !listEquals(selectedCell.coordinates, [-1, -1]);
 
   /**
    * Each cell holds all 1-9 numbers, shuffled

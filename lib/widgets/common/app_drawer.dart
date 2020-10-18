@@ -4,7 +4,7 @@ import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
-import 'package:sudoku_game/util/device_info.dart';
+import 'package:sudoku_game/util/device_util.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -62,7 +62,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.black),
-      title: Text(title, style: AppTypography.appDrawerEntry),
+      title: Text(title, style: AppTypography.body),
       onTap: onTap,
       trailing: trailing ?? const SizedBox(),
     );

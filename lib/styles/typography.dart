@@ -2,12 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sudoku_game/styles/colors.dart';
 
 class AppTypography {
-  static const number = TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.w500,
-  );
-
-  static const appDrawerEntry = TextStyle(
+  static const body = TextStyle(
     fontSize: 22,
   );
 
