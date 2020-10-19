@@ -101,7 +101,7 @@ class GameScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ...List.generate(
-            5,
+            3,
             (int index) => Icon(index < _lives ? Icons.circle : Icons.cancel),
           )
         ],
@@ -117,37 +117,41 @@ class GameScreen extends StatelessWidget {
       margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.all(8),
       child: NonScrollableGridView(
-        crossAxisCount: 5,
-        children: List<Widget>.generate(10, (int index) {
-          final number = ++index;
+          crossAxisCount: 5,
+          children: List<Widget>.generate(
+            10,
+            (int index) {
+              final _number = ++index;
+              final _canGameContinue = !_watchProvider.isWonRound &&
+                  !_watchProvider.isGameOver &&
+                  _watchProvider.selectedCell.coordinates.isNotEmpty;
 
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(6)),
-              border: Border.all(color: AppColors.black, width: 3),
-            ),
-            child: Material(
-              child: InkWell(
-                onTap: !_watchProvider.isGameOver && _watchProvider.selectedCell.coordinates.isNotEmpty
-                    ? () => context.read<BoardProvider>().setNumber(
-                          number: number < 10 ? number : null,
-                          isDelete: number == 10,
-                        )
-                    : null,
-                child: Center(
-                  child: number < 10
-                      ? Text(
-                          number.toString(),
-                          style: AppTypography.body.copyWith(fontSize: 40),
-                        )
-                      : const Icon(Icons.delete, size: 40),
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  border: Border.all(color: AppColors.black, width: 3),
                 ),
-              ),
-            ),
-          );
-        }),
-      ),
+                child: Material(
+                  child: InkWell(
+                    onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
+                    child: Center(
+                      child: _number < 10
+                          ? Text(_number.toString(), style: AppTypography.body.copyWith(fontSize: 40))
+                          : const Icon(Icons.delete, size: 40),
+                    ),
+                  ),
+                ),
+              );
+            },
+          )),
     );
+  }
+
+  void _setNumber(BuildContext context, int number) {
+    context.read<BoardProvider>().setNumber(
+          number: number < 10 ? number : null,
+          isDelete: number == 10,
+        );
   }
 }

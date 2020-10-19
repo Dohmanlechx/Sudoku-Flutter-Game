@@ -11,7 +11,18 @@ class BoardProvider with ChangeNotifier {
 
   int _lives;
 
+  int get lives => _lives;
+
+  bool get isGameOver => _lives <= 0;
+
   var _board = List<List<Cell>>()..clearAllTiles();
+
+  @visibleForTesting
+  List<List<Cell>> get board => _board;
+
+  List<List<Cell>> get boardByGroup {
+    return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
+  }
 
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
@@ -26,18 +37,7 @@ class BoardProvider with ChangeNotifier {
     return Cell();
   }
 
-  @visibleForTesting
-  List<List<Cell>> get board => _board;
-
-  List<List<Cell>> get boardByGroup {
-    return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
-  }
-
   int get _currentNumber => _board[i][j].availableNumbers[0];
-
-  int get lives => _lives;
-
-  bool get isGameOver => _lives <= 0;
 
   bool get isWonRound {
     for (int i = 0; i < 9; i++) {
@@ -58,7 +58,7 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void restoreRound() {
-    _lives = 5;
+    _lives = 3;
     i = 0;
     j = 0;
   }
