@@ -10,4 +10,9 @@ class AppTypography {
     fontSize: 20,
     color: AppColors.grey,
   );
+
+  static const roundDone = TextStyle(
+    fontSize: 40,
+    color: AppColors.white,
+  );
 }

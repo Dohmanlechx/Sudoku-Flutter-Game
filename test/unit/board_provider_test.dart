@@ -121,7 +121,7 @@ void main() {
   test('goNext tests', () {
     final provider = _newBoardProvider();
 
-    provider.restoreCurrentIndexes();
+    provider.restoreRound();
     provider.goNextTile();
 
     expect(provider.i, 0);

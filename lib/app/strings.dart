@@ -5,4 +5,6 @@ class AppTranslations {
   static const settings = 'Settings';
   static const loading = 'Loading';
   static const rumble = 'Rumble';
+  static const congrats = 'Congratulations!';
+  static const gameOver = 'Game Over';
 }
