@@ -9,7 +9,7 @@ class BoardProvider with ChangeNotifier {
   @visibleForTesting
   int j = 0;
 
-  int lives;
+  int _lives;
 
   var _board = List<List<Cell>>()..clearAllTiles();
 
@@ -35,7 +35,11 @@ class BoardProvider with ChangeNotifier {
 
   int get _currentNumber => _board[i][j].availableNumbers[0];
 
-  bool get hasWonRound {
+  int get lives => _lives;
+
+  bool get isGameOver => _lives <= 0;
+
+  bool get isWonRound {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
         if (_board[i][j].number != _board[i][j].solutionNumber) {
@@ -54,7 +58,7 @@ class BoardProvider with ChangeNotifier {
 
   @visibleForTesting
   void restoreRound() {
-    lives = 5;
+    _lives = 5;
     i = 0;
     j = 0;
   }
@@ -233,7 +237,7 @@ class BoardProvider with ChangeNotifier {
 
     if (cell.solutionNumber != number && !isDelete) {
       DeviceUtil.vibrate();
-      lives--;
+      _lives--;
     }
 
     notifyListeners();

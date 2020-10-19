@@ -3,7 +3,7 @@ import 'package:vibration/vibration.dart';
 
 class DeviceUtil {
   // TODO: Create SharedPrefs
-  static bool isRumbleEnabled = false;
+  static bool isRumbleEnabled = true;
 
   static double width(BuildContext ctx) => MediaQuery.of(ctx).size.width;
 

@@ -26,9 +26,9 @@ class GameScreen extends StatelessWidget {
             Stack(
               children: [
                 _buildSudokuGrid(context),
-                _provider.hasWonRound
+                _provider.isWonRound
                     ? _buildCongratsOverlay(context)
-                    : _provider.lives == 0
+                    : _provider.isGameOver
                         ? _buildGameOverOverlay(context)
                         : const SizedBox(),
               ],
@@ -110,6 +110,8 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildNumbersKeyboard(BuildContext context) {
+    final _watchProvider = context.watch<BoardProvider>();
+
     return Container(
       color: AppColors.lightGrey,
       margin: const EdgeInsets.only(top: 4),
@@ -127,7 +129,7 @@ class GameScreen extends StatelessWidget {
             ),
             child: Material(
               child: InkWell(
-                onTap: context.watch<BoardProvider>().selectedCell.coordinates.isNotEmpty
+                onTap: !_watchProvider.isGameOver && _watchProvider.selectedCell.coordinates.isNotEmpty
                     ? () => context.read<BoardProvider>().setNumber(
                           number: number < 10 ? number : null,
                           isDelete: number == 10,
