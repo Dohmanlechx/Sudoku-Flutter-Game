@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/boards/board_factory.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
