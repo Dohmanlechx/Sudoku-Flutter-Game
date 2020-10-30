@@ -1,13 +1,120 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/board/board_solver.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardFactory {
+  @visibleForTesting
+  static var i = 0;
+  @visibleForTesting
+  static var j = 0;
+
+  static var _board = List<List<Cell>>()..clearAllTiles();
+
+  @visibleForTesting
+  static void goNextTile() {
+    assert(i < 9);
+    if (j < 8) {
+      j++;
+    } else {
+      i++;
+      j = 0;
+    }
+  }
+
+  @visibleForTesting
+  static void clearCurrentTileAndGoPrevious() {
+    assert(i >= 0);
+    _board[i][j].number = 0;
+
+    if (j > 0) {
+      j--;
+    } else {
+      i--;
+      j = 8;
+    }
+  }
+
+  @visibleForTesting
+  static bool isBoardFilled() {
+    for (final List<Cell> row in _board) {
+      for (final cell in row) {
+        if (cell.isNotFilled) return false;
+      }
+    }
+
+    return true;
+  }
+
+  static List<List<Cell>> buildEasyBoard() {
+    _board = List<List<Cell>>()..clearAllTiles();
+    i = 0;
+    j = 0;
+
+    int _currentNumber() => _board[i][j].availableNumbers[0];
+
+    while (!isBoardFilled()) {
+      if (_board[i][j].availableNumbers.isEmpty) {
+        _board[i][j].refillAvailableNumbers();
+        clearCurrentTileAndGoPrevious();
+      } else {
+        if (isConflict(_currentNumber(), i, j, _board)) {
+          _board[i][j].availableNumbers.remove(_currentNumber());
+        } else {
+          _board[i][j]
+            ..number = _currentNumber()
+            ..solutionNumber = _currentNumber()
+            ..coordinates = [i, j];
+          goNextTile();
+        }
+      }
+    }
+
+    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
+
+    while (_boardCopy.isNotEmpty) {
+      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
+      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
+
+      int _solutionCount = 0;
+
+      for (int k = 1; k < 10; k++) {
+        if (!isConflict(k, _boardCopy[0].i, _boardCopy[0].j, _board)) {
+          _solutionCount++;
+        }
+      }
+      assert(_solutionCount > 0);
+
+      if (_solutionCount > 1) {
+        _board[_boardCopy[0].i][_boardCopy[0].j]
+          ..number = _oldNumber
+          ..isClickable = false;
+      }
+
+      _boardCopy.removeAt(0);
+    }
+
+    return _board;
+  }
+
+  static List<List<Cell>> buildMediumBoard() {
+    final _randomMediumBoard = mediumBoards[Random().nextInt(mediumBoards.length - 1)];
+    return BoardSolver(_randomMediumBoard).getSolvedBoard();
+  }
+
+  static List<List<Cell>> buildHardBoard() {
+    final _randomHardBoard = hardBoards[Random().nextInt(hardBoards.length - 1)];
+    return BoardSolver(_randomHardBoard).getSolvedBoard();
+  }
+
   static List<List<Cell>> boardByGroup(List<List<Cell>> board) {
-    return List.generate(9, (i) => BoardFactory.getGroupCoordinates(i).map((e) => board[e[0]][e[1]]).toList());
+    return List.generate(9, (i) => getGroupCoordinates(i).map((e) => board[e[0]][e[1]]).toList());
   }
 
   static bool isConflict(int num, int i, int j, List<List<Cell>> board) {
-    return boardByGroup(board)[BoardFactory.getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
+    return boardByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (row) => board[i][row]).where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (col) => board[col][j]).where((cell) => cell.number == num).length >= 1;
   }
@@ -129,6 +236,11 @@ class BoardFactory {
     }
 
     return res;
+  }
+
+  @visibleForTesting
+  static void setBoard(List<List<Cell>> testBoard) {
+    _board = testBoard;
   }
 
   /*

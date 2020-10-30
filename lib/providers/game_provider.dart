@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_factory.dart';
-import 'package:sudoku_game/board/board_solver.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
@@ -10,22 +7,17 @@ import 'package:sudoku_game/util/extensions.dart';
 enum Difficulty { easy, medium, hard }
 
 class GameProvider with ChangeNotifier {
-  @visibleForTesting
-  int i = 0;
-  @visibleForTesting
-  int j = 0;
+  var _board = List<List<Cell>>();
+
+  List<List<Cell>> get board => _board;
 
   int _lives;
 
-  Difficulty selectedDifficulty = Difficulty.easy;
-
   int get lives => _lives;
 
-  bool get isGameOver => _lives <= 0;
+  var _selectedDifficulty = Difficulty.easy;
 
-  var _board = List<List<Cell>>()..clearAllTiles();
-
-  List<List<Cell>> get board => _board;
+  Difficulty get selectedDifficulty => _selectedDifficulty;
 
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
@@ -40,7 +32,9 @@ class GameProvider with ChangeNotifier {
     return Cell();
   }
 
-  int get _currentNumber => _board[i][j].availableNumbers[0];
+  bool get isGameOver {
+    return _lives <= 0;
+  }
 
   bool get isWonRound {
     for (int i = 0; i < 9; i++) {
@@ -55,11 +49,11 @@ class GameProvider with ChangeNotifier {
   }
 
   GameProvider() {
-    init(selectedDifficulty);
+    init(_selectedDifficulty);
   }
 
   void init(Difficulty difficulty) {
-    selectedDifficulty = difficulty;
+    _selectedDifficulty = difficulty;
     restoreRound();
     buildBoard(difficulty);
   }
@@ -69,122 +63,22 @@ class GameProvider with ChangeNotifier {
 
     switch (difficulty) {
       case Difficulty.easy:
-        {
-          _fillBoardWithValidNumbers();
-          _removeCellsWithOnlyOneSolution();
-        }
+        _board = BoardFactory.buildEasyBoard();
         break;
       case Difficulty.medium:
-        {
-          _board = BoardFactory.mediumBoards[Random().nextInt(BoardFactory.mediumBoards.length - 1)];
-          _board = BoardSolver(_board).getSolvedBoard();
-        }
+        _board = BoardFactory.buildMediumBoard();
         break;
       case Difficulty.hard:
-        {
-          _board = BoardFactory.hardBoards[Random().nextInt(BoardFactory.hardBoards.length - 1)];
-          _board = BoardSolver(_board).getSolvedBoard();
-        }
+        _board = BoardFactory.buildHardBoard();
         break;
     }
 
     notifyListeners();
   }
 
-  void _fillBoardWithValidNumbers() {
-    while (!isBoardFilled()) {
-      if (_board[i][j].availableNumbers.isEmpty) {
-        _board[i][j].refillAvailableNumbers();
-        clearCurrentTileAndGoPrevious();
-      } else {
-        if (BoardFactory.isConflict(_currentNumber, i, j, _board)) {
-          _board[i][j].availableNumbers.remove(_currentNumber);
-        } else {
-          _board[i][j]
-            ..number = _currentNumber
-            ..solutionNumber = _currentNumber
-            ..coordinates = [i, j];
-          goNextTile();
-        }
-      }
-    }
-  }
-
-  void _removeCellsWithOnlyOneSolution() {
-    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
-
-    while (_boardCopy.isNotEmpty) {
-      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
-      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
-
-      int _solutionCount = 0;
-
-      for (int k = 1; k < 10; k++) {
-        if (!BoardFactory.isConflict(k, _boardCopy[0].i, _boardCopy[0].j, _board)) {
-          _solutionCount++;
-        }
-      }
-      assert(_solutionCount > 0);
-
-      if (_solutionCount > 1) {
-        _board[_boardCopy[0].i][_boardCopy[0].j]
-          ..number = _oldNumber
-          ..isClickable = false;
-      }
-
-      _boardCopy.removeAt(0);
-    }
-  }
-
   @visibleForTesting
   void restoreRound() {
     _lives = 3;
-    i = 0;
-    j = 0;
-  }
-
-  @visibleForTesting
-  void goNextTile() {
-    assert(i < 9);
-    if (j < 8) {
-      j++;
-    } else {
-      i++;
-      j = 0;
-    }
-  }
-
-  @visibleForTesting
-  void clearCurrentTileAndGoPrevious() {
-    assert(i >= 0);
-    _board[i][j].number = 0;
-
-    if (j > 0) {
-      j--;
-    } else {
-      i--;
-      j = 8;
-    }
-  }
-
-  bool isBoardFilled() {
-    for (final List<Cell> row in _board) {
-      for (final cell in row) {
-        if (cell.isNotFilled) return false;
-      }
-    }
-
-    return true;
-  }
-
-  bool isBoardFilledWithSolutions() {
-    for (final List<Cell> row in _board) {
-      for (final cell in row) {
-        if (cell.solutionNumber == 0) return false;
-      }
-    }
-
-    return true;
   }
 
   @visibleForTesting

@@ -118,60 +118,53 @@ void main() {
   });
 
   test('goNext tests', () {
-    final provider = _newGameProvider();
+    BoardFactory.i = 0;
+    BoardFactory.j = 0;
+    BoardFactory.goNextTile();
 
-    provider.restoreRound();
-    provider.goNextTile();
+    expect(BoardFactory.i, 0);
+    expect(BoardFactory.j, 1);
 
-    expect(provider.i, 0);
-    expect(provider.j, 1);
+    BoardFactory.i = 6;
+    BoardFactory.j = 8;
 
-    provider.i = 6;
-    provider.j = 8;
+    BoardFactory.goNextTile();
 
-    provider.goNextTile();
-
-    expect(provider.i, 7);
-    expect(provider.j, 0);
+    expect(BoardFactory.i, 7);
+    expect(BoardFactory.j, 0);
   });
 
   test('goPrevious tests', () {
-    final provider = _newGameProvider();
+    BoardFactory.i = 3;
+    BoardFactory.j = 5;
 
-    provider.i = 3;
-    provider.j = 5;
+    BoardFactory.clearCurrentTileAndGoPrevious();
 
-    provider.clearCurrentTileAndGoPrevious();
+    expect(BoardFactory.i, 3);
+    expect(BoardFactory.j, 4);
 
-    expect(provider.i, 3);
-    expect(provider.j, 4);
+    BoardFactory.i = 8;
+    BoardFactory.j = 0;
 
-    provider.i = 8;
-    provider.j = 0;
+    BoardFactory.clearCurrentTileAndGoPrevious();
 
-    provider.clearCurrentTileAndGoPrevious();
-
-    expect(provider.i, 7);
-    expect(provider.j, 8);
+    expect(BoardFactory.i, 7);
+    expect(BoardFactory.j, 8);
   });
 
   test('Check if board is completely filled', () {
-    final provider = _newGameProvider();
-
     final testBoard = List<List<Cell>>.generate(9, (_) {
       return List<Cell>.generate(9, (_) {
         return Cell(number: 1);
       });
     });
 
-    provider.setBoard(testBoard);
+    BoardFactory.setBoard(testBoard);
 
-    expect(provider.isBoardFilled(), true);
+    expect(BoardFactory.isBoardFilled(), true);
   });
 
   test('Check if it returns false when the board is not completely filled', () {
-    final provider = _newGameProvider();
-
     final testBoard = List<List<Cell>>.generate(9, (_) {
       return List<Cell>.generate(9, (_) {
         return Cell(number: 1);
@@ -180,9 +173,9 @@ void main() {
 
     testBoard[8][8].number = 0;
 
-    provider.setBoard(testBoard);
+    BoardFactory.setBoard(testBoard);
 
-    expect(provider.isBoardFilled(), false);
+    expect(BoardFactory.isBoardFilled(), false);
   });
 
   test('getCoordinates test', () {
