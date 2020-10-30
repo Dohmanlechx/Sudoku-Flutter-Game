@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
-import 'package:sudoku_game/boards/board_factory.dart';
+import 'package:sudoku_game/board/board_factory.dart';
+import 'package:sudoku_game/board/board_solver.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
+
+enum Difficulty { easy, medium, hard }
 
 class BoardProvider with ChangeNotifier {
   @visibleForTesting
@@ -11,6 +16,8 @@ class BoardProvider with ChangeNotifier {
   int j = 0;
 
   int _lives;
+
+  Difficulty selectedDifficulty = Difficulty.easy;
 
   int get lives => _lives;
 
@@ -22,7 +29,7 @@ class BoardProvider with ChangeNotifier {
   List<List<Cell>> get board => _board;
 
   List<List<Cell>> get boardByGroup {
-    return List.generate(9, (i) => getGroupCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
+    return List.generate(9, (i) => BoardFactory.getGroupCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
   }
 
   Cell get selectedCell {
@@ -53,8 +60,85 @@ class BoardProvider with ChangeNotifier {
   }
 
   BoardProvider() {
+    init(selectedDifficulty);
+  }
+
+  void init(Difficulty difficulty) {
+    selectedDifficulty = difficulty;
     restoreRound();
-    initBoard();
+    buildBoard(difficulty);
+  }
+
+  void buildBoard(Difficulty difficulty) async {
+    _board.clearAllTiles();
+
+    switch (difficulty) {
+      case Difficulty.easy:
+        {
+          _fillBoardWithValidNumbers();
+          _removeCellsWithOnlyOneSolution();
+        }
+        break;
+      case Difficulty.medium:
+        {
+          _board = BoardFactory.mediumBoards[Random().nextInt(BoardFactory.mediumBoards.length - 1)];
+          _board = BoardSolver(_board).getSolvedBoard();
+        }
+        break;
+      case Difficulty.hard:
+        {
+          _board = BoardFactory.hardBoards[Random().nextInt(BoardFactory.hardBoards.length - 1)];
+          _board = BoardSolver(_board).getSolvedBoard();
+        }
+        break;
+    }
+
+    notifyListeners();
+  }
+
+  void _fillBoardWithValidNumbers() {
+    while (!isBoardFilled()) {
+      if (_board[i][j].availableNumbers.isEmpty) {
+        _board[i][j].refillAvailableNumbers();
+        clearCurrentTileAndGoPrevious();
+      } else {
+        if (_isConflict(_currentNumber, i, j)) {
+          _board[i][j].availableNumbers.remove(_currentNumber);
+        } else {
+          _board[i][j]
+            ..number = _currentNumber
+            ..solutionNumber = _currentNumber
+            ..coordinates = [i, j];
+          goNextTile();
+        }
+      }
+    }
+  }
+
+  void _removeCellsWithOnlyOneSolution() {
+    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
+
+    while (_boardCopy.isNotEmpty) {
+      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
+      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
+
+      int _solutionCount = 0;
+
+      for (int k = 1; k < 10; k++) {
+        if (!_isConflict(k, _boardCopy[0].i, _boardCopy[0].j)) {
+          _solutionCount++;
+        }
+      }
+      assert(_solutionCount > 0);
+
+      if (_solutionCount > 1) {
+        _board[_boardCopy[0].i][_boardCopy[0].j]
+          ..number = _oldNumber
+          ..isClickable = false;
+      }
+
+      _boardCopy.removeAt(0);
+    }
   }
 
   @visibleForTesting
@@ -88,59 +172,6 @@ class BoardProvider with ChangeNotifier {
     }
   }
 
-  void initBoard() async {
-    restoreRound();
-    _board.clearAllTiles();
-
-    while (!isBoardFilled()) {
-      if (_board[i][j].availableNumbers.isEmpty) {
-        _board[i][j].refillAvailableNumbers();
-        clearCurrentTileAndGoPrevious();
-      } else {
-        if (_isConflict(_currentNumber, i, j)) {
-          _board[i][j].availableNumbers.remove(_currentNumber);
-        } else {
-          _board[i][j]
-            ..number = _currentNumber
-            ..solutionNumber = _currentNumber
-            ..coordinates = [i, j];
-          ;
-          goNextTile();
-        }
-      }
-    }
-
-    _removeCellsWithOnlyOneSolution();
-  }
-
-  void _removeCellsWithOnlyOneSolution() {
-    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
-
-    while (_boardCopy.isNotEmpty) {
-      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
-      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
-
-      int _solutionCount = 0;
-
-      for (int k = 1; k < 10; k++) {
-        if (!_isConflict(k, _boardCopy[0].i, _boardCopy[0].j)) {
-          _solutionCount++;
-        }
-      }
-      assert(_solutionCount > 0);
-
-      if (_solutionCount > 1) {
-        _board[_boardCopy[0].i][_boardCopy[0].j]
-          ..number = _oldNumber
-          ..isClickable = false;
-      }
-
-      _boardCopy.removeAt(0);
-    }
-
-    notifyListeners();
-  }
-
   bool isBoardFilled() {
     for (final List<Cell> row in _board) {
       for (final cell in row) {
@@ -151,30 +182,20 @@ class BoardProvider with ChangeNotifier {
     return true;
   }
 
+  bool isBoardFilledWithSolutions() {
+    for (final List<Cell> row in _board) {
+      for (final cell in row) {
+        if (cell.solutionNumber == 0) return false;
+      }
+    }
+
+    return true;
+  }
+
   bool _isConflict(int num, int i, int j) {
-    return boardByGroup[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
+    return boardByGroup[BoardFactory.getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (row) => _board[i][row]).where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (col) => _board[col][j]).where((cell) => cell.number == num).length >= 1;
-  }
-
-  int _getRowInGroup(int i) {
-    if (i <= 2) {
-      return 0;
-    } else if (i <= 5) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-
-  int _getColumnInGroup(int i) {
-    if (i == 0 || i == 3 || i == 6) {
-      return 0;
-    } else if (i == 1 || i == 4 || i == 7) {
-      return 1;
-    } else {
-      return 2;
-    }
   }
 
   @visibleForTesting
@@ -201,36 +222,9 @@ class BoardProvider with ChangeNotifier {
 
   bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
     return boardByGroup[groupIndex].where((cell) => cell.number == number).length > 1 ||
-        boardByRow(_getRowInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1 ||
-        boardByColumn(_getColumnInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1;
-  }
-
-  @visibleForTesting
-  int getGroupIndexOf(int a, int b) {
-    int res;
-
-    if (a >= 0 && a <= 2 && b >= 0 && b <= 2) {
-      res = 0;
-    } else if (a >= 0 && a <= 2 && b >= 3 && b <= 5) {
-      res = 1;
-    } else if (a >= 0 && a <= 2 && b >= 6 && b <= 8) {
-      res = 2;
-    } else if (a >= 3 && a <= 5 && b >= 0 && b <= 2) {
-      res = 3;
-    } else if (a >= 3 && a <= 5 && b >= 3 && b <= 5) {
-      res = 4;
-    } else if (a >= 3 && a <= 5 && b >= 6 && b <= 8) {
-      res = 5;
-    } else if (a >= 6 && a <= 8 && b >= 0 && b <= 2) {
-      res = 6;
-    } else if (a >= 6 && a <= 8 && b >= 3 && b <= 5) {
-      res = 7;
-    } else if (a >= 6 && a <= 8 && b >= 6 && b <= 8) {
-      res = 8;
-    }
-
-    assert(res != null);
-    return res;
+        boardByRow(BoardFactory.getRowInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1 ||
+        boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex).where((cell) => cell.number == number).length >
+            1;
   }
 
   void setNumber({int number, bool isDelete = false}) {
@@ -245,7 +239,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setSelectedCoordinates(int groupIndex, int index) {
-    final _clickedCoordinates = getGroupCoordinates(groupIndex)[index];
+    final _clickedCoordinates = BoardFactory.getGroupCoordinates(groupIndex)[index];
     final _clickedCell = _board[_clickedCoordinates[0]][_clickedCoordinates[1]];
 
     if (_clickedCell.isClickable) {
@@ -258,10 +252,10 @@ class BoardProvider with ChangeNotifier {
 
       for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-          final _isInThisRow =
-              boardByRow(_getRowInGroup(index), groupIndex).any((Cell cell) => listEquals([i, j], cell.coordinates));
+          final _isInThisRow = boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
+              .any((Cell cell) => listEquals([i, j], cell.coordinates));
 
-          final _isInThisColumn = boardByColumn(_getColumnInGroup(index), groupIndex)
+          final _isInThisColumn = boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
               .any((Cell cell) => listEquals([i, j], cell.coordinates));
 
           final _isInThisGroup = boardByGroup[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
@@ -275,78 +269,6 @@ class BoardProvider with ChangeNotifier {
       _clickedCell.isSelected = true;
       notifyListeners();
     }
-  }
-
-  List<List<int>> getGroupCoordinates(int groupIndex) {
-    var res = List<List<int>>();
-
-    switch (groupIndex) {
-      case 0:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 0; j < 3; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 1:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 3; j < 6; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 2:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 6; j < 9; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 3:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 0; j < 3; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 4:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 3; j < 6; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 5:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 6; j < 9; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 6:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 0; j < 3; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 7:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 3; j < 6; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-      case 8:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 6; j < 9; j++) {
-            res.add([i, j]);
-          }
-        }
-        break;
-    }
-
-    return res;
   }
 
   @visibleForTesting

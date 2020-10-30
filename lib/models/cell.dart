@@ -21,15 +21,15 @@ class Cell {
   List<int> coordinates;
   List<int> availableNumbers;
 
-  bool get isNotFilled => number == 0;
+  bool get isNotFilled => number <= 0;
 
   int get i => coordinates[0];
 
   int get j => coordinates[1];
 
   void _initCell() {
-    coordinates = [];
-    availableNumbers = [];
+    coordinates ??= [];
+    availableNumbers ??= [];
     refillAvailableNumbers();
   }
 }

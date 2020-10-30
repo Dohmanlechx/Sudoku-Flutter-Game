@@ -15,11 +15,18 @@ extension BoardExtensions on List<List<Cell>> {
 
 extension StringExtensions on String {
   List<List<Cell>> toBoard() {
-    return List.generate(9, (int a) {
-      return List.generate(9, (int b) {
-        final _number = int.parse(this[(a * 9) + b]);
-        return Cell(number: _number <= 0 ? null : _number, solutionNumber: _number);
+    return List.generate(9, (int i) {
+      return List.generate(9, (int j) {
+        final _number = int.parse(this[(i * 9) + j]);
+        return Cell(
+          number: _number,
+          solutionNumber: _number,
+          isClickable: _number <= 0,
+          coordinates: [i, j],
+        );
       });
     });
   }
+
+  String capitalize() => this[0].toUpperCase() + this.substring(1).toLowerCase();
 }

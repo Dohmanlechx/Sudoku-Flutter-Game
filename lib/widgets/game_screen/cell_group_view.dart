@@ -37,7 +37,7 @@ class CellGroupView extends StatelessWidget {
         return Center(
           child: CellView(
             cell: _cells[index],
-            isInvalid: _isOccupied,
+            isInvalid: _isOccupied || (_cells[index].number != _cells[index].solutionNumber),
             onSubmit: () => _provider.setSelectedCoordinates(groupIndex, index),
           ),
         );

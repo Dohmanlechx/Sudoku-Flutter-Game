@@ -1,6 +1,125 @@
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardFactory {
+  static int getRowInGroup(int i) {
+    if (i <= 2) {
+      return 0;
+    } else if (i <= 5) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  static int getColumnInGroup(int i) {
+    if (i == 0 || i == 3 || i == 6) {
+      return 0;
+    } else if (i == 1 || i == 4 || i == 7) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  static int getGroupIndexOf(int a, int b) {
+    int res;
+
+    if (a >= 0 && a <= 2 && b >= 0 && b <= 2) {
+      res = 0;
+    } else if (a >= 0 && a <= 2 && b >= 3 && b <= 5) {
+      res = 1;
+    } else if (a >= 0 && a <= 2 && b >= 6 && b <= 8) {
+      res = 2;
+    } else if (a >= 3 && a <= 5 && b >= 0 && b <= 2) {
+      res = 3;
+    } else if (a >= 3 && a <= 5 && b >= 3 && b <= 5) {
+      res = 4;
+    } else if (a >= 3 && a <= 5 && b >= 6 && b <= 8) {
+      res = 5;
+    } else if (a >= 6 && a <= 8 && b >= 0 && b <= 2) {
+      res = 6;
+    } else if (a >= 6 && a <= 8 && b >= 3 && b <= 5) {
+      res = 7;
+    } else if (a >= 6 && a <= 8 && b >= 6 && b <= 8) {
+      res = 8;
+    }
+
+    assert(res != null);
+    return res;
+  }
+
+  static List<List<int>> getGroupCoordinates(int groupIndex) {
+    var res = List<List<int>>();
+
+    switch (groupIndex) {
+      case 0:
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 3; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 1:
+        for (int i = 0; i < 3; i++) {
+          for (int j = 3; j < 6; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 2:
+        for (int i = 0; i < 3; i++) {
+          for (int j = 6; j < 9; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 3:
+        for (int i = 3; i < 6; i++) {
+          for (int j = 0; j < 3; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 4:
+        for (int i = 3; i < 6; i++) {
+          for (int j = 3; j < 6; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 5:
+        for (int i = 3; i < 6; i++) {
+          for (int j = 6; j < 9; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 6:
+        for (int i = 6; i < 9; i++) {
+          for (int j = 0; j < 3; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 7:
+        for (int i = 6; i < 9; i++) {
+          for (int j = 3; j < 6; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+      case 8:
+        for (int i = 6; i < 9; i++) {
+          for (int j = 6; j < 9; j++) {
+            res.add([i, j]);
+          }
+        }
+        break;
+    }
+
+    return res;
+  }
+
   /*
  * Since I've not managed to generate Medium/Hard boards yet, so I'll use
  * those hard coded boards from https://github.com/ogarcia/opensudoku for now.

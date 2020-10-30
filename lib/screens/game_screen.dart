@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
@@ -8,6 +9,7 @@ import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/cell_group_view.dart';
+import 'package:sudoku_game/util/extensions.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen();
@@ -33,7 +35,14 @@ class GameScreen extends StatelessWidget {
                         : const SizedBox(),
               ],
             ),
-            _buildLives(context),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildDifficultyText(context),
+                _buildLives(context),
+              ],
+            ),
             _buildNumbersKeyboard(context),
           ],
         ),
@@ -90,11 +99,17 @@ class GameScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildDifficultyText(BuildContext context) {
+    return Text(
+      context.watch<BoardProvider>().selectedDifficulty.toString().split('.').last.capitalize(),
+      style: AppTypography.body,
+    );
+  }
+
   Widget _buildLives(BuildContext context) {
     final int _lives = context.watch<BoardProvider>().lives;
 
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisSize: MainAxisSize.max,

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/board_provider.dart';
 
@@ -41,11 +42,11 @@ void main() {
       final actual = provider.boardByRow(row, groupIndex);
 
       expect(
-          listEquals(
-            actual.map((cell) => cell.number).toList(),
-            expected.map((cell) => cell.number).toList(),
-          ),
-          isTrue
+        listEquals(
+          actual.map((cell) => cell.number).toList(),
+          expected.map((cell) => cell.number).toList(),
+        ),
+        isTrue,
       );
 
       testCount++;
@@ -72,7 +73,7 @@ void main() {
           actual.map((cell) => cell.number).toList(),
           expected.map((cell) => cell.number).toList(),
         ),
-        isTrue
+        isTrue,
       );
 
       testCount++;
@@ -80,18 +81,16 @@ void main() {
   });
 
   test('getGroupIndexOf tests', () {
-    final provider = _newBoardProvider();
-
     final Map<int, int> tests = {
-      0: provider.getGroupIndexOf(1, 2),
-      1: provider.getGroupIndexOf(2, 4),
-      2: provider.getGroupIndexOf(0, 8),
-      3: provider.getGroupIndexOf(4, 0),
-      4: provider.getGroupIndexOf(4, 5),
-      5: provider.getGroupIndexOf(5, 8),
-      6: provider.getGroupIndexOf(7, 2),
-      7: provider.getGroupIndexOf(6, 4),
-      8: provider.getGroupIndexOf(8, 8)
+      0: BoardFactory.getGroupIndexOf(1, 2),
+      1: BoardFactory.getGroupIndexOf(2, 4),
+      2: BoardFactory.getGroupIndexOf(0, 8),
+      3: BoardFactory.getGroupIndexOf(4, 0),
+      4: BoardFactory.getGroupIndexOf(4, 5),
+      5: BoardFactory.getGroupIndexOf(5, 8),
+      6: BoardFactory.getGroupIndexOf(7, 2),
+      7: BoardFactory.getGroupIndexOf(6, 4),
+      8: BoardFactory.getGroupIndexOf(8, 8)
     };
 
     tests.forEach((expected, actual) {
@@ -187,11 +186,9 @@ void main() {
   });
 
   test('getCoordinates test', () {
-    final provider = _newBoardProvider();
-
     for (int i = 0; i < 9; i++) {
       expect(
-        provider.getGroupCoordinates(i),
+        BoardFactory.getGroupCoordinates(i),
         TestResources.getExpectedOf(groupIndex: i),
       );
     }

@@ -39,7 +39,13 @@ class CellView extends StatelessWidget {
       child: Center(
         child: Text(
           (cell.number ?? '').toString(),
-          style: AppTypography.body.copyWith(color: isInvalid ? AppColors.red : AppColors.black),
+          style: AppTypography.body.copyWith(
+            color: cell.number == 0
+                ? Colors.transparent
+                : isInvalid
+                    ? AppColors.red
+                    : AppColors.black,
+          ),
         ),
       ),
     );

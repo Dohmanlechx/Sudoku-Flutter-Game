@@ -26,11 +26,21 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: const Icon(Icons.menu),
             backgroundColor: AppColors.accent,
           ),
-          _buildTitleDivider(AppTranslations.mainMenu),
+          _buildTitleDivider(AppTranslations.newGame),
           _buildListTile(
             icon: Icons.add,
-            title: AppTranslations.newGame,
-            onTap: () => _triggerNewGame(context),
+            title: AppTranslations.easy,
+            onTap: () => _triggerNewGame(context, Difficulty.easy),
+          ),
+          _buildListTile(
+            icon: Icons.add,
+            title: AppTranslations.medium,
+            onTap: () => _triggerNewGame(context, Difficulty.medium),
+          ),
+          _buildListTile(
+            icon: Icons.add,
+            title: AppTranslations.hard,
+            onTap: () => _triggerNewGame(context, Difficulty.hard),
           ),
           const SizedBox(height: 100),
           _buildTitleDivider(AppTranslations.settings),
@@ -49,8 +59,8 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  void _triggerNewGame(BuildContext context) {
-    context.read<BoardProvider>().initBoard();
+  void _triggerNewGame(BuildContext context, Difficulty difficulty) {
+    context.read<BoardProvider>().init(difficulty);
     Navigator.of(context).pop();
   }
 

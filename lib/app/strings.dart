@@ -7,4 +7,7 @@ class AppTranslations {
   static const rumble = 'Rumble';
   static const congrats = 'Congratulations!';
   static const gameOver = 'Game Over';
+  static const easy = 'Easy';
+  static const medium = 'Medium';
+  static const hard = 'Hard';
 }
