@@ -1,6 +1,17 @@
+import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 class BoardFactory {
+  static List<List<Cell>> boardByGroup(List<List<Cell>> board) {
+    return List.generate(9, (i) => BoardFactory.getGroupCoordinates(i).map((e) => board[e[0]][e[1]]).toList());
+  }
+
+  static bool isConflict(int num, int i, int j, List<List<Cell>> board) {
+    return boardByGroup(board)[BoardFactory.getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (row) => board[i][row]).where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (col) => board[col][j]).where((cell) => cell.number == num).length >= 1;
+  }
+
   static int getRowInGroup(int i) {
     if (i <= 2) {
       return 0;

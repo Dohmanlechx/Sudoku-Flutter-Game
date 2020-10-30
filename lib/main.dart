@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/screens/game_screen.dart';
 import 'package:sudoku_game/styles/theme.dart';
 
@@ -11,7 +11,7 @@ class SudokuGameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => BoardProvider()),
+        ChangeNotifierProvider(create: (_) => GameProvider()),
       ],
       child: MaterialApp(
         key: const Key('sudoku_game'),

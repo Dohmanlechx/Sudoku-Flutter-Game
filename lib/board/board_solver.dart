@@ -7,10 +7,6 @@ class BoardSolver {
 
   final List<List<Cell>> board;
 
-  List<List<Cell>> boardByGroup() {
-    return List.generate(9, (i) => BoardFactory.getGroupCoordinates(i).map((e) => board[e[0]][e[1]]).toList());
-  }
-
   List<List<Cell>> getSolvedBoard() {
     final List<Cell> _emptyCells =
         board.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
@@ -26,7 +22,7 @@ class BoardSolver {
         _currentCell().solutionNumber = 0;
         _iterator--;
       } else {
-        if (isConflict(_currentCell().availableNumbers[0], _currentCell().i, _currentCell().j, board)) {
+        if (BoardFactory.isConflict(_currentCell().availableNumbers[0], _currentCell().i, _currentCell().j, board)) {
           _currentCell().availableNumbers.remove(_currentCell().availableNumbers[0]);
         } else {
           board[_currentCell().i][_currentCell().j].number = _currentCell().availableNumbers[0];
@@ -41,11 +37,5 @@ class BoardSolver {
     });
 
     return board;
-  }
-
-  bool isConflict(int num, int i, int j, List<List<Cell>> board) {
-    return boardByGroup()[BoardFactory.getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (row) => board[i][row]).where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (col) => board[col][j]).where((cell) => cell.number == num).length >= 1;
   }
 }

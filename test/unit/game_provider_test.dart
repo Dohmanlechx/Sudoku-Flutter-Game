@@ -4,15 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/cell.dart';
-import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
 
 import '../test_resources.dart';
 
 void main() {
-  BoardProvider _newBoardProvider() => BoardProvider();
+  GameProvider _newGameProvider() => GameProvider();
 
   test('The board should contain 81 elements', () {
-    final board = _newBoardProvider().board;
+    final board = _newGameProvider().board;
     var count = 0;
 
     for (final row in board) {
@@ -23,11 +23,11 @@ void main() {
   });
 
   test('The tileGroups should contain 9 elements', () {
-    expect(_newBoardProvider().boardByGroup.length, 9);
+    expect(BoardFactory.boardByGroup(_newGameProvider().board).length, 9);
   });
 
   test('boardByRow tests', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
@@ -54,7 +54,7 @@ void main() {
   });
 
   test('boardByColumn tests', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
@@ -99,12 +99,12 @@ void main() {
   });
 
   test('boardByGroup tests', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     provider.setBoard(TestResources.mockedValidBoard);
 
     for (int i = 0; i < 9; i++) {
-      final actual = provider.boardByGroup[i];
+      final actual = BoardFactory.boardByGroup(provider.board)[i];
       final expected = TestResources.getExpectedBoardByGroup(groupIndex: i);
 
       expect(
@@ -118,7 +118,7 @@ void main() {
   });
 
   test('goNext tests', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     provider.restoreRound();
     provider.goNextTile();
@@ -136,7 +136,7 @@ void main() {
   });
 
   test('goPrevious tests', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     provider.i = 3;
     provider.j = 5;
@@ -156,7 +156,7 @@ void main() {
   });
 
   test('Check if board is completely filled', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     final testBoard = List<List<Cell>>.generate(9, (_) {
       return List<Cell>.generate(9, (_) {
@@ -170,7 +170,7 @@ void main() {
   });
 
   test('Check if it returns false when the board is not completely filled', () {
-    final provider = _newBoardProvider();
+    final provider = _newGameProvider();
 
     final testBoard = List<List<Cell>>.generate(9, (_) {
       return List<Cell>.generate(9, (_) {

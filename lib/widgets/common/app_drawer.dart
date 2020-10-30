@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
-import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
@@ -60,7 +60,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   void _triggerNewGame(BuildContext context, Difficulty difficulty) {
-    context.read<BoardProvider>().init(difficulty);
+    context.read<GameProvider>().init(difficulty);
     Navigator.of(context).pop();
   }
 

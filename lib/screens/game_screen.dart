@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
-import 'package:sudoku_game/providers/board_provider.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
@@ -16,7 +16,7 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _provider = context.watch<BoardProvider>();
+    final _provider = context.watch<GameProvider>();
 
     return Scaffold(
       appBar: AppBar(title: const Text(AppTranslations.appTitle)),
@@ -101,13 +101,13 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildDifficultyText(BuildContext context) {
     return Text(
-      context.watch<BoardProvider>().selectedDifficulty.toString().split('.').last.capitalize(),
+      context.watch<GameProvider>().selectedDifficulty.toString().split('.').last.capitalize(),
       style: AppTypography.body,
     );
   }
 
   Widget _buildLives(BuildContext context) {
-    final int _lives = context.watch<BoardProvider>().lives;
+    final int _lives = context.watch<GameProvider>().lives;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -125,7 +125,7 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildNumbersKeyboard(BuildContext context) {
-    final _watchProvider = context.watch<BoardProvider>();
+    final _watchProvider = context.watch<GameProvider>();
 
     return Container(
       color: AppColors.lightGrey,
@@ -164,7 +164,7 @@ class GameScreen extends StatelessWidget {
   }
 
   void _setNumber(BuildContext context, int number) {
-    context.read<BoardProvider>().setNumber(
+    context.read<GameProvider>().setNumber(
           number: number < 10 ? number : null,
           isDelete: number == 10,
         );

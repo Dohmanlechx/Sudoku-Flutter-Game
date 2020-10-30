@@ -9,7 +9,7 @@ import 'package:sudoku_game/util/extensions.dart';
 
 enum Difficulty { easy, medium, hard }
 
-class BoardProvider with ChangeNotifier {
+class GameProvider with ChangeNotifier {
   @visibleForTesting
   int i = 0;
   @visibleForTesting
@@ -25,12 +25,7 @@ class BoardProvider with ChangeNotifier {
 
   var _board = List<List<Cell>>()..clearAllTiles();
 
-  @visibleForTesting
   List<List<Cell>> get board => _board;
-
-  List<List<Cell>> get boardByGroup {
-    return List.generate(9, (i) => BoardFactory.getGroupCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
-  }
 
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
@@ -59,7 +54,7 @@ class BoardProvider with ChangeNotifier {
     return true;
   }
 
-  BoardProvider() {
+  GameProvider() {
     init(selectedDifficulty);
   }
 
@@ -102,7 +97,7 @@ class BoardProvider with ChangeNotifier {
         _board[i][j].refillAvailableNumbers();
         clearCurrentTileAndGoPrevious();
       } else {
-        if (_isConflict(_currentNumber, i, j)) {
+        if (BoardFactory.isConflict(_currentNumber, i, j, _board)) {
           _board[i][j].availableNumbers.remove(_currentNumber);
         } else {
           _board[i][j]
@@ -125,7 +120,7 @@ class BoardProvider with ChangeNotifier {
       int _solutionCount = 0;
 
       for (int k = 1; k < 10; k++) {
-        if (!_isConflict(k, _boardCopy[0].i, _boardCopy[0].j)) {
+        if (!BoardFactory.isConflict(k, _boardCopy[0].i, _boardCopy[0].j, _board)) {
           _solutionCount++;
         }
       }
@@ -192,12 +187,6 @@ class BoardProvider with ChangeNotifier {
     return true;
   }
 
-  bool _isConflict(int num, int i, int j) {
-    return boardByGroup[BoardFactory.getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (row) => _board[i][row]).where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (col) => _board[col][j]).where((cell) => cell.number == num).length >= 1;
-  }
-
   @visibleForTesting
   List<Cell> boardByRow(int row, int groupIndex) {
     if (groupIndex > 2 && groupIndex <= 5) {
@@ -221,7 +210,7 @@ class BoardProvider with ChangeNotifier {
   }
 
   bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
-    return boardByGroup[groupIndex].where((cell) => cell.number == number).length > 1 ||
+    return BoardFactory.boardByGroup(_board)[groupIndex].where((cell) => cell.number == number).length > 1 ||
         boardByRow(BoardFactory.getRowInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1 ||
         boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex).where((cell) => cell.number == number).length >
             1;
@@ -258,7 +247,8 @@ class BoardProvider with ChangeNotifier {
           final _isInThisColumn = boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
               .any((Cell cell) => listEquals([i, j], cell.coordinates));
 
-          final _isInThisGroup = boardByGroup[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
+          final _isInThisGroup =
+              BoardFactory.boardByGroup(_board)[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
 
           if (_isInThisRow || _isInThisColumn || _isInThisGroup) {
             _board[i][j].isHighlighted = true;
