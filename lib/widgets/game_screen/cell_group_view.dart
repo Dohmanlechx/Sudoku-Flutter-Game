@@ -15,7 +15,7 @@ class CellGroupView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: AppColors.white,
         border: Border.all(),
       ),
       child: _buildTileGroupGrid(context),

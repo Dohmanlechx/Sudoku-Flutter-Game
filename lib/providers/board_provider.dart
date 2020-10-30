@@ -21,7 +21,7 @@ class BoardProvider with ChangeNotifier {
   List<List<Cell>> get board => _board;
 
   List<List<Cell>> get boardByGroup {
-    return List.generate(9, (i) => getCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
+    return List.generate(9, (i) => getGroupCoordinates(i).map((e) => _board[e[0]][e[1]]).toList());
   }
 
   Cell get selectedCell {
@@ -244,22 +244,39 @@ class BoardProvider with ChangeNotifier {
   }
 
   void setSelectedCoordinates(int groupIndex, int index) {
-    final _clickedCoordinates = getCoordinates(groupIndex)[index];
+    final _clickedCoordinates = getGroupCoordinates(groupIndex)[index];
     final _clickedCell = _board[_clickedCoordinates[0]][_clickedCoordinates[1]];
 
     if (_clickedCell.isClickable) {
       _board.forEach((List<Cell> row) {
         return row.forEach((Cell cell) {
           cell.isSelected = false;
+          cell.isHighlighted = false;
         });
       });
+
+      for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+          final _isInThisRow =
+              boardByRow(_getRowInGroup(index), groupIndex).any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+          final _isInThisColumn = boardByColumn(_getColumnInGroup(index), groupIndex)
+              .any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+          final _isInThisGroup = boardByGroup[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+          if (_isInThisRow || _isInThisColumn || _isInThisGroup) {
+            _board[i][j].isHighlighted = true;
+          }
+        }
+      }
 
       _clickedCell.isSelected = true;
       notifyListeners();
     }
   }
 
-  List<List<int>> getCoordinates(int groupIndex) {
+  List<List<int>> getGroupCoordinates(int groupIndex) {
     var res = List<List<int>>();
 
     switch (groupIndex) {

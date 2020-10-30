@@ -6,6 +6,7 @@ class Cell {
     this.solutionNumber,
     this.isClickable = true,
     this.isSelected = false,
+    this.isHighlighted = false,
     this.coordinates,
     this.availableNumbers,
   }) {
@@ -16,6 +17,7 @@ class Cell {
   int solutionNumber;
   bool isClickable;
   bool isSelected;
+  bool isHighlighted;
   List<int> coordinates;
   List<int> availableNumbers;
 

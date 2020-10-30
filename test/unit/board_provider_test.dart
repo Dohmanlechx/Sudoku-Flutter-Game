@@ -191,7 +191,7 @@ void main() {
 
     for (int i = 0; i < 9; i++) {
       expect(
-        provider.getCoordinates(i),
+        provider.getGroupCoordinates(i),
         TestResources.getExpectedOf(groupIndex: i),
       );
     }

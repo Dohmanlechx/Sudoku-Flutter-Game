@@ -102,7 +102,7 @@ class GameScreen extends StatelessWidget {
         children: [
           ...List.generate(
             3,
-            (int index) => Icon(index < _lives ? Icons.circle : Icons.cancel),
+            (int index) => Icon(index < _lives ? Icons.favorite : Icons.favorite_outline),
           )
         ],
       ),

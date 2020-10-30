@@ -20,11 +20,7 @@ class CellView extends StatelessWidget {
       onTap: onSubmit,
       child: Container(
         decoration: BoxDecoration(
-          color: cell.number == null || (cell.isClickable && !isInvalid)
-              ? AppColors.white
-              : isInvalid
-                  ? AppColors.red.withOpacity(0.1)
-                  : null,
+          color: cell.isHighlighted ? AppColors.highlight.withOpacity(0.75) : AppColors.white,
           border: Border.all(width: 0.5),
         ),
         child: _buildNumber(),
@@ -36,14 +32,14 @@ class CellView extends StatelessWidget {
     return Container(
       decoration: cell.isSelected
           ? BoxDecoration(
-              border: Border.all(color: AppColors.red, width: 3),
+              border: Border.all(color: AppColors.accent, width: 2),
               borderRadius: const BorderRadius.all(Radius.circular(50)),
             )
           : null,
       child: Center(
         child: Text(
           (cell.number ?? '').toString(),
-          style: AppTypography.body,
+          style: AppTypography.body.copyWith(color: isInvalid ? AppColors.red : AppColors.black),
         ),
       ),
     );
