@@ -43,7 +43,7 @@ class _StopWatchViewState extends State<StopWatchView> {
       });
     }
 
-    return Center(child: Text(_formattedTimerText, style: AppTypography.body));
+    return Center(child: Text(_formattedTimerText, style: AppTypography.timer));
   }
 
   void _resetTimerAndSetupListener() {

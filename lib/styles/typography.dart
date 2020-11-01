@@ -15,4 +15,10 @@ abstract class AppTypography {
     fontSize: 40,
     color: AppColors.white,
   );
+
+  static const timer = TextStyle(
+    fontFamily: 'Consolas', // Monospaced, fixed width for every char
+    fontWeight: FontWeight.bold,
+    fontSize: 22,
+  );
 }
