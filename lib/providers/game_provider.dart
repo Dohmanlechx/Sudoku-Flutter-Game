@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
-import 'package:sudoku_game/util/extensions.dart';
 
 enum Difficulty { easy, medium, hard }
 
@@ -19,6 +20,10 @@ class GameProvider with ChangeNotifier {
   Difficulty _selectedDifficulty = Difficulty.easy;
 
   Difficulty get selectedDifficulty => _selectedDifficulty;
+
+  var _isNewGameStream = StreamController<bool>();
+
+  Stream<bool> get isNewGameStream => _isNewGameStream.stream.asBroadcastStream();
 
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
@@ -54,6 +59,7 @@ class GameProvider with ChangeNotifier {
   }
 
   void init(Difficulty difficulty) {
+    _isNewGameStream.add(true);
     _selectedDifficulty = difficulty;
     _lives = 3;
     buildBoard(difficulty);

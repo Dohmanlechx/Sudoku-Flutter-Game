@@ -6,10 +6,11 @@ import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
+import 'package:sudoku_game/util/extensions.dart';
 import 'package:sudoku_game/widgets/common/app_drawer.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/cell_group_view.dart';
-import 'package:sudoku_game/util/extensions.dart';
+import 'package:sudoku_game/widgets/game_screen/stop_watch_view.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen();
@@ -35,13 +36,15 @@ class GameScreen extends StatelessWidget {
                         : const SizedBox(),
               ],
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildDifficultyText(context),
-                _buildLives(context),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Expanded(flex: 1, child: _buildDifficultyText(context)),
+                  Expanded(flex: 1, child: _buildLives(context)),
+                  const Expanded(flex: 1, child: StopWatchView()),
+                ],
+              ),
             ),
             _buildNumbersKeyboard(context),
           ],
@@ -100,9 +103,11 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildDifficultyText(BuildContext context) {
-    return Text(
-      context.watch<GameProvider>().selectedDifficulty.toString().split('.').last.capitalize(),
-      style: AppTypography.body,
+    return Center(
+      child: Text(
+        context.watch<GameProvider>().selectedDifficulty.toString().split('.').last.capitalize(),
+        style: AppTypography.body,
+      ),
     );
   }
 
