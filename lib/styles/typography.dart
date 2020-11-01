@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sudoku_game/styles/colors.dart';
 
-class AppTypography {
+abstract class AppTypography {
   static const body = TextStyle(
     fontSize: 22,
   );

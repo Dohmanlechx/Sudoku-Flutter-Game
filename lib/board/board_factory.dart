@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_solver.dart';
+import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
@@ -11,7 +12,7 @@ abstract class BoardFactory {
   @visibleForTesting
   static var j = 0;
 
-  static var _board = List<List<Cell>>()..clearAllTiles();
+  static var _board = Board();
 
   @visibleForTesting
   static void goNextTile() {
@@ -27,7 +28,7 @@ abstract class BoardFactory {
   @visibleForTesting
   static void clearCurrentTileAndGoPrevious() {
     assert(i >= 0);
-    _board[i][j].number = 0;
+    _board.cells[i][j].number = 0;
 
     if (j > 0) {
       j--;
@@ -39,7 +40,7 @@ abstract class BoardFactory {
 
   @visibleForTesting
   static bool isBoardFilled() {
-    for (final List<Cell> row in _board) {
+    for (final List<Cell> row in _board.cells) {
       for (final cell in row) {
         if (cell.isNotFilled) return false;
       }
@@ -48,22 +49,22 @@ abstract class BoardFactory {
     return true;
   }
 
-  static List<List<Cell>> buildEasyBoard() {
-    _board = List<List<Cell>>()..clearAllTiles();
+  static Board buildEasyBoard() {
+    _board = Board();
     i = 0;
     j = 0;
 
-    int _currentNumber() => _board[i][j].availableNumbers[0];
+    int _currentNumber() => _board.cells[i][j].availableNumbers[0];
 
     while (!isBoardFilled()) {
-      if (_board[i][j].availableNumbers.isEmpty) {
-        _board[i][j].refillAvailableNumbers();
+      if (_board.cells[i][j].availableNumbers.isEmpty) {
+        _board.cells[i][j].refillAvailableNumbers();
         clearCurrentTileAndGoPrevious();
       } else {
         if (isConflict(_currentNumber(), i, j, _board)) {
-          _board[i][j].availableNumbers.remove(_currentNumber());
+          _board.cells[i][j].availableNumbers.remove(_currentNumber());
         } else {
-          _board[i][j]
+          _board.cells[i][j]
             ..number = _currentNumber()
             ..solutionNumber = _currentNumber()
             ..coordinates = [i, j];
@@ -72,11 +73,11 @@ abstract class BoardFactory {
       }
     }
 
-    final List<Cell> _boardCopy = List.of(_board.expand((List<Cell> e) => e))..shuffle();
+    final List<Cell> _boardCopy = List.of(_board.cells.expand((List<Cell> e) => e))..shuffle();
 
     while (_boardCopy.isNotEmpty) {
-      int _oldNumber = _board[_boardCopy[0].i][_boardCopy[0].j].number;
-      _board[_boardCopy[0].i][_boardCopy[0].j].number = null;
+      int _oldNumber = _board.cells[_boardCopy[0].i][_boardCopy[0].j].number;
+      _board.cells[_boardCopy[0].i][_boardCopy[0].j].number = null;
 
       int _solutionCount = 0;
 
@@ -88,7 +89,7 @@ abstract class BoardFactory {
       assert(_solutionCount > 0);
 
       if (_solutionCount > 1) {
-        _board[_boardCopy[0].i][_boardCopy[0].j]
+        _board.cells[_boardCopy[0].i][_boardCopy[0].j]
           ..number = _oldNumber
           ..isClickable = false;
       }
@@ -99,26 +100,26 @@ abstract class BoardFactory {
     return _board;
   }
 
-  static List<List<Cell>> buildMediumBoard() {
+  static Board buildMediumBoard() {
     _board = mediumBoards[Random().nextInt(mediumBoards.length - 1)];
     return BoardSolver.getSolvedBoard(_board);
   }
 
-  static List<List<Cell>> buildHardBoard() {
+  static Board buildHardBoard() {
     _board = hardBoards[Random().nextInt(hardBoards.length - 1)];
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static bool isOccupiedNumberInGroup(int index, int number, int groupIndex) {
     final _isOccupiedInGroup =
-        BoardFactory.boardByGroup(_board)[groupIndex].where((cell) => cell.number == number).length > 1;
+        BoardFactory.cellsByGroup(_board)[groupIndex].where((cell) => cell.number == number).length > 1;
 
-    final _isOccupiedInRow = BoardFactory.boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
+    final _isOccupiedInRow = BoardFactory.cellsByRow(BoardFactory.getRowInGroup(index), groupIndex)
             .where((cell) => cell.number == number)
             .length >
         1;
 
-    final _isOccupiedInColumn = BoardFactory.boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
+    final _isOccupiedInColumn = BoardFactory.cellsByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
             .where((cell) => cell.number == number)
             .length >
         1;
@@ -126,34 +127,36 @@ abstract class BoardFactory {
     return _isOccupiedInGroup || _isOccupiedInRow || _isOccupiedInColumn;
   }
 
-  static List<List<Cell>> boardByGroup(List<List<Cell>> board) {
-    return List.generate(9, (i) => getGroupCoordinates(i).map((e) => board[e[0]][e[1]]).toList());
+  static bool isConflict(int num, int i, int j, Board board) {
+    return cellsByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (row) => board.cells[i][row]).where((cell) => cell.number == num).length >= 1 ||
+        List.generate(9, (col) => board.cells[col][j]).where((cell) => cell.number == num).length >= 1;
   }
 
-  static bool isConflict(int num, int i, int j, List<List<Cell>> board) {
-    return boardByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (row) => board[i][row]).where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (col) => board[col][j]).where((cell) => cell.number == num).length >= 1;
+  static List<List<Cell>> cellsByGroup(Board board) {
+    return List.generate(9, (i) {
+      return getGroupCoordinates(i).map((coordinates) => board.cells[coordinates[0]][coordinates[1]]).toList();
+    });
   }
 
-  static List<Cell> boardByRow(int row, int groupIndex) {
+  static List<Cell> cellsByRow(int row, int groupIndex) {
     if (groupIndex > 2 && groupIndex <= 5) {
       row += 3;
     } else if (groupIndex > 5) {
       row += 6;
     }
 
-    return List.generate(9, (i) => _board[row][i]);
+    return List.generate(9, (i) => _board.cells[row][i]);
   }
 
-  static List<Cell> boardByColumn(int column, int groupIndex) {
+  static List<Cell> cellsByColumn(int column, int groupIndex) {
     if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
       column += 3;
     } else if (groupIndex == 2 || groupIndex == 5 || groupIndex == 8) {
       column += 6;
     }
 
-    return List.generate(9, (i) => _board[i][column]);
+    return List.generate(9, (i) => _board.cells[i][column]);
   }
 
   static int getRowInGroup(int i) {
@@ -276,7 +279,7 @@ abstract class BoardFactory {
   }
 
   @visibleForTesting
-  static void setBoard(List<List<Cell>> testBoard) {
+  static void setBoard(Board testBoard) {
     _board = testBoard;
   }
 
@@ -286,7 +289,7 @@ abstract class BoardFactory {
  * Good Luck and Have Fun!
  * */
 
-  static final mediumBoards = [
+  static final List<Board> mediumBoards = [
     "916004072800620050500008930060000200000207000005000090097800003080076009450100687".toBoard(),
     "000900082063001409908000000000670300046050290007023000000000701704300620630007000".toBoard(),
     "035670000400829500080003060020005807800206005301700020040900070002487006000052490".toBoard(),
@@ -319,7 +322,7 @@ abstract class BoardFactory {
     "021009008000004031740100025000007086058000170160800000910008052230900000800300410".toBoard(),
   ];
 
-  static final hardBoards = [
+  static final List<Board> hardBoards = [
     "600300100071620000805001000500870901009000600407069008000200807000086410008003002".toBoard(),
     "906013008058000090030000010060800920003409100049006030090000080010000670400960301".toBoard(),
     "300060250000500103005210486000380500030000040002045000413052700807004000056070004".toBoard(),

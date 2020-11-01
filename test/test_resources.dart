@@ -1,19 +1,21 @@
+import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 
 class TestResources {
-  static List<List<Cell>> mockedValidBoard = [
-    [4, 6, 9,    2, 3, 8,    5, 7, 1],
-    [3, 8, 2,    1, 5, 7,    9, 6, 4],
-    [5, 7, 1,    6, 9, 4,    2, 3, 8],
+  static Board mockedValidBoard =
+    Board()..cells = [
+        [4, 6, 9,    2, 3, 8,    5, 7, 1],
+        [3, 8, 2,    1, 5, 7,    9, 6, 4],
+        [5, 7, 1,    6, 9, 4,    2, 3, 8],
 
-    [7, 3, 4,    5, 6, 1,    8, 2, 9],
-    [8, 9, 5,    7, 2, 3,    1, 4, 6],
-    [1, 2, 6,    4, 8, 9,    7, 5, 3],
+        [7, 3, 4,    5, 6, 1,    8, 2, 9],
+        [8, 9, 5,    7, 2, 3,    1, 4, 6],
+        [1, 2, 6,    4, 8, 9,    7, 5, 3],
 
-    [6, 4, 7,    9, 1, 5,    3, 8, 2],
-    [2, 1, 3,    8, 7, 6,    4, 9, 5],
-    [9, 5, 8,    3, 4, 2,    6, 1, 7],
-  ].map((row) => row.map((int num) => Cell(number: num)).toList()).toList();
+        [6, 4, 7,    9, 1, 5,    3, 8, 2],
+        [2, 1, 3,    8, 7, 6,    4, 9, 5],
+        [9, 5, 8,    3, 4, 2,    6, 1, 7],
+    ].map((row) => row.map((int num) => Cell(number: num)).toList()).toList();
 
   static List<Cell> getExpectedBoardByRow(int row, int groupIndex) {
     List<int> res;

@@ -1,11 +1,12 @@
 import 'package:sudoku_game/board/board_factory.dart';
+import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
 abstract class BoardSolver {
-  static List<List<Cell>> getSolvedBoard(List<List<Cell>> board) {
+  static Board getSolvedBoard(Board board) {
     final List<Cell> _emptyCells =
-        board.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
+        board.cells.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
 
     var _iterator = 0;
 
@@ -21,15 +22,15 @@ abstract class BoardSolver {
         if (BoardFactory.isConflict(_currentCell().availableNumbers[0], _currentCell().i, _currentCell().j, board)) {
           _currentCell().availableNumbers.remove(_currentCell().availableNumbers[0]);
         } else {
-          board[_currentCell().i][_currentCell().j].number = _currentCell().availableNumbers[0];
-          board[_currentCell().i][_currentCell().j].solutionNumber = _currentCell().availableNumbers[0];
+          board.cells[_currentCell().i][_currentCell().j].number = _currentCell().availableNumbers[0];
+          board.cells[_currentCell().i][_currentCell().j].solutionNumber = _currentCell().availableNumbers[0];
           _iterator++;
         }
       }
     } while (_iterator < _emptyCells.length);
 
     _emptyCells.forEach((Cell cell) {
-      board[cell.i][cell.j].number = null;
+      board.cells[cell.i][cell.j].number = null;
     });
 
     return board;

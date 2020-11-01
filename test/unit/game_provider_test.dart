@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/board/board_factory.dart';
+import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 
@@ -15,7 +16,7 @@ void main() {
     final board = _newGameProvider().board;
     var count = 0;
 
-    for (final row in board) {
+    for (final row in board.cells) {
       row.forEach((_) => count++);
     }
 
@@ -23,7 +24,7 @@ void main() {
   });
 
   test('The tileGroups should contain 9 elements', () {
-    expect(BoardFactory.boardByGroup(_newGameProvider().board).length, 9);
+    expect(BoardFactory.cellsByGroup(_newGameProvider().board).length, 9);
   });
 
   test('boardByRow tests', () {
@@ -37,7 +38,7 @@ void main() {
       final groupIndex = randomizer.nextInt(9);
 
       final expected = TestResources.getExpectedBoardByRow(row, groupIndex);
-      final actual = BoardFactory.boardByRow(row, groupIndex);
+      final actual = BoardFactory.cellsByRow(row, groupIndex);
 
       expect(
         listEquals(
@@ -62,7 +63,7 @@ void main() {
       final groupIndex = randomizer.nextInt(9);
 
       final expected = TestResources.getExpectedBoardByColumn(column, groupIndex);
-      final actual = BoardFactory.boardByColumn(column, groupIndex);
+      final actual = BoardFactory.cellsByColumn(column, groupIndex);
 
       expect(
         listEquals(
@@ -96,7 +97,7 @@ void main() {
 
   test('boardByGroup tests', () {
     for (int i = 0; i < 9; i++) {
-      final actual = BoardFactory.boardByGroup(TestResources.mockedValidBoard)[i];
+      final actual = BoardFactory.cellsByGroup(TestResources.mockedValidBoard)[i];
       final expected = TestResources.getExpectedBoardByGroup(groupIndex: i);
 
       expect(
@@ -145,11 +146,12 @@ void main() {
   });
 
   test('Check if board is completely filled', () {
-    final testBoard = List<List<Cell>>.generate(9, (_) {
-      return List<Cell>.generate(9, (_) {
-        return Cell(number: 1);
+    final testBoard = Board()
+      ..cells = List<List<Cell>>.generate(9, (_) {
+        return List<Cell>.generate(9, (_) {
+          return Cell(number: 1);
+        });
       });
-    });
 
     BoardFactory.setBoard(testBoard);
 
@@ -157,13 +159,14 @@ void main() {
   });
 
   test('Check if it returns false when the board is not completely filled', () {
-    final testBoard = List<List<Cell>>.generate(9, (_) {
-      return List<Cell>.generate(9, (_) {
-        return Cell(number: 1);
+    final testBoard = Board()
+      ..cells = List<List<Cell>>.generate(9, (_) {
+        return List<Cell>.generate(9, (_) {
+          return Cell(number: 1);
+        });
       });
-    });
 
-    testBoard[8][8].number = 0;
+    testBoard.cells[8][8].number = 0;
 
     BoardFactory.setBoard(testBoard);
 

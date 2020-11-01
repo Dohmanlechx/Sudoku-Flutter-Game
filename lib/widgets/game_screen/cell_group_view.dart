@@ -25,7 +25,7 @@ class CellGroupView extends StatelessWidget {
 
   Widget _buildTileGroupGrid(BuildContext context) {
     final GameProvider _provider = context.watch<GameProvider>();
-    final List<Cell> _cells = BoardFactory.boardByGroup(_provider.board)[groupIndex];
+    final List<Cell> _cells = BoardFactory.cellsByGroup(_provider.board)[groupIndex];
 
     return NonScrollableGridView(
       children: List<Widget>.generate(9, (int index) {

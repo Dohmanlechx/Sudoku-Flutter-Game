@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_factory.dart';
+import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
@@ -7,9 +8,9 @@ import 'package:sudoku_game/util/extensions.dart';
 enum Difficulty { easy, medium, hard }
 
 class GameProvider with ChangeNotifier {
-  List<List<Cell>> _board = List();
+  var _board = Board();
 
-  List<List<Cell>> get board => _board;
+  Board get board => _board;
 
   int _lives;
 
@@ -22,7 +23,7 @@ class GameProvider with ChangeNotifier {
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
-        final cell = _board[i][j];
+        final cell = _board.cells[i][j];
         if (cell.isSelected) {
           return cell;
         }
@@ -39,7 +40,7 @@ class GameProvider with ChangeNotifier {
   bool get isWonRound {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
-        if (_board[i][j].number != _board[i][j].solutionNumber) {
+        if (_board.cells[i][j].number != _board.cells[i][j].solutionNumber) {
           return false;
         }
       }
@@ -81,7 +82,7 @@ class GameProvider with ChangeNotifier {
   }
 
   void setNumber({int number, bool isDelete = false}) {
-    final cell = _board[selectedCell.i][selectedCell.j]..number = number;
+    final cell = _board.cells[selectedCell.i][selectedCell.j]..number = number;
 
     if (cell.solutionNumber != number && !isDelete) {
       DeviceUtil.vibrate();
@@ -93,10 +94,10 @@ class GameProvider with ChangeNotifier {
 
   void setSelectedCoordinates(int groupIndex, int index) {
     final _clickedCoordinates = BoardFactory.getGroupCoordinates(groupIndex)[index];
-    final _clickedCell = _board[_clickedCoordinates[0]][_clickedCoordinates[1]];
+    final _clickedCell = _board.cells[_clickedCoordinates[0]][_clickedCoordinates[1]];
 
     if (_clickedCell.isClickable) {
-      _board.forEach((List<Cell> row) {
+      _board.cells.forEach((List<Cell> row) {
         return row.forEach((Cell cell) {
           cell.isSelected = false;
           cell.isHighlighted = false;
@@ -116,17 +117,17 @@ class GameProvider with ChangeNotifier {
   }
 
   void _maybeHighlightThisCell(int groupIndex, int index, int i, int j) {
-    final _isInThisRow = BoardFactory.boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
+    final _isInThisRow = BoardFactory.cellsByRow(BoardFactory.getRowInGroup(index), groupIndex)
         .any((Cell cell) => listEquals([i, j], cell.coordinates));
 
-    final _isInThisColumn = BoardFactory.boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
+    final _isInThisColumn = BoardFactory.cellsByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
         .any((Cell cell) => listEquals([i, j], cell.coordinates));
 
     final _isInThisGroup =
-        BoardFactory.boardByGroup(_board)[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
+        BoardFactory.cellsByGroup(_board)[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
 
     if (_isInThisRow || _isInThisColumn || _isInThisGroup) {
-      _board[i][j].isHighlighted = true;
+      _board.cells[i][j].isHighlighted = true;
     }
   }
 }
