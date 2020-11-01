@@ -16,45 +16,47 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       key: const Key('app_drawer'),
-      child: Column(
-        children: [
-          AppBar(
-            title: const Text(
-              AppTranslations.mainMenu,
-              key: ValueKey('drawer_headline_text'),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            AppBar(
+              title: const Text(
+                AppTranslations.mainMenu,
+                key: ValueKey('drawer_headline_text'),
+              ),
+              leading: const Icon(Icons.menu),
+              backgroundColor: AppColors.accent,
             ),
-            leading: const Icon(Icons.menu),
-            backgroundColor: AppColors.accent,
-          ),
-          _buildTitleDivider(AppTranslations.newGame),
-          _buildListTile(
-            icon: Icons.add,
-            title: AppTranslations.easy,
-            onTap: () => _triggerNewGame(context, Difficulty.easy),
-          ),
-          _buildListTile(
-            icon: Icons.add,
-            title: AppTranslations.medium,
-            onTap: () => _triggerNewGame(context, Difficulty.medium),
-          ),
-          _buildListTile(
-            icon: Icons.add,
-            title: AppTranslations.hard,
-            onTap: () => _triggerNewGame(context, Difficulty.hard),
-          ),
-          const SizedBox(height: 100),
-          _buildTitleDivider(AppTranslations.settings),
-          _buildListTile(
-              icon: Icons.app_settings_alt,
-              title: AppTranslations.rumble,
-              trailing: Switch.adaptive(
-                value: DeviceUtil.isRumbleEnabled,
-                onChanged: (bool isToggled) {
-                  setState(() => DeviceUtil.isRumbleEnabled = isToggled);
-                },
-              )),
-          const SizedBox(height: 16),
-        ],
+            _buildTitleDivider(AppTranslations.newGame),
+            _buildListTile(
+              icon: Icons.add,
+              title: AppTranslations.easy,
+              onTap: () => _triggerNewGame(context, Difficulty.easy),
+            ),
+            _buildListTile(
+              icon: Icons.add,
+              title: AppTranslations.medium,
+              onTap: () => _triggerNewGame(context, Difficulty.medium),
+            ),
+            _buildListTile(
+              icon: Icons.add,
+              title: AppTranslations.hard,
+              onTap: () => _triggerNewGame(context, Difficulty.hard),
+            ),
+            const SizedBox(height: 100),
+            _buildTitleDivider(AppTranslations.settings),
+            _buildListTile(
+                icon: Icons.app_settings_alt,
+                title: AppTranslations.rumble,
+                trailing: Switch.adaptive(
+                  value: DeviceUtil.isRumbleEnabled,
+                  onChanged: (bool isToggled) {
+                    setState(() => DeviceUtil.isRumbleEnabled = isToggled);
+                  },
+                )),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

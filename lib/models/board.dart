@@ -1,5 +1,4 @@
 import 'package:sudoku_game/models/cell.dart';
-import 'package:sudoku_game/util/extensions.dart';
 
 class Board {
   Board() {
@@ -8,4 +7,10 @@ class Board {
   }
 
   List<List<Cell>> cells;
+
+  void clearAllTiles() {
+    this.cells
+      ..clear()
+      ..addAll(List<List<Cell>>.generate(9, (_) => List.generate(9, (_) => Cell())));
+  }
 }

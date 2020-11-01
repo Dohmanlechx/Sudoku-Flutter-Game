@@ -8,12 +8,6 @@ extension IntListExtensions on Cell {
     ..shuffle();
 }
 
-extension BoardExtensions on Board {
-  void clearAllTiles() => this.cells
-    ..clear()
-    ..addAll(List<List<Cell>>.generate(9, (_) => List.generate(9, (_) => Cell())));
-}
-
 extension StringExtensions on String {
   Board toBoard() {
     return Board()
