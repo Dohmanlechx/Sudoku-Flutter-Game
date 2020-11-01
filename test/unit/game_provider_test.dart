@@ -27,9 +27,7 @@ void main() {
   });
 
   test('boardByRow tests', () {
-    final provider = _newGameProvider();
-
-    provider.setBoard(TestResources.mockedValidBoard);
+    BoardFactory.setBoard(TestResources.mockedValidBoard);
 
     final randomizer = Random();
     int testCount = 0;
@@ -39,7 +37,7 @@ void main() {
       final groupIndex = randomizer.nextInt(9);
 
       final expected = TestResources.getExpectedBoardByRow(row, groupIndex);
-      final actual = provider.boardByRow(row, groupIndex);
+      final actual = BoardFactory.boardByRow(row, groupIndex);
 
       expect(
         listEquals(
@@ -54,9 +52,7 @@ void main() {
   });
 
   test('boardByColumn tests', () {
-    final provider = _newGameProvider();
-
-    provider.setBoard(TestResources.mockedValidBoard);
+    BoardFactory.setBoard(TestResources.mockedValidBoard);
 
     final randomizer = Random();
     int testCount = 0;
@@ -66,7 +62,7 @@ void main() {
       final groupIndex = randomizer.nextInt(9);
 
       final expected = TestResources.getExpectedBoardByColumn(column, groupIndex);
-      final actual = provider.boardByColumn(column, groupIndex);
+      final actual = BoardFactory.boardByColumn(column, groupIndex);
 
       expect(
         listEquals(
@@ -99,12 +95,8 @@ void main() {
   });
 
   test('boardByGroup tests', () {
-    final provider = _newGameProvider();
-
-    provider.setBoard(TestResources.mockedValidBoard);
-
     for (int i = 0; i < 9; i++) {
-      final actual = BoardFactory.boardByGroup(provider.board)[i];
+      final actual = BoardFactory.boardByGroup(TestResources.mockedValidBoard)[i];
       final expected = TestResources.getExpectedBoardByGroup(groupIndex: i);
 
       expect(

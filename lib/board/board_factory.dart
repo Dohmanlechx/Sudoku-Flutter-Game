@@ -5,7 +5,7 @@ import 'package:sudoku_game/board/board_solver.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
-class BoardFactory {
+abstract class BoardFactory {
   @visibleForTesting
   static var i = 0;
   @visibleForTesting
@@ -100,13 +100,30 @@ class BoardFactory {
   }
 
   static List<List<Cell>> buildMediumBoard() {
-    final _randomMediumBoard = mediumBoards[Random().nextInt(mediumBoards.length - 1)];
-    return BoardSolver(_randomMediumBoard).getSolvedBoard();
+    _board = mediumBoards[Random().nextInt(mediumBoards.length - 1)];
+    return BoardSolver.getSolvedBoard(_board);
   }
 
   static List<List<Cell>> buildHardBoard() {
-    final _randomHardBoard = hardBoards[Random().nextInt(hardBoards.length - 1)];
-    return BoardSolver(_randomHardBoard).getSolvedBoard();
+    _board = hardBoards[Random().nextInt(hardBoards.length - 1)];
+    return BoardSolver.getSolvedBoard(_board);
+  }
+
+  static bool isOccupiedNumberInGroup(int index, int number, int groupIndex) {
+    final _isOccupiedInGroup =
+        BoardFactory.boardByGroup(_board)[groupIndex].where((cell) => cell.number == number).length > 1;
+
+    final _isOccupiedInRow = BoardFactory.boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
+            .where((cell) => cell.number == number)
+            .length >
+        1;
+
+    final _isOccupiedInColumn = BoardFactory.boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
+            .where((cell) => cell.number == number)
+            .length >
+        1;
+
+    return _isOccupiedInGroup || _isOccupiedInRow || _isOccupiedInColumn;
   }
 
   static List<List<Cell>> boardByGroup(List<List<Cell>> board) {
@@ -117,6 +134,26 @@ class BoardFactory {
     return boardByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (row) => board[i][row]).where((cell) => cell.number == num).length >= 1 ||
         List.generate(9, (col) => board[col][j]).where((cell) => cell.number == num).length >= 1;
+  }
+
+  static List<Cell> boardByRow(int row, int groupIndex) {
+    if (groupIndex > 2 && groupIndex <= 5) {
+      row += 3;
+    } else if (groupIndex > 5) {
+      row += 6;
+    }
+
+    return List.generate(9, (i) => _board[row][i]);
+  }
+
+  static List<Cell> boardByColumn(int column, int groupIndex) {
+    if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
+      column += 3;
+    } else if (groupIndex == 2 || groupIndex == 5 || groupIndex == 8) {
+      column += 6;
+    }
+
+    return List.generate(9, (i) => _board[i][column]);
   }
 
   static int getRowInGroup(int i) {

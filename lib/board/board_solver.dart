@@ -2,12 +2,8 @@ import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
-class BoardSolver {
-  const BoardSolver(this.board);
-
-  final List<List<Cell>> board;
-
-  List<List<Cell>> getSolvedBoard() {
+abstract class BoardSolver {
+  static List<List<Cell>> getSolvedBoard(List<List<Cell>> board) {
     final List<Cell> _emptyCells =
         board.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
 

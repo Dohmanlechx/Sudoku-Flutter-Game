@@ -7,7 +7,7 @@ import 'package:sudoku_game/util/extensions.dart';
 enum Difficulty { easy, medium, hard }
 
 class GameProvider with ChangeNotifier {
-  var _board = List<List<Cell>>();
+  List<List<Cell>> _board = List();
 
   List<List<Cell>> get board => _board;
 
@@ -15,7 +15,7 @@ class GameProvider with ChangeNotifier {
 
   int get lives => _lives;
 
-  var _selectedDifficulty = Difficulty.easy;
+  Difficulty _selectedDifficulty = Difficulty.easy;
 
   Difficulty get selectedDifficulty => _selectedDifficulty;
 
@@ -54,7 +54,7 @@ class GameProvider with ChangeNotifier {
 
   void init(Difficulty difficulty) {
     _selectedDifficulty = difficulty;
-    restoreRound();
+    _lives = 3;
     buildBoard(difficulty);
   }
 
@@ -76,38 +76,8 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  @visibleForTesting
-  void restoreRound() {
-    _lives = 3;
-  }
-
-  @visibleForTesting
-  List<Cell> boardByRow(int row, int groupIndex) {
-    if (groupIndex > 2 && groupIndex <= 5) {
-      row += 3;
-    } else if (groupIndex > 5) {
-      row += 6;
-    }
-
-    return List.generate(9, (i) => _board[row][i]);
-  }
-
-  @visibleForTesting
-  List<Cell> boardByColumn(int column, int groupIndex) {
-    if (groupIndex == 1 || groupIndex == 4 || groupIndex == 7) {
-      column += 3;
-    } else if (groupIndex == 2 || groupIndex == 5 || groupIndex == 8) {
-      column += 6;
-    }
-
-    return List.generate(9, (i) => _board[i][column]);
-  }
-
   bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
-    return BoardFactory.boardByGroup(_board)[groupIndex].where((cell) => cell.number == number).length > 1 ||
-        boardByRow(BoardFactory.getRowInGroup(index), groupIndex).where((cell) => cell.number == number).length > 1 ||
-        boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex).where((cell) => cell.number == number).length >
-            1;
+    return BoardFactory.isOccupiedNumberInGroup(index, number, groupIndex);
   }
 
   void setNumber({int number, bool isDelete = false}) {
@@ -135,28 +105,28 @@ class GameProvider with ChangeNotifier {
 
       for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-          final _isInThisRow = boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
-              .any((Cell cell) => listEquals([i, j], cell.coordinates));
-
-          final _isInThisColumn = boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
-              .any((Cell cell) => listEquals([i, j], cell.coordinates));
-
-          final _isInThisGroup =
-              BoardFactory.boardByGroup(_board)[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
-
-          if (_isInThisRow || _isInThisColumn || _isInThisGroup) {
-            _board[i][j].isHighlighted = true;
-          }
+          _maybeHighlightThisCell(groupIndex, index, i, j);
         }
       }
 
       _clickedCell.isSelected = true;
+
       notifyListeners();
     }
   }
 
-  @visibleForTesting
-  void setBoard(List<List<Cell>> testBoard) {
-    _board = testBoard;
+  void _maybeHighlightThisCell(int groupIndex, int index, int i, int j) {
+    final _isInThisRow = BoardFactory.boardByRow(BoardFactory.getRowInGroup(index), groupIndex)
+        .any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+    final _isInThisColumn = BoardFactory.boardByColumn(BoardFactory.getColumnInGroup(index), groupIndex)
+        .any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+    final _isInThisGroup =
+        BoardFactory.boardByGroup(_board)[groupIndex].any((Cell cell) => listEquals([i, j], cell.coordinates));
+
+    if (_isInThisRow || _isInThisColumn || _isInThisGroup) {
+      _board[i][j].isHighlighted = true;
+    }
   }
 }
