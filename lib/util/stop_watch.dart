@@ -1,11 +1,11 @@
 import 'dart:async';
 
 class StopWatch {
-  Stream<int> stopWatchStream() {
+  Stream<int> stopWatchStream({int startCounter}) {
     StreamController<int> _streamController;
     Timer _timer;
     var _timerInterval = const Duration(seconds: 1);
-    var _counter = 0;
+    var _counter = startCounter + 0;
 
     void _stopTimer() {
       if (_timer != null) {

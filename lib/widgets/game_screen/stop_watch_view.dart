@@ -15,7 +15,8 @@ class StopWatchView extends StatefulWidget {
   _StopWatchViewState createState() => _StopWatchViewState();
 }
 
-class _StopWatchViewState extends State<StopWatchView> {
+class _StopWatchViewState extends State<StopWatchView>
+    with WidgetsBindingObserver {
   StopWatch _stopWatch;
 
   Stream<int> _timerStream;
@@ -26,10 +27,32 @@ class _StopWatchViewState extends State<StopWatchView> {
 
   var _formattedTimerText = "";
 
+  int _ongoingTick = 0;
+  int _savedTick = 0;
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.paused) {
+      _savedTick = _ongoingTick;
+      _disposeTimer();
+    } else if (state == AppLifecycleState.resumed) {
+      _resetTimerAndSetupListener();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _disposeTimer();
     _isNewGameSubscription.cancel();
-    _timerSubscription.cancel();
     super.dispose();
   }
 
@@ -39,24 +62,47 @@ class _StopWatchViewState extends State<StopWatchView> {
 
     if (_isNewGameSubscription == null) {
       _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
-        if (isNewGame) _resetTimerAndSetupListener();
+        if (isNewGame) {
+          _savedTick = 0;
+          _disposeTimer();
+          _resetTimerAndSetupListener();
+        }
       });
     }
 
     return Center(child: Text(_formattedTimerText, style: AppTypography.timer));
   }
 
+  void _disposeTimer() {
+    _stopWatch = null;
+    _timerStream = null;
+    _timerSubscription?.cancel();
+    _timerSubscription = null;
+  }
+
   void _resetTimerAndSetupListener() {
-    setState(() => _formattedTimerText = "00:00");
+    _ongoingTick = 0;
+
+    _updateTimerText(_savedTick + _ongoingTick);
 
     if (_timerSubscription != null) {
       _timerSubscription.cancel();
     }
 
     _stopWatch = StopWatch();
-    _timerStream = _stopWatch.stopWatchStream();
+
+    _timerStream =
+        _stopWatch.stopWatchStream(startCounter: _savedTick + _ongoingTick);
+
     _timerSubscription = _timerStream.listen((int newTick) {
-      setState(() => _formattedTimerText = _getFormattedTimerText(newTick));
+      _ongoingTick = newTick;
+      _updateTimerText(_ongoingTick);
+    });
+  }
+
+  void _updateTimerText(int tick) {
+    setState(() {
+      _formattedTimerText = _getFormattedTimerText(tick);
     });
   }
 
