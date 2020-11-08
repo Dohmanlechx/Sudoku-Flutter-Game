@@ -1,0 +1,3 @@
+In order to generate json files, type this in the terminal:
+
+flutter packages pub run build_runner build

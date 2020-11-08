@@ -1,5 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sudoku_game/util/extensions.dart';
 
+part 'cell.g.dart';
+
+@JsonSerializable()
 class Cell {
   Cell({
     this.number = 0,
@@ -32,4 +36,8 @@ class Cell {
     availableNumbers ??= [];
     refillAvailableNumbers();
   }
+
+  factory Cell.fromJson(Map<String, dynamic> json) => _$CellFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CellToJson(this);
 }
