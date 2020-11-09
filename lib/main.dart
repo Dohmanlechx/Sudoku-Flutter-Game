@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/screens/game_screen.dart';
 import 'package:sudoku_game/styles/theme.dart';
 
-void main() => runApp(SudokuGameApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await InternalStorage.init();
+  runApp(SudokuGameApp());
+}
 
 class SudokuGameApp extends StatelessWidget {
   @override

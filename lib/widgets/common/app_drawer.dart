@@ -62,7 +62,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   void _triggerNewGame(BuildContext context, Difficulty difficulty) {
-    context.read<GameProvider>().init(difficulty);
+    context.read<GameProvider>().init(difficulty, isCalledByNewGame: true);
     Navigator.of(context).pop();
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_factory.dart';
+import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
@@ -58,11 +59,23 @@ class GameProvider with ChangeNotifier {
     init(_selectedDifficulty);
   }
 
-  void init(Difficulty difficulty) {
+  void init(Difficulty difficulty, {bool isCalledByNewGame = false}) async {
     _isNewGameStream.add(true);
     _selectedDifficulty = difficulty;
     _lives = 3;
-    buildBoard(difficulty);
+
+    if (isCalledByNewGame) {
+      buildBoard(difficulty);
+    } else {
+      final Board _retrievedBoard = await InternalStorage.retrieveBoard();
+
+      if (_retrievedBoard != null) {
+        _board = _retrievedBoard;
+        BoardFactory.setBoard(_board);
+      } else {
+        buildBoard(difficulty);
+      }
+    }
   }
 
   void buildBoard(Difficulty difficulty) async {
@@ -80,6 +93,7 @@ class GameProvider with ChangeNotifier {
         break;
     }
 
+    InternalStorage.storeSession(_board);
     notifyListeners();
   }
 
@@ -95,6 +109,7 @@ class GameProvider with ChangeNotifier {
       _lives--;
     }
 
+    InternalStorage.storeSession(_board);
     notifyListeners();
   }
 

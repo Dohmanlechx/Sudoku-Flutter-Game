@@ -20,6 +20,8 @@ dependencies:
 
   json_annotation: ^3.1.0
 
+  shared_preferences: ^0.5.12+4
+
 dev_dependencies:
   build_runner: ^1.10.4
   json_serializable: ^3.5.0

@@ -278,9 +278,8 @@ abstract class BoardFactory {
     return res;
   }
 
-  @visibleForTesting
-  static void setBoard(Board testBoard) {
-    _board = testBoard;
+  static void setBoard(Board board) {
+    _board = board;
   }
 
   /*
