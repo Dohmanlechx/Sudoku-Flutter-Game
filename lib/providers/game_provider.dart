@@ -93,7 +93,7 @@ class GameProvider with ChangeNotifier {
         break;
     }
 
-    InternalStorage.storeSession(_board);
+    InternalStorage.storeBoard(_board);
     notifyListeners();
   }
 
@@ -109,7 +109,7 @@ class GameProvider with ChangeNotifier {
       _lives--;
     }
 
-    InternalStorage.storeSession(_board);
+    InternalStorage.storeBoard(_board);
     notifyListeners();
   }
 

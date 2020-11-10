@@ -5,6 +5,7 @@ import 'package:sudoku_game/models/board.dart';
 
 class InternalStorage {
   static const _keySession = 'prefs_key_session';
+  static const _keyTimeTick = 'key_time_tick';
 
   static SharedPreferences _prefs;
 
@@ -12,7 +13,7 @@ class InternalStorage {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  static Future<void> storeSession(Board board) async {
+  static Future<void> storeBoard(Board board) async {
     final Map<String, dynamic> _boardSerialized = board.toJson();
     final String _boardJson = jsonEncode(_boardSerialized);
     await _prefs.setString(_keySession, _boardJson);
@@ -24,5 +25,13 @@ class InternalStorage {
 
     final Map<String, dynamic> _boardDeserialized = jsonDecode(_boardJson);
     return Board.fromJson(_boardDeserialized);
+  }
+
+  static Future<void> storeTimeTick(int tick) async {
+    await _prefs.setInt(_keyTimeTick, tick);
+  }
+
+  static Future<int> retrieveTimeTick() async {
+    return await _prefs.getInt(_keyTimeTick);
   }
 }

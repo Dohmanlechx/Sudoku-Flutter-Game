@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/stop_watch.dart';
@@ -15,8 +16,7 @@ class StopWatchView extends StatefulWidget {
   _StopWatchViewState createState() => _StopWatchViewState();
 }
 
-class _StopWatchViewState extends State<StopWatchView>
-    with WidgetsBindingObserver {
+class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserver {
   StopWatch _stopWatch;
 
   Stream<int> _timerStream;
@@ -28,14 +28,13 @@ class _StopWatchViewState extends State<StopWatchView>
   var _formattedTimerText = "";
 
   int _ongoingTick = 0;
-  int _savedTick = 0;
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.paused) {
-      _savedTick = _ongoingTick;
+      await InternalStorage.storeTimeTick(_ongoingTick);
       _disposeTimer();
     } else if (state == AppLifecycleState.resumed) {
       _resetTimerAndSetupListener();
@@ -63,7 +62,6 @@ class _StopWatchViewState extends State<StopWatchView>
     if (_isNewGameSubscription == null) {
       _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
         if (isNewGame) {
-          _savedTick = 0;
           _disposeTimer();
           _resetTimerAndSetupListener();
         }
@@ -80,9 +78,10 @@ class _StopWatchViewState extends State<StopWatchView>
     _timerSubscription = null;
   }
 
-  void _resetTimerAndSetupListener() {
+  Future<void> _resetTimerAndSetupListener() async {
     _ongoingTick = 0;
 
+    final int _savedTick = await InternalStorage.retrieveTimeTick() ?? 0;
     _updateTimerText(_savedTick + _ongoingTick);
 
     if (_timerSubscription != null) {
@@ -91,8 +90,7 @@ class _StopWatchViewState extends State<StopWatchView>
 
     _stopWatch = StopWatch();
 
-    _timerStream =
-        _stopWatch.stopWatchStream(startCounter: _savedTick + _ongoingTick);
+    _timerStream = _stopWatch.stopWatchStream(startCounter: _savedTick + _ongoingTick);
 
     _timerSubscription = _timerStream.listen((int newTick) {
       _ongoingTick = newTick;
