@@ -6,11 +6,16 @@ import 'package:sudoku_game/models/board.dart';
 class InternalStorage {
   static const _keySession = 'prefs_key_session';
   static const _keyTimeTick = 'key_time_tick';
+  static const _keyLives = 'key_lives';
 
   static SharedPreferences _prefs;
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+  }
+
+  static Future<void> clearAllData() async {
+    await _prefs.clear();
   }
 
   static Future<void> storeBoard(Board board) async {
@@ -32,6 +37,14 @@ class InternalStorage {
   }
 
   static Future<int> retrieveTimeTick() async {
-    return await _prefs.getInt(_keyTimeTick);
+    return await _prefs.getInt(_keyTimeTick) ?? 0;
+  }
+
+  static Future<void> storeLives(int lives) async {
+    await _prefs.setInt(_keyLives, lives);
+  }
+
+  static Future<int> retrieveLives() async {
+    return await _prefs.getInt(_keyLives) ?? 3;
   }
 }

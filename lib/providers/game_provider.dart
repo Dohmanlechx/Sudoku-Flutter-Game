@@ -65,6 +65,7 @@ class GameProvider with ChangeNotifier {
     _lives = 3;
 
     if (isCalledByNewGame) {
+      await InternalStorage.clearAllData();
       buildBoard(difficulty);
     } else {
       final Board _retrievedBoard = await InternalStorage.retrieveBoard();
@@ -72,6 +73,8 @@ class GameProvider with ChangeNotifier {
       if (_retrievedBoard != null) {
         _board = _retrievedBoard;
         BoardFactory.setBoard(_board);
+        _lives = await InternalStorage.retrieveLives();
+        notifyListeners();
       } else {
         buildBoard(difficulty);
       }
@@ -101,12 +104,13 @@ class GameProvider with ChangeNotifier {
     return BoardFactory.isOccupiedNumberInGroup(index, number, groupIndex);
   }
 
-  void setNumber({int number, bool isDelete = false}) {
+  Future<void> setNumber({int number, bool isDelete = false}) async {
     final cell = _board.cells[selectedCell.i][selectedCell.j]..number = number;
 
     if (cell.solutionNumber != number && !isDelete) {
       DeviceUtil.vibrate();
       _lives--;
+      await InternalStorage.storeLives(_lives);
     }
 
     InternalStorage.storeBoard(_board);
