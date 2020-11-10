@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
@@ -12,12 +13,26 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  var versionText = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    PackageInfo.fromPlatform().then((PackageInfo pkgInfo) {
+      setState(() {
+        versionText = "v${pkgInfo.version}";
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       key: const Key('app_drawer'),
       child: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             AppBar(
               title: const Text(
@@ -54,7 +69,8 @@ class _AppDrawerState extends State<AppDrawer> {
                     setState(() => DeviceUtil.isRumbleEnabled = isToggled);
                   },
                 )),
-            const SizedBox(height: 16),
+            const SizedBox(height: 64),
+            _buildVersionText(),
           ],
         ),
       ),
@@ -90,6 +106,22 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
         const Divider(thickness: 1),
       ],
+    );
+  }
+
+  Widget _buildVersionText() {
+    return Container(
+      padding: const EdgeInsets.only(right: 16),
+      width: double.infinity,
+      child: Text(
+        versionText,
+        textAlign: TextAlign.end,
+        style: AppTypography.timer.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: AppColors.black.withOpacity(0.5),
+        ),
+      ),
     );
   }
 }
