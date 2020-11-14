@@ -29,11 +29,16 @@ class GameScreen extends StatelessWidget {
             Stack(
               children: [
                 _buildSudokuGrid(context),
-                _provider.isWonRound
-                    ? _buildCongratsOverlay(context)
-                    : _provider.isGameOver
-                        ? _buildGameOverOverlay(context)
-                        : const SizedBox(),
+                Stack(
+                  children: [
+                    _provider.isWonRound
+                        ? _buildCongratsOverlay(context)
+                        : _provider.isGameOver
+                            ? _buildGameOverOverlay(context)
+                            : const SizedBox(),
+                    if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
+                  ],
+                )
               ],
             ),
             Padding(
@@ -78,7 +83,7 @@ class GameScreen extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
-      color: AppColors.green.withOpacity(0.9),
+      color: AppColors.green.withOpacity(0.95),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -91,13 +96,26 @@ class GameScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildStartNewGameTutorialText(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 32),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          const Icon(Icons.arrow_upward, color: AppColors.white, size: 32),
+          Text(AppTranslations.newGameTutorial, style: AppTypography.roundDone.copyWith(fontSize: 16))
+        ],
+      ),
+    );
+  }
+
   Widget _buildGameOverOverlay(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.all(8),
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
-      color: AppColors.grey.withOpacity(0.9),
+      color: AppColors.grey.withOpacity(0.95),
       child: const Center(child: Text(AppTranslations.gameOver, style: AppTypography.roundDone)),
     );
   }
