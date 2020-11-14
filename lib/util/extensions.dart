@@ -21,6 +21,7 @@ extension StringExtensions on String {
       ..cells = List.generate(9, (int i) {
         return List.generate(9, (int j) {
           final _number = int.parse(this[(i * 9) + j]);
+
           return Cell(
             number: _number,
             solutionNumber: _number,
