@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
+import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
-import 'package:sudoku_game/util/device_util.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -28,52 +28,62 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      key: const Key('app_drawer'),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            AppBar(
-              title: const Text(
-                AppTranslations.mainMenu,
-                key: ValueKey('drawer_headline_text'),
-              ),
-              leading: const Icon(Icons.menu),
-              backgroundColor: AppColors.accent,
+    return FutureBuilder(
+      future: InternalStorage.retrieveRumbleEnabled(),
+      builder: (BuildContext ctx, AsyncSnapshot<bool> snapshot) {
+        if (!snapshot.hasData) return const SizedBox();
+
+        final _isRumbleEnabled = snapshot.data;
+
+        return Drawer(
+          key: const Key('app_drawer'),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                AppBar(
+                  title: const Text(
+                    AppTranslations.mainMenu,
+                    key: ValueKey('drawer_headline_text'),
+                  ),
+                  leading: const Icon(Icons.menu),
+                  backgroundColor: AppColors.accent,
+                ),
+                _buildTitleDivider(AppTranslations.newGame),
+                _buildListTile(
+                  icon: Icons.add,
+                  title: AppTranslations.easy,
+                  onTap: () => _triggerNewGame(context, Difficulty.easy),
+                ),
+                _buildListTile(
+                  icon: Icons.add,
+                  title: AppTranslations.medium,
+                  onTap: () => _triggerNewGame(context, Difficulty.medium),
+                ),
+                _buildListTile(
+                  icon: Icons.add,
+                  title: AppTranslations.hard,
+                  onTap: () => _triggerNewGame(context, Difficulty.hard),
+                ),
+                const SizedBox(height: 100),
+                _buildTitleDivider(AppTranslations.settings),
+                _buildListTile(
+                    icon: Icons.app_settings_alt,
+                    title: AppTranslations.rumble,
+                    trailing: Switch.adaptive(
+                      value: _isRumbleEnabled,
+                      onChanged: (bool isToggled) async {
+                        await InternalStorage.storeRumbleEnabled(isToggled);
+                        setState(() {});
+                      },
+                    )),
+                const SizedBox(height: 64),
+                _buildVersionText(),
+              ],
             ),
-            _buildTitleDivider(AppTranslations.newGame),
-            _buildListTile(
-              icon: Icons.add,
-              title: AppTranslations.easy,
-              onTap: () => _triggerNewGame(context, Difficulty.easy),
-            ),
-            _buildListTile(
-              icon: Icons.add,
-              title: AppTranslations.medium,
-              onTap: () => _triggerNewGame(context, Difficulty.medium),
-            ),
-            _buildListTile(
-              icon: Icons.add,
-              title: AppTranslations.hard,
-              onTap: () => _triggerNewGame(context, Difficulty.hard),
-            ),
-            const SizedBox(height: 100),
-            _buildTitleDivider(AppTranslations.settings),
-            _buildListTile(
-                icon: Icons.app_settings_alt,
-                title: AppTranslations.rumble,
-                trailing: Switch.adaptive(
-                  value: DeviceUtil.isRumbleEnabled,
-                  onChanged: (bool isToggled) {
-                    setState(() => DeviceUtil.isRumbleEnabled = isToggled);
-                  },
-                )),
-            const SizedBox(height: 64),
-            _buildVersionText(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

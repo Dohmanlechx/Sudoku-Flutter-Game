@@ -10,6 +10,7 @@ class InternalStorage {
   static const _keyTimeTick = 'key_time_tick';
   static const _keyLives = 'key_lives';
   static const _keyDifficulty = 'key_difficulty';
+  static const _keyRumbleEnabled = 'key_rumble_enabled';
 
   static SharedPreferences _prefs;
 
@@ -57,5 +58,13 @@ class InternalStorage {
 
   static Future<Difficulty> retrieveDifficulty() async {
     return await _prefs.getString(_keyDifficulty).toDifficultyEnum();
+  }
+
+  static Future<void> storeRumbleEnabled(bool value) async {
+    await _prefs.setBool(_keyRumbleEnabled, value);
+  }
+
+  static Future<bool> retrieveRumbleEnabled() async {
+    return await _prefs.getBool(_keyRumbleEnabled) ?? true;
   }
 }
