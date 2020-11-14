@@ -71,6 +71,8 @@ class GameProvider with ChangeNotifier {
     _lives = 3;
     _selectedDifficulty = difficulty;
 
+    await InternalStorage.storeDifficulty(_selectedDifficulty);
+
     if (isCalledByNewGame) {
       await InternalStorage.clearAllData();
       await InternalStorage.storeDifficulty(_selectedDifficulty);
@@ -116,10 +118,14 @@ class GameProvider with ChangeNotifier {
     return BoardFactory.isOccupiedNumberInGroup(index, number, groupIndex);
   }
 
-  Future<void> setNumber({int number, bool isDelete = false}) async {
-    final cell = _board.cells[selectedCell.i][selectedCell.j]..number = number;
+  Future<void> setNumber({int numberInput, bool isDelete = false}) async {
+    final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
 
-    if (cell.solutionNumber != number && !isDelete) {
+    if (_clickedCell.number == _clickedCell.solutionNumber) return;
+
+    _clickedCell.number = numberInput;
+
+    if (_clickedCell.solutionNumber != numberInput && !isDelete) {
       DeviceUtil.vibrate();
       _lives--;
       await InternalStorage.storeLives(_lives);
@@ -132,6 +138,8 @@ class GameProvider with ChangeNotifier {
   void setSelectedCoordinates(int groupIndex, int index) {
     final _clickedCoordinates = BoardFactory.getGroupCoordinates(groupIndex)[index];
     final _clickedCell = _board.cells[_clickedCoordinates[0]][_clickedCoordinates[1]];
+
+    if (_clickedCell.number == _clickedCell.solutionNumber) return;
 
     if (_clickedCell.isClickable) {
       _board.cells.forEach((List<Cell> row) {

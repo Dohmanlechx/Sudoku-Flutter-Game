@@ -26,6 +26,7 @@ class GameScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 16),
             Stack(
               children: [
                 _buildSudokuGrid(context),
@@ -60,7 +61,6 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildSudokuGrid(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
@@ -79,7 +79,6 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildCongratsOverlay(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.all(8),
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
@@ -98,7 +97,6 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildStartNewGameTutorialText(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
@@ -111,7 +109,6 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildGameOverOverlay(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 32),
       padding: const EdgeInsets.all(8),
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
@@ -149,12 +146,15 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildNumbersKeyboard(BuildContext context) {
     final _watchProvider = context.watch<GameProvider>();
+    final _buttonContentSize = DeviceUtil.isSmallDevice(context) ? 20.0 : 40.0;
+    final _buttonMarginSize = DeviceUtil.isSmallDevice(context) ? 2.0 : 4.0;
 
     return Container(
       color: AppColors.lightGrey,
       margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.all(8),
       child: NonScrollableGridView(
+          childAspectRatio: DeviceUtil.isSmallDevice(context) ? 3 / 2 : null,
           crossAxisCount: 5,
           children: List<Widget>.generate(
             10,
@@ -165,7 +165,7 @@ class GameScreen extends StatelessWidget {
                   _watchProvider.selectedCell.coordinates.isNotEmpty;
 
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                margin: EdgeInsets.all(_buttonMarginSize),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   border: Border.all(color: AppColors.black, width: 3),
@@ -175,8 +175,8 @@ class GameScreen extends StatelessWidget {
                     onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
                     child: Center(
                       child: _number < 10
-                          ? Text(_number.toString(), style: AppTypography.body.copyWith(fontSize: 40))
-                          : const Icon(Icons.delete, size: 40),
+                          ? Text(_number.toString(), style: AppTypography.body.copyWith(fontSize: _buttonContentSize))
+                          : Icon(Icons.delete, size: _buttonContentSize),
                     ),
                   ),
                 ),
@@ -188,7 +188,7 @@ class GameScreen extends StatelessWidget {
 
   void _setNumber(BuildContext context, int number) {
     context.read<GameProvider>().setNumber(
-          number: number < 10 ? number : null,
+          numberInput: number < 10 ? number : null,
           isDelete: number == 10,
         );
   }
