@@ -25,6 +25,9 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   Stream<bool> _isNewGameStream;
   StreamSubscription<bool> _isNewGameSubscription;
 
+  Stream<bool> _isRoundDoneStream;
+  StreamSubscription<bool> _isRoundDoneSubscription;
+
   var _formattedTimerText = "";
 
   int _ongoingTick = 0;
@@ -58,6 +61,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   @override
   Widget build(BuildContext context) {
     _isNewGameStream = context.watch<GameProvider>().isNewGameStream;
+    _isRoundDoneStream = context.watch<GameProvider>().isRoundDoneStream;
 
     if (_isNewGameSubscription == null) {
       _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
@@ -65,6 +69,12 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
           _disposeTimer();
           _resetTimerAndSetupListener();
         }
+      });
+    }
+
+    if (_isRoundDoneSubscription == null) {
+      _isRoundDoneSubscription = _isRoundDoneStream.listen((bool isRoundDone) {
+        if (isRoundDone) _disposeTimer();
       });
     }
 

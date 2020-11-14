@@ -23,8 +23,11 @@ class GameProvider with ChangeNotifier {
   Difficulty get selectedDifficulty => _selectedDifficulty;
 
   var _isNewGameStream = StreamController<bool>();
+  var _isRoundDoneStream = StreamController<bool>();
 
   Stream<bool> get isNewGameStream => _isNewGameStream.stream.asBroadcastStream();
+
+  Stream<bool> get isRoundDoneStream => _isRoundDoneStream.stream.asBroadcastStream();
 
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
@@ -40,7 +43,9 @@ class GameProvider with ChangeNotifier {
   }
 
   bool get isGameOver {
-    return _lives <= 0;
+    var _isGameOver = _lives <= 0;
+    if (_isGameOver) _isRoundDoneStream.add(true);
+    return _isGameOver;
   }
 
   bool get isWonRound {
@@ -52,6 +57,7 @@ class GameProvider with ChangeNotifier {
       }
     }
 
+    _isRoundDoneStream.add(true);
     return true;
   }
 
