@@ -61,19 +61,25 @@ class GameProvider with ChangeNotifier {
 
   void init(Difficulty difficulty, {bool isCalledByNewGame = false}) async {
     _isNewGameStream.add(true);
-    _selectedDifficulty = difficulty;
+
     _lives = 3;
+    _selectedDifficulty = difficulty;
 
     if (isCalledByNewGame) {
       await InternalStorage.clearAllData();
+      await InternalStorage.storeDifficulty(_selectedDifficulty);
       buildBoard(difficulty);
     } else {
       final Board _retrievedBoard = await InternalStorage.retrieveBoard();
 
       if (_retrievedBoard != null) {
         _board = _retrievedBoard;
+
         BoardFactory.setBoard(_board);
+
         _lives = await InternalStorage.retrieveLives();
+        _selectedDifficulty = await InternalStorage.retrieveDifficulty();
+
         notifyListeners();
       } else {
         buildBoard(difficulty);

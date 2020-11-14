@@ -1,5 +1,12 @@
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
+
+const _difficultyMap = {
+  Difficulty.easy: 'easy',
+  Difficulty.medium: 'medium',
+  Difficulty.hard: 'hard',
+};
 
 extension IntListExtensions on Cell {
   void refillAvailableNumbers() => this.availableNumbers
@@ -25,4 +32,19 @@ extension StringExtensions on String {
   }
 
   String capitalize() => this[0].toUpperCase() + this.substring(1).toLowerCase();
+
+  Difficulty toDifficultyEnum() {
+    Difficulty res;
+
+    _difficultyMap.forEach((key, value) {
+      if (res != null) return;
+      if (this == value) res = key;
+    });
+
+    return res;
+  }
+}
+
+extension DifficultyExtensions on Difficulty {
+  String asString() => _difficultyMap[this];
 }

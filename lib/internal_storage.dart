@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/models/board.dart';
+import 'package:sudoku_game/providers/game_provider.dart';
+import 'package:sudoku_game/util/extensions.dart';
 
 class InternalStorage {
   static const _keySession = 'prefs_key_session';
   static const _keyTimeTick = 'key_time_tick';
   static const _keyLives = 'key_lives';
+  static const _keyDifficulty = 'key_difficulty';
 
   static SharedPreferences _prefs;
 
@@ -46,5 +49,13 @@ class InternalStorage {
 
   static Future<int> retrieveLives() async {
     return await _prefs.getInt(_keyLives) ?? 3;
+  }
+
+  static Future<void> storeDifficulty(Difficulty difficulty) async {
+    await _prefs.setString(_keyDifficulty, difficulty.asString());
+  }
+
+  static Future<Difficulty> retrieveDifficulty() async {
+    return await _prefs.getString(_keyDifficulty).toDifficultyEnum();
   }
 }
