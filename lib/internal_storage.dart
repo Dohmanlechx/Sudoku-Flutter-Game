@@ -19,7 +19,9 @@ class InternalStorage {
   }
 
   static Future<void> clearAllData() async {
+    final _isRumbleEnabled = await retrieveRumbleEnabled();
     await _prefs.clear();
+    await storeRumbleEnabled(_isRumbleEnabled);
   }
 
   static Future<void> storeBoard(Board board) async {
