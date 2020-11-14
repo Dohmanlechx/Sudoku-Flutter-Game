@@ -7,7 +7,7 @@ import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/util/device_util.dart';
 
-enum Difficulty { easy, medium, hard }
+enum Difficulty { easy, medium, hard, extreme }
 
 class GameProvider with ChangeNotifier {
   var _board = Board();
@@ -71,8 +71,6 @@ class GameProvider with ChangeNotifier {
     _lives = 3;
     _selectedDifficulty = difficulty;
 
-    await InternalStorage.storeDifficulty(_selectedDifficulty);
-
     if (isCalledByNewGame) {
       await InternalStorage.clearAllData();
       await InternalStorage.storeDifficulty(_selectedDifficulty);
@@ -107,6 +105,9 @@ class GameProvider with ChangeNotifier {
         break;
       case Difficulty.hard:
         _board = BoardFactory.buildHardBoard();
+        break;
+      case Difficulty.extreme:
+        _board = BoardFactory.buildExtremeBoard();
         break;
     }
 

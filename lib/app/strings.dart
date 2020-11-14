@@ -11,4 +11,5 @@ class AppTranslations {
   static const easy = 'Easy';
   static const medium = 'Medium';
   static const hard = 'Hard';
+  static const extreme = 'Extreme';
 }

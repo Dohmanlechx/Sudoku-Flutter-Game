@@ -15,6 +15,13 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   var versionText = "";
 
+  final _difficultyTranslations = {
+    Difficulty.easy: AppTranslations.easy,
+    Difficulty.medium: AppTranslations.medium,
+    Difficulty.hard: AppTranslations.hard,
+    Difficulty.extreme: AppTranslations.extreme,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -50,21 +57,13 @@ class _AppDrawerState extends State<AppDrawer> {
                   backgroundColor: AppColors.accent,
                 ),
                 _buildTitleDivider(AppTranslations.newGame),
-                _buildListTile(
-                  icon: Icons.add,
-                  title: AppTranslations.easy,
-                  onTap: () => _triggerNewGame(context, Difficulty.easy),
-                ),
-                _buildListTile(
-                  icon: Icons.add,
-                  title: AppTranslations.medium,
-                  onTap: () => _triggerNewGame(context, Difficulty.medium),
-                ),
-                _buildListTile(
-                  icon: Icons.add,
-                  title: AppTranslations.hard,
-                  onTap: () => _triggerNewGame(context, Difficulty.hard),
-                ),
+                ...List.generate(Difficulty.values.length, (int index) {
+                  return _buildListTile(
+                    icon: Icons.add,
+                    title: _difficultyTranslations[Difficulty.values[index]],
+                    onTap: () => _triggerNewGame(context, Difficulty.values[index]),
+                  );
+                }),
                 const SizedBox(height: 100),
                 _buildTitleDivider(AppTranslations.settings),
                 _buildListTile(

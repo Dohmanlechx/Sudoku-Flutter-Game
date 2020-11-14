@@ -101,12 +101,17 @@ abstract class BoardFactory {
   }
 
   static Board buildMediumBoard() {
-    _board = mediumBoards[Random().nextInt(mediumBoards.length - 1)];
+    _board = mediumBoards[Random().nextInt(mediumBoards.length)];
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildHardBoard() {
-    _board = hardBoards[Random().nextInt(hardBoards.length - 1)];
+    _board = hardBoards[Random().nextInt(hardBoards.length)];
+    return BoardSolver.getSolvedBoard(_board);
+  }
+
+  static Board buildExtremeBoard() {
+    _board = extremeBoards[Random().nextInt(extremeBoards.length)];
     return BoardSolver.getSolvedBoard(_board);
   }
 
@@ -283,7 +288,7 @@ abstract class BoardFactory {
   }
 
   /*
- * Since I've not managed to generate Medium/Hard boards yet, so I'll use
+ * Since I've not managed to generate harder boards yet, so I'll use
  * those hard coded boards from https://github.com/ogarcia/opensudoku for now.
  * Good Luck and Have Fun!
  * */
