@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -101,17 +102,17 @@ abstract class BoardFactory {
   }
 
   static Board buildMediumBoard() {
-    _board = mediumBoards[Random().nextInt(mediumBoards.length)].toBoard();
+    _board = _mediumBoards[Random().nextInt(_mediumBoards.length)].toBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildHardBoard() {
-    _board = hardBoards[Random().nextInt(hardBoards.length)].toBoard();
+    _board = _hardBoards[Random().nextInt(_hardBoards.length)].toBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildExtremeBoard() {
-    _board = extremeBoards[Random().nextInt(extremeBoards.length)].toBoard();
+    _board = _extremeBoards[Random().nextInt(_extremeBoards.length)].toBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
@@ -293,7 +294,7 @@ abstract class BoardFactory {
  * Good Luck and Have Fun!
  * */
 
-  static final List<String> mediumBoards = [
+  static final List<String> _mediumBoards = [
     "916004072800620050500008930060000200000207000005000090097800003080076009450100687",
     "000900082063001409908000000000670300046050290007023000000000701704300620630007000",
     "035670000400829500080003060020005807800206005301700020040900070002487006000052490",
@@ -326,7 +327,7 @@ abstract class BoardFactory {
     "021009008000004031740100025000007086058000170160800000910008052230900000800300410",
   ];
 
-  static final List<String> hardBoards = [
+  static final List<String> _hardBoards = [
     "600300100071620000805001000500870901009000600407069008000200807000086410008003002",
     "906013008058000090030000010060800920003409100049006030090000080010000670400960301",
     "300060250000500103005210486000380500030000040002045000413052700807004000056070004",
@@ -359,7 +360,8 @@ abstract class BoardFactory {
     "000030065460950200000086004003070006004090100500010300200140000007065028630020000",
   ];
 
-  static final List<String> extremeBoards = [
+  static final List<String> _extremeBoards = [
     "030000000000007510940000000000000091000526004007010005000300700000400000020000100",
+    "500000804000060500009145000800002000000000061090000000316000000004000000000000907",
   ];
 }

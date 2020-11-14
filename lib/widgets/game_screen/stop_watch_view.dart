@@ -54,6 +54,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _disposeTimer();
+    _disposeStreamsAndSubscriptions();
     _isNewGameSubscription.cancel();
     super.dispose();
   }
@@ -86,6 +87,16 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _timerStream = null;
     _timerSubscription?.cancel();
     _timerSubscription = null;
+  }
+
+  void _disposeStreamsAndSubscriptions() {
+    _isNewGameStream = null;
+    _isNewGameSubscription?.cancel();
+    _isNewGameSubscription = null;
+
+    _isRoundDoneStream = null;
+    _isRoundDoneSubscription?.cancel();
+    _isRoundDoneSubscription = null;
   }
 
   Future<void> _resetTimerAndSetupListener() async {

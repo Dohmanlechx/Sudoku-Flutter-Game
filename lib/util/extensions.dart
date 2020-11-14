@@ -6,6 +6,7 @@ const _difficultyMap = {
   Difficulty.easy: 'easy',
   Difficulty.medium: 'medium',
   Difficulty.hard: 'hard',
+  Difficulty.extreme: 'extreme',
 };
 
 extension IntListExtensions on Cell {
