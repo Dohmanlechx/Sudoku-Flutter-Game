@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
+
 class StopWatch {
   Stream<int> stopWatchStream({int startCounter}) {
-    StreamController<int> _streamController;
+    BehaviorSubject<int> _streamController;
     Timer _timer;
     var _timerInterval = const Duration(seconds: 1);
     var _counter = startCounter + 0;
@@ -25,11 +27,9 @@ class StopWatch {
       _timer = Timer.periodic(_timerInterval, _tick);
     }
 
-    _streamController = StreamController<int>(
+    _streamController = BehaviorSubject<int>(
       onListen: _startTimer,
       onCancel: _stopTimer,
-      onResume: _startTimer,
-      onPause: _stopTimer,
     );
 
     return _streamController.stream.asBroadcastStream();

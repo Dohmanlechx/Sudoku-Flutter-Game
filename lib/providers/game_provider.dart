@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/models/board.dart';
@@ -22,8 +23,8 @@ class GameProvider with ChangeNotifier {
 
   Difficulty get selectedDifficulty => _selectedDifficulty;
 
-  var _isNewGameStream = StreamController<bool>();
-  var _isRoundDoneStream = StreamController<bool>();
+  var _isNewGameStream = BehaviorSubject<bool>();
+  var _isRoundDoneStream = BehaviorSubject<bool>();
 
   Stream<bool> get isNewGameStream => _isNewGameStream.stream.asBroadcastStream();
 
@@ -83,6 +84,7 @@ class GameProvider with ChangeNotifier {
     if (isCalledByNewGame) {
       await InternalStorage.clearAllData();
       await InternalStorage.storeDifficulty(_selectedDifficulty);
+      _isNewGameStream.add(true);
       buildBoard(difficulty);
     } else {
       final Board _retrievedBoard = await InternalStorage.retrieveBoard();

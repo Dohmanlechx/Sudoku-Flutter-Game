@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.0
 
+  rxdart: ^0.24.1
+
   provider: ^4.3.2+2
 
   pedantic: ^1.9.2

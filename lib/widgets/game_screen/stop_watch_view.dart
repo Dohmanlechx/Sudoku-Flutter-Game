@@ -40,7 +40,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
       await InternalStorage.storeTimeTick(_ongoingTick);
       _disposeTimer();
     } else if (state == AppLifecycleState.resumed) {
-      _resetTimerAndSetupListener();
+      _restoreTimerAndSetupListener();
     }
   }
 
@@ -64,16 +64,16 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _isNewGameStream = context.watch<GameProvider>().isNewGameStream;
     _isRoundDoneStream = context.watch<GameProvider>().isRoundDoneStream;
 
-    if (_isNewGameSubscription == null && _isNewGameStream == null) {
+    if (_isNewGameSubscription == null) {
       _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
         if (isNewGame) {
           _disposeTimer();
-          _resetTimerAndSetupListener();
+          _restoreTimerAndSetupListener();
         }
       });
     }
 
-    if (_isRoundDoneSubscription == null && _isRoundDoneStream == null) {
+    if (_isRoundDoneSubscription == null) {
       _isRoundDoneSubscription = _isRoundDoneStream.listen((bool isRoundDone) {
         if (isRoundDone) _disposeTimer();
       });
@@ -99,7 +99,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _isRoundDoneSubscription = null;
   }
 
-  Future<void> _resetTimerAndSetupListener() async {
+  Future<void> _restoreTimerAndSetupListener() async {
     _ongoingTick = 0;
 
     final int _savedTick = await InternalStorage.retrieveTimeTick() ?? 0;
