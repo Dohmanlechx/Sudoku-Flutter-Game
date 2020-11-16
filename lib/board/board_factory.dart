@@ -105,21 +105,23 @@ abstract class BoardFactory {
 
   static Board buildMediumBoard() {
     final _boardDigits = _mediumBoards[getRandomDigitOf(_mediumBoards.length) - 1];
-    _board = shuffledBoard(_boardDigits);
+    _board = _shuffledBoard(_boardDigits);
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildHardBoard() {
-    _board = _hardBoards[Random().nextInt(_hardBoards.length)].toBoard();
+    final _boardDigits = _hardBoards[getRandomDigitOf(_hardBoards.length) - 1];
+    _board = _shuffledBoard(_boardDigits);
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildExtremeBoard() {
-    _board = _extremeBoards[Random().nextInt(_extremeBoards.length)].toBoard();
+    final _boardDigits = _extremeBoards[getRandomDigitOf(_extremeBoards.length) - 1];
+    _board = _shuffledBoard(_boardDigits);
     return BoardSolver.getSolvedBoard(_board);
   }
 
-  static Board shuffledBoard(String boardDigits) {
+  static Board _shuffledBoard(String boardDigits) {
     List<int> _digits = [];
 
     boardDigits.runes.forEach((int rune) {
