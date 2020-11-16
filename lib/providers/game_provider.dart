@@ -29,6 +29,10 @@ class GameProvider with ChangeNotifier {
 
   Stream<bool> get isRoundDoneStream => _isRoundDoneStream.stream.asBroadcastStream();
 
+  bool get isLoading => _isLoading;
+
+  bool _isLoading = false;
+
   Cell get selectedCell {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
@@ -63,6 +67,11 @@ class GameProvider with ChangeNotifier {
 
   GameProvider() {
     init(_selectedDifficulty);
+  }
+
+  void startLoader() {
+    _isLoading = true;
+    notifyListeners();
   }
 
   void init(Difficulty difficulty, {bool isCalledByNewGame = false}) async {
@@ -112,6 +121,7 @@ class GameProvider with ChangeNotifier {
     }
 
     InternalStorage.storeBoard(_board);
+    _isLoading = false;
     notifyListeners();
   }
 

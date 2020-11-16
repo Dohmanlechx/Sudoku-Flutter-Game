@@ -55,7 +55,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     WidgetsBinding.instance.removeObserver(this);
     _disposeTimer();
     _disposeStreamsAndSubscriptions();
-    _isNewGameSubscription.cancel();
+    _isNewGameSubscription?.cancel();
     super.dispose();
   }
 
@@ -64,7 +64,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _isNewGameStream = context.watch<GameProvider>().isNewGameStream;
     _isRoundDoneStream = context.watch<GameProvider>().isRoundDoneStream;
 
-    if (_isNewGameSubscription == null) {
+    if (_isNewGameSubscription == null && _isNewGameStream == null) {
       _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
         if (isNewGame) {
           _disposeTimer();
@@ -73,7 +73,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
       });
     }
 
-    if (_isRoundDoneSubscription == null) {
+    if (_isRoundDoneSubscription == null && _isRoundDoneStream == null) {
       _isRoundDoneSubscription = _isRoundDoneStream.listen((bool isRoundDone) {
         if (isRoundDone) _disposeTimer();
       });
