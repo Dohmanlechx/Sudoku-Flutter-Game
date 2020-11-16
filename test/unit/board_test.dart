@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:test/test.dart';
@@ -11,8 +13,7 @@ void main() {
   test('Board serialization and de-serialization', () {
     List.generate(100, (_) => _getNewBoard()).forEach((Board board) {
       final Board _boardBeforeSerialization = board;
-      final Map<String, dynamic> _boardSerialized =
-          _boardBeforeSerialization.toJson();
+      final Map<String, dynamic> _boardSerialized = _boardBeforeSerialization.toJson();
 
       final String _boardJson = jsonEncode(_boardSerialized);
 
@@ -51,5 +52,15 @@ void main() {
         }
       }
     });
+  });
+
+  test('Random generator should only emit a digit between 1 and 9', () {
+    var count = 0;
+
+    while (count < 100) {
+      final randomizedDigit = BoardFactory.getRandomDigitOf(9);
+      assert(randomizedDigit >= 1 && randomizedDigit <= 9);
+      count++;
+    }
   });
 }

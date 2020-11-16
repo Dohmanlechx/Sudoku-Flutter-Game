@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -12,6 +11,9 @@ abstract class BoardFactory {
   static var i = 0;
   @visibleForTesting
   static var j = 0;
+
+  @visibleForTesting
+  static int getRandomDigitOf(int max) => Random().nextInt(max) + 1;
 
   static var _board = Board();
 
@@ -102,7 +104,8 @@ abstract class BoardFactory {
   }
 
   static Board buildMediumBoard() {
-    _board = _mediumBoards[Random().nextInt(_mediumBoards.length)].toBoard();
+    final _boardDigits = _mediumBoards[getRandomDigitOf(_mediumBoards.length) - 1];
+    _board = shuffledBoard(_boardDigits);
     return BoardSolver.getSolvedBoard(_board);
   }
 
@@ -114,6 +117,32 @@ abstract class BoardFactory {
   static Board buildExtremeBoard() {
     _board = _extremeBoards[Random().nextInt(_extremeBoards.length)].toBoard();
     return BoardSolver.getSolvedBoard(_board);
+  }
+
+  static Board shuffledBoard(String boardDigits) {
+    List<int> _digits = [];
+
+    boardDigits.runes.forEach((int rune) {
+      _digits.add(int.parse(String.fromCharCode(rune)));
+    });
+
+    var _count = getRandomDigitOf(50);
+
+    while (_count > 0) {
+      final _firstDigit = getRandomDigitOf(9);
+      final _secondDigit = getRandomDigitOf(9);
+
+      for (int i = 0; i < _digits.length; i++) {
+        if (_digits[i] == _firstDigit) {
+          _digits[i] = _secondDigit;
+        } else if (_digits[i] == _secondDigit) {
+          _digits[i] = _firstDigit;
+        }
+      }
+      _count--;
+    }
+
+    return _digits.map((int n) => n.toString()).join().toBoard();
   }
 
   static bool isOccupiedNumberInGroup(int index, int number, int groupIndex) {
