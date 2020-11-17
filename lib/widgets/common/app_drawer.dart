@@ -90,15 +90,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Future<void> _triggerNewGame(BuildContext context, Difficulty difficulty) async {
-    final _isExtreme = (difficulty == Difficulty.extreme); // Because solving Extreme boards using BoardSolver might take a while
-
     Navigator.of(context).pop();
-
-    if (_isExtreme) {
-      context.read<GameProvider>().startLoader();
-      await Future.delayed(const Duration(milliseconds: 300));
-    }
-
     context.read<GameProvider>().init(difficulty, isCalledByNewGame: true);
   }
 

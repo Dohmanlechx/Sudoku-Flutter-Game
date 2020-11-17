@@ -20,59 +20,43 @@ class GameScreen extends StatelessWidget {
     final _provider = context.watch<GameProvider>();
 
     return Scaffold(
-        appBar: AppBar(title: const Text(AppTranslations.appTitle)),
-        drawer: const AppDrawer(),
-        backgroundColor: AppColors.primary,
-        body: Stack(
+      appBar: AppBar(title: const Text(AppTranslations.appTitle)),
+      drawer: const AppDrawer(),
+      backgroundColor: AppColors.primary,
+      body: SingleChildScrollView(
+        child: Column(
           children: [
-            AnimatedOpacity(
-              opacity: _provider.isLoading ? 0 : 1,
-              duration: _provider.isLoading ? const Duration(milliseconds: 250) : Duration.zero,
-              child: SingleChildScrollView(
-                child: Column(
+            const SizedBox(height: 16),
+            Stack(
+              children: [
+                _buildSudokuGrid(context),
+                Stack(
                   children: [
-                    const SizedBox(height: 16),
-                    Stack(
-                      children: [
-                        _buildSudokuGrid(context),
-                        Stack(
-                          children: [
-                            _provider.isWonRound
-                                ? _buildCongratsOverlay(context)
-                                : _provider.isGameOver
-                                    ? _buildGameOverOverlay(context)
-                                    : const SizedBox(),
-                            if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
-                          ],
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        children: [
-                          Expanded(flex: 1, child: _buildDifficultyText(context)),
-                          Expanded(flex: 1, child: _buildLives(context)),
-                          const Expanded(flex: 1, child: StopWatchView()),
-                        ],
-                      ),
-                    ),
-                    _buildNumbersKeyboard(context),
+                    _provider.isWonRound
+                        ? _buildCongratsOverlay(context)
+                        : _provider.isGameOver
+                            ? _buildGameOverOverlay(context)
+                            : const SizedBox(),
+                    if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
                   ],
-                ),
+                )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Expanded(flex: 1, child: _buildDifficultyText(context)),
+                  Expanded(flex: 1, child: _buildLives(context)),
+                  const Expanded(flex: 1, child: StopWatchView()),
+                ],
               ),
             ),
-            _provider.isLoading
-                ? const Center(
-                    child: Text(
-                      AppTranslations.loading,
-                      textAlign: TextAlign.center,
-                      style: AppTypography.body,
-                    ),
-                  )
-                : const SizedBox(),
+            _buildNumbersKeyboard(context),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildSudokuGrid(BuildContext context) {
