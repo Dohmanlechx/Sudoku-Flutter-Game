@@ -59,7 +59,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   backgroundColor: AppColors.accent,
                 ),
                 _buildTitleDivider(AppTranslations.newGame),
-                ...List.generate(Difficulty.values.length - 1, (int index) {
+                ...List.generate(Difficulty.values.length, (int index) {
                   return _buildListTile(
                     icon: Icons.add,
                     title: _difficultyTranslations[Difficulty.values[index]],

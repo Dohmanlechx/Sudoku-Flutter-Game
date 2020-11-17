@@ -104,47 +104,51 @@ abstract class BoardFactory {
   }
 
   static Board buildMediumBoard() {
-    final _boardDigits = _mediumBoards[getRandomDigitOf(_mediumBoards.length) - 1];
-    _board = _shuffledBoard(_boardDigits);
+    _board = _mediumBoards[getRandomDigitOf(_mediumBoards.length) - 1].toBoard();
+    _shuffleBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildHardBoard() {
-    final _boardDigits = _hardBoards[getRandomDigitOf(_hardBoards.length) - 1];
-    _board = _shuffledBoard(_boardDigits);
+    _board = _hardBoards[getRandomDigitOf(_hardBoards.length) - 1].toBoard();
+    _shuffleBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
   static Board buildExtremeBoard() {
-    final _boardDigits = _extremeBoards[getRandomDigitOf(_extremeBoards.length) - 1];
-    _board = _shuffledBoard(_boardDigits);
+    _board = _extremeBoards[getRandomDigitOf(_extremeBoards.length) - 1].toBoard();
+    _shuffleBoard();
     return BoardSolver.getSolvedBoard(_board);
   }
 
-  static Board _shuffledBoard(String boardDigits) {
-    List<int> _digits = [];
-
-    boardDigits.runes.forEach((int rune) {
-      _digits.add(int.parse(String.fromCharCode(rune)));
-    });
-
+  static void _shuffleBoard() {
     var _count = getRandomDigitOf(50);
 
     while (_count > 0) {
       final _firstDigit = getRandomDigitOf(9);
       final _secondDigit = getRandomDigitOf(9);
 
-      for (int i = 0; i < _digits.length; i++) {
-        if (_digits[i] == _firstDigit) {
-          _digits[i] = _secondDigit;
-        } else if (_digits[i] == _secondDigit) {
-          _digits[i] = _firstDigit;
+      for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+          final _cell = _board.cells[i][j];
+
+          if (_cell.solutionNumber == _firstDigit) {
+            _cell.solutionNumber = _secondDigit;
+
+            if (_cell.number != null) {
+              _cell.number = _secondDigit;
+            }
+          } else if (_cell.solutionNumber == _secondDigit) {
+            _cell.solutionNumber = _firstDigit;
+
+            if (_cell.number != null) {
+              _cell.number = _firstDigit;
+            }
+          }
         }
       }
       _count--;
     }
-
-    return _digits.map((int n) => n.toString()).join().toBoard();
   }
 
   static bool isOccupiedNumberInGroup(int index, int number, int groupIndex) {
