@@ -80,6 +80,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     )),
                 const SizedBox(height: 64),
                 _buildVersionText(),
+                const SizedBox(height: 16),
               ],
             ),
           ),
