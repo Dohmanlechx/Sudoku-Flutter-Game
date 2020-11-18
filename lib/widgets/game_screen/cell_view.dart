@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
+import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 
 class CellView extends StatelessWidget {
@@ -24,12 +25,12 @@ class CellView extends StatelessWidget {
           color: cell.isHighlighted ? AppColors.highlight.withOpacity(0.7) : AppColors.white,
           border: Border.all(width: 0.5),
         ),
-        child: _buildNumber(),
+        child: _buildNumber(context),
       ),
     );
   }
 
-  Widget _buildNumber() {
+  Widget _buildNumber(BuildContext context) {
     final _cellNumber = (cell.number ?? '').toString();
 
     return Container(
@@ -45,7 +46,9 @@ class CellView extends StatelessWidget {
                         ? Text(
                             (index + 1).toString(),
                             textAlign: TextAlign.center,
-                            style: AppTypography.body.copyWith(fontSize: 10),
+                            style: AppTypography.body.copyWith(
+                              fontSize: DeviceUtil.isSmallDevice(context, limit: 720) ? 8 : 11,
+                            ),
                           )
                         : const SizedBox();
                   }),
