@@ -50,14 +50,6 @@ class _AppDrawerState extends State<AppDrawer> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                AppBar(
-                  title: const Text(
-                    AppTranslations.mainMenu,
-                    key: ValueKey('drawer_headline_text'),
-                  ),
-                  leading: const Icon(Icons.menu),
-                  backgroundColor: AppColors.accent,
-                ),
                 _buildTitleDivider(AppTranslations.newGame),
                 ...List.generate(Difficulty.values.length, (int index) {
                   return _buildListTile(
@@ -66,7 +58,6 @@ class _AppDrawerState extends State<AppDrawer> {
                     onTap: () => _triggerNewGame(context, Difficulty.values[index]),
                   );
                 }),
-                const SizedBox(height: 100),
                 _buildTitleDivider(AppTranslations.settings),
                 _buildListTile(
                     icon: Icons.app_settings_alt,
@@ -113,7 +104,7 @@ class _AppDrawerState extends State<AppDrawer> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Text(title, style: AppTypography.dividerTitle),
         ),
         const Divider(thickness: 1),
