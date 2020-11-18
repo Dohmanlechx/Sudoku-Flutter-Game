@@ -172,6 +172,7 @@ class GameScreen extends StatelessWidget {
                 ),
                 child: Material(
                   child: InkWell(
+                    onLongPress: _canGameContinue ? () => _setMaybeNumber(context, _number) : null,
                     onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
                     child: Center(
                       child: _number < 10
@@ -183,6 +184,13 @@ class GameScreen extends StatelessWidget {
               );
             },
           )),
+    );
+  }
+
+  void _setMaybeNumber(BuildContext context, int number) {
+    context.read<GameProvider>().setMaybeNumber(
+      maybeNumberInput: number < 10 ? number : null,
+      isDelete: number == 10,
     );
   }
 

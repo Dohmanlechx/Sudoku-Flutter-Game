@@ -121,12 +121,26 @@ class GameProvider with ChangeNotifier {
     return BoardFactory.isOccupiedNumberInGroup(index, number, groupIndex);
   }
 
+  Future<void> setMaybeNumber({int maybeNumberInput, isDelete = false}) async {
+    final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
+
+    if (_clickedCell.maybeNumbers.contains(maybeNumberInput)) return;
+
+    _clickedCell.maybeNumbers.add(maybeNumberInput);
+
+    DeviceUtil.vibrate();
+
+    InternalStorage.storeBoard(_board);
+    notifyListeners();
+  }
+
   Future<void> setNumber({int numberInput, bool isDelete = false}) async {
     final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
 
     if (_clickedCell.number == _clickedCell.solutionNumber) return;
 
     _clickedCell.number = numberInput;
+    _clickedCell.maybeNumbers.clear();
 
     if (_clickedCell.solutionNumber != numberInput && !isDelete) {
       DeviceUtil.vibrate();

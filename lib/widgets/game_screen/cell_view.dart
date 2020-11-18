@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/styles/colors.dart';
 import 'package:sudoku_game/styles/typography.dart';
+import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 
 class CellView extends StatelessWidget {
   const CellView({
@@ -29,19 +30,33 @@ class CellView extends StatelessWidget {
   }
 
   Widget _buildNumber() {
+    final _cellNumber = (cell.number ?? '').toString();
+
     return Container(
-      decoration: cell.isSelected
-          ? BoxDecoration(
-              border: Border.all(color: AppColors.accent, width: 2),
-              borderRadius: const BorderRadius.all(Radius.circular(50)),
-            )
-          : null,
-      child: Center(
-        child: Text(
-          (cell.number ?? '').toString(),
-          style: AppTypography.body.copyWith(color: _getDigitColor()),
-        ),
+      decoration: BoxDecoration(
+        border: Border.all(color: cell.isSelected ? AppColors.red : Colors.transparent, width: 2),
       ),
+      child: _cellNumber.isNotEmpty
+          ? _buildTextInNumber(_cellNumber)
+          : cell.maybeNumbers.isNotEmpty
+              ? NonScrollableGridView(
+                  children: List<Widget>.generate(9, (int index) {
+                    return cell.maybeNumbers.contains(index + 1)
+                        ? Text(
+                            (index + 1).toString(),
+                            textAlign: TextAlign.center,
+                            style: AppTypography.body.copyWith(fontSize: 10),
+                          )
+                        : const SizedBox();
+                  }),
+                )
+              : _buildTextInNumber(''),
+    );
+  }
+
+  Widget _buildTextInNumber(String copy) {
+    return Center(
+      child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor())),
     );
   }
 
