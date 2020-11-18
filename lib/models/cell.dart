@@ -13,6 +13,7 @@ class Cell {
     this.isHighlighted = false,
     this.coordinates,
     this.availableNumbers,
+    this.maybeNumbers,
   }) {
     _initCell();
   }
@@ -24,6 +25,7 @@ class Cell {
   bool isHighlighted;
   List<int> coordinates;
   List<int> availableNumbers;
+  List<int> maybeNumbers;
 
   bool get isNotFilled => number <= 0;
 
@@ -34,6 +36,7 @@ class Cell {
   void _initCell() {
     coordinates ??= [];
     availableNumbers ??= [];
+    maybeNumbers ??= [];
     refillAvailableNumbers();
   }
 

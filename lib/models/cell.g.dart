@@ -16,6 +16,8 @@ Cell _$CellFromJson(Map<String, dynamic> json) {
     coordinates: (json['coordinates'] as List)?.map((e) => e as int)?.toList(),
     availableNumbers:
         (json['availableNumbers'] as List)?.map((e) => e as int)?.toList(),
+    maybeNumbers:
+        (json['maybeNumbers'] as List)?.map((e) => e as int)?.toList(),
   );
 }
 
@@ -27,4 +29,5 @@ Map<String, dynamic> _$CellToJson(Cell instance) => <String, dynamic>{
       'isHighlighted': instance.isHighlighted,
       'coordinates': instance.coordinates,
       'availableNumbers': instance.availableNumbers,
+      'maybeNumbers': instance.maybeNumbers,
     };
