@@ -7,9 +7,9 @@ class DeviceUtil {
 
   static double height(BuildContext context) => MediaQuery.of(context).size.height;
 
-  static bool isSmallDevice(BuildContext context, {int limit = 1080}) {
-    final _physicalWidth = width(context) * MediaQuery.of(context).devicePixelRatio;
-    return limit >= _physicalWidth;
+  static bool isSmallDevice(BuildContext context, {int limit = 1920}) {
+    final _physicalHeight = height(context) * MediaQuery.of(context).devicePixelRatio;
+    return limit >= _physicalHeight;
   }
 
   static Future<void> vibrate() async {

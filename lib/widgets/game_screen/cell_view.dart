@@ -47,7 +47,7 @@ class CellView extends StatelessWidget {
                             (index + 1).toString(),
                             textAlign: TextAlign.center,
                             style: AppTypography.body.copyWith(
-                              fontSize: DeviceUtil.isSmallDevice(context, limit: 720) ? 8 : 11,
+                              fontSize: DeviceUtil.isSmallDevice(context, limit: 1280) ? 8 : 11,
                             ),
                           )
                         : const SizedBox();
