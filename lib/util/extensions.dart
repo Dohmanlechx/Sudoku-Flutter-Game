@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
@@ -49,4 +50,8 @@ extension StringExtensions on String {
 
 extension DifficultyExtensions on Difficulty {
   String asString() => _difficultyMap[this];
+}
+
+extension ContextExtensions on BuildContext {
+  bool isLightMode() => MediaQuery.of(this).platformBrightness == Brightness.light;
 }

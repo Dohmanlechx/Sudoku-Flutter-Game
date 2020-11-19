@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
-import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/providers/theme_provider.dart';
+import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/styles/typography.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -38,11 +39,15 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: InternalStorage.retrieveRumbleEnabled(),
-      builder: (BuildContext ctx, AsyncSnapshot<bool> snapshot) {
+      future: Future.wait([
+        InternalStorage.retrieveRumbleEnabled(),
+        InternalStorage.retrieveNightModeEnabled(),
+      ]),
+      builder: (BuildContext ctx, AsyncSnapshot<List<bool>> snapshot) {
         if (!snapshot.hasData) return const SizedBox();
 
-        final _isRumbleEnabled = snapshot.data;
+        final _isRumbleEnabled = snapshot.data[0];
+        final _isNightModeEnabled = snapshot.data[1];
 
         return Drawer(
           key: const Key('app_drawer'),
@@ -60,15 +65,27 @@ class _AppDrawerState extends State<AppDrawer> {
                 }),
                 _buildTitleDivider(AppTranslations.settings),
                 _buildListTile(
-                    icon: Icons.app_settings_alt,
-                    title: AppTranslations.rumble,
-                    trailing: Switch.adaptive(
-                      value: _isRumbleEnabled,
-                      onChanged: (bool isToggled) async {
-                        await InternalStorage.storeRumbleEnabled(isToggled);
-                        setState(() {});
-                      },
-                    )),
+                  icon: Icons.app_settings_alt,
+                  title: AppTranslations.rumble,
+                  trailing: Switch.adaptive(
+                    value: _isRumbleEnabled,
+                    onChanged: (bool isToggled) async {
+                      await InternalStorage.storeRumbleEnabled(isToggled);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                _buildListTile(
+                  icon: Icons.brightness_4_outlined,
+                  title: AppTranslations.darkTheme,
+                  trailing: Switch.adaptive(
+                    value: _isNightModeEnabled,
+                    onChanged: (bool isToggled) async {
+                      context.read<ThemeProvider>().toggleNightMode(isToggled);
+                      setState(() {});
+                    },
+                  ),
+                ),
                 const SizedBox(height: 64),
                 _buildVersionText(),
                 const SizedBox(height: 16),

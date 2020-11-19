@@ -11,17 +11,21 @@ class InternalStorage {
   static const _keyLives = 'key_lives';
   static const _keyDifficulty = 'key_difficulty';
   static const _keyRumbleEnabled = 'key_rumble_enabled';
+  static const _keyNightModeEnabled = 'key_night_mode_enabled';
 
   static SharedPreferences _prefs;
+  static bool isNightModeEnabled;
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    isNightModeEnabled = await retrieveNightModeEnabled();
   }
 
-  static Future<void> clearAllData() async {
-    final _isRumbleEnabled = await retrieveRumbleEnabled();
-    await _prefs.clear();
-    await storeRumbleEnabled(_isRumbleEnabled);
+  static Future<void> clearGameSessionData() async {
+    await _prefs.remove(_keySession);
+    await _prefs.remove(_keyTimeTick);
+    await _prefs.remove(_keyLives);
+    await _prefs.remove(_keyDifficulty);
   }
 
   static Future<void> storeBoard(Board board) async {
@@ -68,5 +72,14 @@ class InternalStorage {
 
   static Future<bool> retrieveRumbleEnabled() async {
     return await _prefs.getBool(_keyRumbleEnabled) ?? true;
+  }
+
+  static Future<void> storeNightModeEnabled(bool value) async {
+    isNightModeEnabled = value;
+    await _prefs.setBool(_keyNightModeEnabled, value);
+  }
+
+  static Future<bool> retrieveNightModeEnabled() async {
+    return await _prefs.getBool(_keyNightModeEnabled) ?? false;
   }
 }

@@ -5,7 +5,6 @@ linter:
     - avoid_renaming_method_parameters
     - camel_case_types
     - constant_identifier_names
-    - avoid_positional_boolean_parameters
     - prefer_const_constructors
     - prefer_const_constructors_in_immutables
     - prefer_const_declarations

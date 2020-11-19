@@ -73,7 +73,7 @@ class GameProvider with ChangeNotifier {
     _selectedDifficulty = difficulty;
 
     if (isCalledByNewGame) {
-      await InternalStorage.clearAllData();
+      await InternalStorage.clearGameSessionData();
       await InternalStorage.storeDifficulty(_selectedDifficulty);
       _isNewGameStream.add(true);
       buildBoard(difficulty);

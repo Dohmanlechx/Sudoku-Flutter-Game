@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/models/cell.dart';
-import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
@@ -38,7 +38,7 @@ class CellView extends StatelessWidget {
         border: Border.all(color: cell.isSelected ? AppColors.red : Colors.transparent, width: 2),
       ),
       child: _cellNumber.isNotEmpty
-          ? _buildTextInNumber(_cellNumber)
+          ? _buildTextInNumber(_cellNumber, context)
           : cell.maybeNumbers.isNotEmpty
               ? NonScrollableGridView(
                   children: List<Widget>.generate(9, (int index) {
@@ -53,23 +53,23 @@ class CellView extends StatelessWidget {
                         : const SizedBox();
                   }),
                 )
-              : _buildTextInNumber(''),
+              : _buildTextInNumber('', context),
     );
   }
 
-  Widget _buildTextInNumber(String copy) {
+  Widget _buildTextInNumber(String copy, BuildContext context) {
     return Center(
-      child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor())),
+      child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context))),
     );
   }
 
-  Color _getDigitColor() {
+  Color _getDigitColor(BuildContext context) {
     if (cell.number == 0) {
       return Colors.transparent;
     } else if (isInvalid) {
       return AppColors.red;
     } else if (cell.isClickable) {
-      return AppColors.accent;
+      return Theme.of(context).accentColor;
     } else {
       return AppColors.black;
     }

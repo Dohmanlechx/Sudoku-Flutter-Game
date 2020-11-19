@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/styles/theme.dart';
 
 abstract class AppTypography {
   static const body = TextStyle(

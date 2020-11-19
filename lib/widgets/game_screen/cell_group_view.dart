@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
-import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/cell_view.dart';
 

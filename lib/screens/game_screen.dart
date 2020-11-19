@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
-import 'package:sudoku_game/styles/colors.dart';
+import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/util/extensions.dart';
@@ -18,11 +18,18 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _provider = context.watch<GameProvider>();
+    final _appBarColor = CustomColors.appBarText(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppTranslations.appTitle)),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: _appBarColor),
+        title: Text(
+          AppTranslations.appTitle,
+          style: AppTypography.body.copyWith(color: _appBarColor),
+        ),
+      ),
       drawer: const AppDrawer(),
-      backgroundColor: AppColors.primary,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -189,9 +196,9 @@ class GameScreen extends StatelessWidget {
 
   void _setMaybeNumber(BuildContext context, int number) {
     context.read<GameProvider>().setMaybeNumber(
-      maybeNumberInput: number < 10 ? number : null,
-      isDelete: number == 10,
-    );
+          maybeNumberInput: number < 10 ? number : null,
+          isDelete: number == 10,
+        );
   }
 
   void _setNumber(BuildContext context, int number) {
