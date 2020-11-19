@@ -51,45 +51,48 @@ class _AppDrawerState extends State<AppDrawer> {
 
         return Drawer(
           key: const Key('app_drawer'),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                _buildTitleDivider(AppTranslations.newGame),
-                ...List.generate(Difficulty.values.length, (int index) {
-                  return _buildListTile(
-                    icon: Icons.add,
-                    title: _difficultyTranslations[Difficulty.values[index]],
-                    onTap: () => _triggerNewGame(context, Difficulty.values[index]),
-                  );
-                }),
-                _buildTitleDivider(AppTranslations.settings),
-                _buildListTile(
-                  icon: Icons.app_settings_alt,
-                  title: AppTranslations.rumble,
-                  trailing: Switch.adaptive(
-                    value: _isRumbleEnabled,
-                    onChanged: (bool isToggled) async {
-                      await InternalStorage.storeRumbleEnabled(isToggled);
-                      setState(() {});
-                    },
+          child: Container(
+            color: AppColors.drawer,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _buildTitleDivider(AppTranslations.newGame),
+                  ...List.generate(Difficulty.values.length, (int index) {
+                    return _buildListTile(
+                      icon: Icons.add,
+                      title: _difficultyTranslations[Difficulty.values[index]],
+                      onTap: () => _triggerNewGame(context, Difficulty.values[index]),
+                    );
+                  }),
+                  _buildTitleDivider(AppTranslations.settings),
+                  _buildListTile(
+                    icon: Icons.app_settings_alt,
+                    title: AppTranslations.rumble,
+                    trailing: Switch.adaptive(
+                      value: _isRumbleEnabled,
+                      onChanged: (bool isToggled) async {
+                        await InternalStorage.storeRumbleEnabled(isToggled);
+                        setState(() {});
+                      },
+                    ),
                   ),
-                ),
-                _buildListTile(
-                  icon: Icons.brightness_4_outlined,
-                  title: AppTranslations.darkTheme,
-                  trailing: Switch.adaptive(
-                    value: _isNightModeEnabled,
-                    onChanged: (bool isToggled) async {
-                      context.read<ThemeProvider>().toggleNightMode(isToggled);
-                      setState(() {});
-                    },
+                  _buildListTile(
+                    icon: Icons.brightness_4_outlined,
+                    title: AppTranslations.darkTheme,
+                    trailing: Switch.adaptive(
+                      value: _isNightModeEnabled,
+                      onChanged: (bool isToggled) async {
+                        context.read<ThemeProvider>().toggleNightMode(isToggled);
+                        setState(() {});
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 64),
-                _buildVersionText(),
-                const SizedBox(height: 16),
-              ],
+                  const SizedBox(height: 64),
+                  _buildVersionText(),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         );
@@ -117,14 +120,16 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget _buildTitleDivider(String title) {
+    final _color = AppColors.drawerTitle;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Text(title, style: AppTypography.dividerTitle),
+          child: Text(title, style: AppTypography.dividerTitle.copyWith(color: _color)),
         ),
-        const Divider(thickness: 1),
+        Divider(thickness: 1, color: _color),
       ],
     );
   }

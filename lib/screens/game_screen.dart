@@ -18,14 +18,13 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _provider = context.watch<GameProvider>();
-    final _appBarColor = CustomColors.appBarText(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: _appBarColor),
+        iconTheme: IconThemeData(color: AppColors.appBarText),
         title: Text(
           AppTranslations.appTitle,
-          style: AppTypography.body.copyWith(color: _appBarColor),
+          style: AppTypography.body.copyWith(color: AppColors.appBarText),
         ),
       ),
       drawer: const AppDrawer(),
@@ -157,7 +156,7 @@ class GameScreen extends StatelessWidget {
     final _buttonMarginSize = DeviceUtil.isSmallDevice(context) ? 2.0 : 4.0;
 
     return Container(
-      color: AppColors.lightGrey,
+      color: AppColors.keyboard,
       margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.all(8),
       child: NonScrollableGridView(
@@ -178,6 +177,7 @@ class GameScreen extends StatelessWidget {
                   border: Border.all(color: AppColors.black, width: 3),
                 ),
                 child: Material(
+                  color: AppColors.keyboardButton,
                   child: InkWell(
                     onLongPress: _canGameContinue ? () => _setMaybeNumber(context, _number) : null,
                     onTap: _canGameContinue ? () => _setNumber(context, _number) : null,

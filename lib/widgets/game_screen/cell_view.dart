@@ -22,7 +22,7 @@ class CellView extends StatelessWidget {
       onTap: onSubmit,
       child: Container(
         decoration: BoxDecoration(
-          color: cell.isHighlighted ? AppColors.highlight.withOpacity(0.7) : AppColors.white,
+          color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.7) : AppColors.board,
           border: Border.all(width: 0.5),
         ),
         child: _buildNumber(context),
