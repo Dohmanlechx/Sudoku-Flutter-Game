@@ -6,7 +6,6 @@ final appTheme = ThemeData(
   primaryColor: AppColors.primary,
   backgroundColor: AppColors.primary,
   accentColor: AppColors.accent,
-  dividerColor: AppColors.grey,
   appBarTheme: const AppBarTheme(
     textTheme: TextTheme(),
     color: AppColors.accent,
@@ -17,8 +16,7 @@ final appThemeDark = ThemeData(
   fontFamily: 'Coolvetica',
   primaryColor: AppColors.primaryDark,
   backgroundColor: AppColors.primaryDark,
-  accentColor: AppColors.accent,
-  dividerColor: AppColors.grey,
+  accentColor: AppColors.accentDark,
   appBarTheme: const AppBarTheme(
     textTheme: TextTheme(),
     color: AppColors.grey,
@@ -29,9 +27,11 @@ abstract class AppColors {
   // Custom colors that don't fit in the ThemeData
   static Color get appBarText => InternalStorage.isNightModeEnabled ? AppColors.black : AppColors.white;
 
-  static Color get board => InternalStorage.isNightModeEnabled ? AppColors.primaryDark : AppColors.white;
+  static Color get board => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
 
-  static Color get boardHighlight => InternalStorage.isNightModeEnabled ? AppColors.highlightDark : AppColors.highlight;
+  static Color get boardAccent => InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
+
+  static Color get boardHighlight => InternalStorage.isNightModeEnabled ? AppColors.black : AppColors.highlight;
 
   static Color get keyboard => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.lightGrey;
 
@@ -53,5 +53,5 @@ abstract class AppColors {
   static const darkGrey = Color(0xFF5A5B56);
   static const green = Color(0xFF5AD3A9);
   static const highlight = Color(0xFFD6DBDF);
-  static const highlightDark = Color(0xFF5A5B56);
+  static const highlightDark = Color(0xFFC9C7C7);
 }

@@ -22,8 +22,8 @@ class CellView extends StatelessWidget {
       onTap: onSubmit,
       child: Container(
         decoration: BoxDecoration(
-          color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.7) : AppColors.board,
-          border: Border.all(width: 0.5),
+          color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
+          border: Border.all(width: 0.5, color: AppColors.boardAccent),
         ),
         child: _buildNumber(context),
       ),
@@ -47,6 +47,7 @@ class CellView extends StatelessWidget {
                             (index + 1).toString(),
                             textAlign: TextAlign.center,
                             style: AppTypography.body.copyWith(
+                              color: Theme.of(context).accentColor,
                               fontSize: DeviceUtil.isSmallDevice(context, limit: 1280) ? 8 : 11,
                             ),
                           )
@@ -71,7 +72,7 @@ class CellView extends StatelessWidget {
     } else if (cell.isClickable) {
       return Theme.of(context).accentColor;
     } else {
-      return AppColors.black;
+      return AppColors.boardAccent;
     }
   }
 }
