@@ -170,32 +170,52 @@ class GameScreen extends StatelessWidget {
                   !_watchProvider.isGameOver &&
                   _watchProvider.selectedCell.coordinates.isNotEmpty;
 
-              return Container(
-                margin: EdgeInsets.all(_buttonMarginSize),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  border: Border.all(color: AppColors.keyboardButtonText, width: 3),
-                ),
-                child: Material(
-                  color: AppColors.keyboardButton,
-                  child: InkWell(
-                    onLongPress: _canGameContinue ? () => _setMaybeNumber(context, _number) : null,
-                    onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
-                    child: Center(
-                      child: _number < 10
-                          ? Text(_number.toString(),
-                              style: AppTypography.body.copyWith(
-                                color: AppColors.keyboardButtonText,
-                                fontSize: _buttonContentSize,
-                              ))
-                          : Icon(
-                              Icons.delete,
-                              color: AppColors.keyboardButtonText,
-                              size: _buttonContentSize,
-                            ),
+              return Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(_buttonMarginSize),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
+                      border: Border.all(color: AppColors.keyboardButtonText, width: 3),
+                    ),
+                    child: Material(
+                      color: AppColors.keyboardButton,
+                      child: InkWell(
+                        onLongPress: _canGameContinue ? () => _setMaybeNumber(context, _number) : null,
+                        onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
+                        child: Center(
+                          child: _number < 10
+                              ? Text(
+                                  _number.toString(),
+                                  style: AppTypography.body.copyWith(
+                                    color: AppColors.keyboardButtonText,
+                                    fontSize: _buttonContentSize,
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.delete,
+                                  color: AppColors.keyboardButtonText,
+                                  size: _buttonContentSize,
+                                ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  if (_number < 10)
+                    Positioned(
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12, top: 8),
+                        child: Text(
+                          _number.toString(),
+                          style: AppTypography.body.copyWith(
+                            color: AppColors.keyboardButtonText,
+                            fontSize: _buttonContentSize / 2.5,
+                          ),
+                        ),
+                      ),
+                    )
+                ],
               );
             },
           )),
