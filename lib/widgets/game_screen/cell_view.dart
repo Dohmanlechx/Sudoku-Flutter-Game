@@ -38,7 +38,7 @@ class CellView extends StatelessWidget {
         border: Border.all(color: cell.isSelected ? AppColors.red : Colors.transparent, width: 2),
       ),
       child: _cellNumber.isNotEmpty
-          ? _buildTextInNumber(_cellNumber, context)
+          ? _buildTextInNumber(context, _cellNumber)
           : cell.maybeNumbers.isNotEmpty
               ? NonScrollableGridView(
                   children: List<Widget>.generate(9, (int index) {
@@ -47,29 +47,35 @@ class CellView extends StatelessWidget {
                             (index + 1).toString(),
                             textAlign: TextAlign.center,
                             style: AppTypography.body.copyWith(
-                              color: Theme.of(context).accentColor,
+                              color: AppColors.boardAccent,
                               fontSize: DeviceUtil.isSmallDevice(context, limit: 1280) ? 8 : 11,
                             ),
                           )
                         : const SizedBox();
                   }),
                 )
-              : _buildTextInNumber('', context),
+              : _buildTextInNumber(context, ''),
     );
   }
 
-  Widget _buildTextInNumber(String copy, BuildContext context) {
-    return Center(
-      child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context))),
+  Widget _buildTextInNumber(BuildContext context, String copy) {
+    return Container(
+      decoration: isInvalid && cell.number != null
+          ? BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
+              color: AppColors.red.withOpacity(cell.isClickable ? 0.75 : 0.5),
+            )
+          : null,
+      child: Center(
+        child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context))),
+      ),
     );
   }
 
   Color _getDigitColor(BuildContext context) {
     if (cell.number == 0) {
       return Colors.transparent;
-    } else if (isInvalid) {
-      return AppColors.red;
-    } else if (cell.isClickable) {
+    } else if (cell.isClickable && cell.number == cell.solutionNumber) {
       return Theme.of(context).accentColor;
     } else {
       return AppColors.boardAccent;
