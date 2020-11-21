@@ -35,7 +35,9 @@ abstract class AppColors {
 
   static Color get keyboard => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.lightGrey;
 
-  static Color get keyboardButton => InternalStorage.isNightModeEnabled ? AppColors.lightGrey : AppColors.white;
+  static Color get keyboardButton => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
+
+  static Color get keyboardButtonText => InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
 
   static Color get drawer => InternalStorage.isNightModeEnabled ? AppColors.primaryDark : AppColors.lightGrey;
 

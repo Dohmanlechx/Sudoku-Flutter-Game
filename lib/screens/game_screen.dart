@@ -174,7 +174,7 @@ class GameScreen extends StatelessWidget {
                 margin: EdgeInsets.all(_buttonMarginSize),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  border: Border.all(color: AppColors.black, width: 3),
+                  border: Border.all(color: AppColors.keyboardButtonText, width: 3),
                 ),
                 child: Material(
                   color: AppColors.keyboardButton,
@@ -183,8 +183,16 @@ class GameScreen extends StatelessWidget {
                     onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
                     child: Center(
                       child: _number < 10
-                          ? Text(_number.toString(), style: AppTypography.body.copyWith(fontSize: _buttonContentSize))
-                          : Icon(Icons.delete, size: _buttonContentSize),
+                          ? Text(_number.toString(),
+                              style: AppTypography.body.copyWith(
+                                color: AppColors.keyboardButtonText,
+                                fontSize: _buttonContentSize,
+                              ))
+                          : Icon(
+                              Icons.delete,
+                              color: AppColors.keyboardButtonText,
+                              size: _buttonContentSize,
+                            ),
                     ),
                   ),
                 ),
