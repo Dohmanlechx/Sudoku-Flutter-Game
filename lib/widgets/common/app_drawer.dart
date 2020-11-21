@@ -129,6 +129,52 @@ class _AppDrawerState extends State<AppDrawer> {
       trailing: Switch.adaptive(
         value: isSundaySudokuEnabled,
         onChanged: (bool isToggled) async {
+          if (context.read<GameProvider>().hasBeenStartedPlaying) {
+            if (isToggled) {
+              var _userApproved = false;
+
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: const Text(
+                      AppTranslations.enableSundayDialogText,
+                      style: AppTypography.body,
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(
+                          AppTranslations.yes.toUpperCase(),
+                          style: AppTypography.body.copyWith(color: AppColors.red),
+                        ),
+                        onPressed: () {
+                          _userApproved = true;
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
+
+              if (!_userApproved) return;
+            } else {
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    content: Text(
+                      AppTranslations.disableSundayDialogText,
+                      style: AppTypography.body,
+                    ),
+                  );
+                },
+              );
+
+              return;
+            }
+          }
+
           context.read<SettingsProvider>().toggleSundayMode(isToggled);
           setState(() {});
         },

@@ -7,10 +7,12 @@ part 'board.g.dart';
 class Board {
   Board() {
     cells = List();
+    hasBeenStartedPlaying = false;
     clearAllTiles();
   }
 
   List<List<Cell>> cells;
+  bool hasBeenStartedPlaying;
 
   void clearAllTiles() {
     this.cells

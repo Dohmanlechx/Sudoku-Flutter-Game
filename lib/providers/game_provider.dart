@@ -66,6 +66,8 @@ class GameProvider with ChangeNotifier {
     init(_selectedDifficulty);
   }
 
+  bool get hasBeenStartedPlaying => _board.hasBeenStartedPlaying;
+
   void init(Difficulty difficulty, {bool isCalledByNewGame = false}) async {
     _isNewGameStream.add(true);
 
@@ -152,6 +154,7 @@ class GameProvider with ChangeNotifier {
       await InternalStorage.storeLives(_lives);
     }
 
+    _board.hasBeenStartedPlaying = true;
     InternalStorage.storeBoard(_board);
     notifyListeners();
   }

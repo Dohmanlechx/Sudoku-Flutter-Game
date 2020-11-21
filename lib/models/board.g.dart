@@ -13,9 +13,11 @@ Board _$BoardFromJson(Map<String, dynamic> json) {
             ?.map((e) =>
                 e == null ? null : Cell.fromJson(e as Map<String, dynamic>))
             ?.toList())
-        ?.toList();
+        ?.toList()
+    ..hasBeenStartedPlaying = json['hasBeenStartedPlaying'] as bool;
 }
 
 Map<String, dynamic> _$BoardToJson(Board instance) => <String, dynamic>{
       'cells': instance.cells,
+      'hasBeenStartedPlaying': instance.hasBeenStartedPlaying,
     };
