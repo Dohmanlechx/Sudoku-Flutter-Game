@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
-import 'package:sudoku_game/providers/theme_provider.dart';
+import 'package:sudoku_game/providers/settings_provider.dart';
 import 'package:sudoku_game/screens/game_screen.dart';
 import 'package:sudoku_game/styles/theme.dart';
 
@@ -20,13 +20,13 @@ class SudokuGameApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GameProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       builder: (BuildContext context, _) {
         return MaterialApp(
           key: const Key('sudoku_game'),
           home: const GameScreen(),
-          theme: context.watch<ThemeProvider>().isNightModeEnabled ? appThemeDark : appTheme,
+          theme: context.watch<SettingsProvider>().isNightModeEnabled ? appThemeDark : appTheme,
         );
       },
     );

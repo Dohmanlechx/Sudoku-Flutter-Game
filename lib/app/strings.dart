@@ -4,6 +4,7 @@ class AppTranslations {
   static const newGame = 'New Game';
   static const newGameTutorial = 'Open the drawer to start a New Game!';
   static const settings = 'Settings';
+  static const sundaySudoku = 'Sunday';
   static const rumble = 'Rumble';
   static const darkTheme = 'Night Mode';
   static const congrats = 'Congratulations!';
@@ -12,4 +13,5 @@ class AppTranslations {
   static const medium = 'Medium';
   static const hard = 'Hard';
   static const extreme = 'Extreme';
+  static const modes = 'Modes';
 }

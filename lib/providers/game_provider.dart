@@ -146,7 +146,7 @@ class GameProvider with ChangeNotifier {
     _clickedCell.number = numberInput;
     _clickedCell.maybeNumbers.clear();
 
-    if (_clickedCell.solutionNumber != numberInput && !isDelete) {
+    if (_clickedCell.solutionNumber != numberInput && !isDelete && !InternalStorage.isSundayModeEnabled) {
       DeviceUtil.vibrate();
       _lives--;
       await InternalStorage.storeLives(_lives);

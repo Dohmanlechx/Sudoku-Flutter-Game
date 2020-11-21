@@ -10,15 +10,18 @@ class InternalStorage {
   static const _keyTimeTick = 'key_time_tick';
   static const _keyLives = 'key_lives';
   static const _keyDifficulty = 'key_difficulty';
+  static const _keySundayEnabled = 'key_sunday_enabled';
   static const _keyRumbleEnabled = 'key_rumble_enabled';
   static const _keyNightModeEnabled = 'key_night_mode_enabled';
 
   static SharedPreferences _prefs;
   static bool isNightModeEnabled;
+  static bool isSundayModeEnabled;
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     isNightModeEnabled = await retrieveNightModeEnabled();
+    isSundayModeEnabled = await retrieveSundayModeEnabled();
   }
 
   static Future<void> clearGameSessionData() async {
@@ -64,6 +67,16 @@ class InternalStorage {
 
   static Future<Difficulty> retrieveDifficulty() async {
     return await _prefs.getString(_keyDifficulty).toDifficultyEnum();
+  }
+
+  static Future<void> storeSundayModeEnabled(bool value) async {
+    isSundayModeEnabled = value;
+    await _prefs.remove(_keyTimeTick);
+    await _prefs.setBool(_keySundayEnabled, value);
+  }
+
+  static Future<bool> retrieveSundayModeEnabled() async {
+    return await _prefs.getBool(_keySundayEnabled) ?? false;
   }
 
   static Future<void> storeRumbleEnabled(bool value) async {

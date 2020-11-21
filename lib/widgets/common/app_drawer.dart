@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/internal_storage.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
-import 'package:sudoku_game/providers/theme_provider.dart';
+import 'package:sudoku_game/providers/settings_provider.dart';
 import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/styles/typography.dart';
 
@@ -42,12 +42,14 @@ class _AppDrawerState extends State<AppDrawer> {
       future: Future.wait([
         InternalStorage.retrieveRumbleEnabled(),
         InternalStorage.retrieveNightModeEnabled(),
+        InternalStorage.retrieveSundayModeEnabled(),
       ]),
       builder: (BuildContext ctx, AsyncSnapshot<List<bool>> snapshot) {
         if (!snapshot.hasData) return const SizedBox();
 
         final _isRumbleEnabled = snapshot.data[0];
         final _isNightModeEnabled = snapshot.data[1];
+        final _isSundayEnabled = snapshot.data[2];
 
         return Drawer(
           key: const Key('app_drawer'),
@@ -58,36 +60,12 @@ class _AppDrawerState extends State<AppDrawer> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   _buildTitleDivider(AppTranslations.newGame),
-                  ...List.generate(Difficulty.values.length, (int index) {
-                    return _buildListTile(
-                      icon: Icons.add,
-                      title: _difficultyTranslations[Difficulty.values[index]],
-                      onTap: () => _triggerNewGame(context, Difficulty.values[index]),
-                    );
-                  }),
+                  ..._buildDifficulties(),
+                  _buildTitleDivider(AppTranslations.modes),
+                  _buildSundaySudokuSetting(_isSundayEnabled),
                   _buildTitleDivider(AppTranslations.settings),
-                  _buildListTile(
-                    icon: Icons.app_settings_alt,
-                    title: AppTranslations.rumble,
-                    trailing: Switch.adaptive(
-                      value: _isRumbleEnabled,
-                      onChanged: (bool isToggled) async {
-                        await InternalStorage.storeRumbleEnabled(isToggled);
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                  _buildListTile(
-                    icon: Icons.brightness_4_outlined,
-                    title: AppTranslations.darkTheme,
-                    trailing: Switch.adaptive(
-                      value: _isNightModeEnabled,
-                      onChanged: (bool isToggled) async {
-                        context.read<ThemeProvider>().toggleNightMode(isToggled);
-                        setState(() {});
-                      },
-                    ),
-                  ),
+                  _buildRumbleSetting(_isRumbleEnabled),
+                  _buildNightModeSetting(_isNightModeEnabled),
                   const SizedBox(height: 64),
                   _buildVersionText(),
                   const SizedBox(height: 16),
@@ -103,6 +81,16 @@ class _AppDrawerState extends State<AppDrawer> {
   Future<void> _triggerNewGame(BuildContext context, Difficulty difficulty) async {
     Navigator.of(context).pop();
     context.read<GameProvider>().init(difficulty, isCalledByNewGame: true);
+  }
+
+  List<Widget> _buildDifficulties() {
+    return List.generate(Difficulty.values.length, (int index) {
+      return _buildListTile(
+        icon: Icons.add,
+        title: _difficultyTranslations[Difficulty.values[index]],
+        onTap: () => _triggerNewGame(context, Difficulty.values[index]),
+      );
+    });
   }
 
   Widget _buildListTile({
@@ -131,6 +119,48 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
         Divider(thickness: 1, color: _color),
       ],
+    );
+  }
+
+  Widget _buildSundaySudokuSetting(bool isSundaySudokuEnabled) {
+    return _buildListTile(
+      icon: Icons.all_inclusive,
+      title: AppTranslations.sundaySudoku,
+      trailing: Switch.adaptive(
+        value: isSundaySudokuEnabled,
+        onChanged: (bool isToggled) async {
+          context.read<SettingsProvider>().toggleSundayMode(isToggled);
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget _buildRumbleSetting(bool isRumbleEnabled) {
+    return _buildListTile(
+      icon: Icons.app_settings_alt,
+      title: AppTranslations.rumble,
+      trailing: Switch.adaptive(
+        value: isRumbleEnabled,
+        onChanged: (bool isToggled) async {
+          await InternalStorage.storeRumbleEnabled(isToggled);
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget _buildNightModeSetting(bool isNightModeEnabled) {
+    return _buildListTile(
+      icon: Icons.brightness_4_outlined,
+      title: AppTranslations.darkTheme,
+      trailing: Switch.adaptive(
+        value: isNightModeEnabled,
+        onChanged: (bool isToggled) async {
+          context.read<SettingsProvider>().toggleNightMode(isToggled);
+          setState(() {});
+        },
+      ),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
+import 'package:sudoku_game/providers/settings_provider.dart';
 import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/device_util.dart';
@@ -48,16 +49,18 @@ class GameScreen extends StatelessWidget {
                 )
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Expanded(flex: 1, child: _buildDifficultyText(context)),
-                  Expanded(flex: 1, child: _buildLives(context)),
-                  const Expanded(flex: 1, child: StopWatchView()),
-                ],
-              ),
-            ),
+            context.watch<SettingsProvider>().isSundayModeEnabled
+                ? const SizedBox(height: 16)
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        Expanded(flex: 1, child: _buildDifficultyText(context)),
+                        Expanded(flex: 1, child: _buildLives(context)),
+                        const Expanded(flex: 1, child: StopWatchView()),
+                      ],
+                    ),
+                  ),
             _buildNumbersKeyboard(context),
           ],
         ),
