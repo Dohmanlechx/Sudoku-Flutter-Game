@@ -148,10 +148,13 @@ class GameProvider with ChangeNotifier {
     _clickedCell.number = numberInput;
     _clickedCell.maybeNumbers.clear();
 
-    if (_clickedCell.solutionNumber != numberInput && !isDelete && !InternalStorage.isSundayModeEnabled) {
+    if (_clickedCell.solutionNumber != numberInput && !isDelete) {
       DeviceUtil.vibrate();
-      _lives--;
-      await InternalStorage.storeLives(_lives);
+
+      if (!InternalStorage.isSundayModeEnabled) {
+        _lives--;
+        await InternalStorage.storeLives(_lives);
+      }
     }
 
     _board.hasBeenStartedPlaying = true;
