@@ -2,7 +2,7 @@ name: sudoku_game
 description: A simple Sudoku game.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.9.7+9
+version: 0.9.8+10
 
 environment:
   sdk: ">=2.9.0 <3.0.0"
