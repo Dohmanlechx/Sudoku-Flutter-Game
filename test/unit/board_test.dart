@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/board/board_factory.dart';
@@ -8,7 +7,10 @@ import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Board _getNewBoard() => GameProvider().board;
+  Board _getNewBoard() {
+    GameProvider.isTesting = true;
+    return GameProvider().board;
+  }
 
   test('Board serialization and de-serialization', () {
     List.generate(100, (_) => _getNewBoard()).forEach((Board board) {

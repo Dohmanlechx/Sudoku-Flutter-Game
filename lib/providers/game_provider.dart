@@ -11,6 +11,8 @@ import 'package:sudoku_game/util/device_util.dart';
 enum Difficulty { easy, medium, hard, extreme }
 
 class GameProvider with ChangeNotifier {
+  static var isTesting = false;
+
   var _board = Board();
 
   Board get board => _board;
@@ -75,20 +77,29 @@ class GameProvider with ChangeNotifier {
     _selectedDifficulty = difficulty;
 
     if (isCalledByNewGame) {
-      await InternalStorage.clearGameSessionData();
-      await InternalStorage.storeDifficulty(_selectedDifficulty);
+      if (!isTesting) {
+        await InternalStorage.clearGameSessionData();
+        await InternalStorage.storeDifficulty(_selectedDifficulty);
+      }
+
       _isNewGameStream.add(true);
       buildBoard(difficulty);
     } else {
-      final Board _retrievedBoard = await InternalStorage.retrieveBoard();
+      Board _retrievedBoard;
+
+      if (!isTesting) {
+        _retrievedBoard = await InternalStorage.retrieveBoard();
+      }
 
       if (_retrievedBoard != null) {
         _board = _retrievedBoard;
 
         BoardFactory.setBoard(_board);
 
-        _lives = await InternalStorage.retrieveLives();
-        _selectedDifficulty = await InternalStorage.retrieveDifficulty();
+        if (!isTesting) {
+          _lives = await InternalStorage.retrieveLives();
+          _selectedDifficulty = await InternalStorage.retrieveDifficulty();
+        }
 
         notifyListeners();
       } else {
@@ -115,7 +126,10 @@ class GameProvider with ChangeNotifier {
         break;
     }
 
-    InternalStorage.storeBoard(_board);
+    if (!isTesting) {
+      InternalStorage.storeBoard(_board);
+    }
+
     notifyListeners();
   }
 

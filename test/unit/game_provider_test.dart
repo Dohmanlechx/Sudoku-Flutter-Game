@@ -10,7 +10,10 @@ import 'package:sudoku_game/providers/game_provider.dart';
 import '../test_resources.dart';
 
 void main() {
-  GameProvider _newGameProvider() => GameProvider();
+  GameProvider _newGameProvider() {
+    GameProvider.isTesting = true;
+    return GameProvider();
+  }
 
   test('The board should contain 81 elements', () {
     final board = _newGameProvider().board;
