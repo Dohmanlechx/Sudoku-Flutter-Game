@@ -6,6 +6,8 @@ import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 
 class CellView extends StatelessWidget {
+  static const _animDuration = Duration(milliseconds: 250);
+
   const CellView({
     this.cell,
     this.isInvalid,
@@ -20,7 +22,9 @@ class CellView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onSubmit,
-      child: Container(
+      child: AnimatedContainer(
+        curve: Curves.easeInOutCubic,
+        duration: _animDuration,
         decoration: BoxDecoration(
           color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
           border: Border.all(width: 0.5, color: AppColors.boardAccent),
@@ -59,16 +63,24 @@ class CellView extends StatelessWidget {
   }
 
   Widget _buildTextInNumber(BuildContext context, String copy) {
-    return Container(
-      decoration: isInvalid && cell.number != null
-          ? BoxDecoration(
+    Widget _textWidget(String copy) => Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context)));
+
+    return Stack(
+      children: [
+        AnimatedOpacity(
+          curve: Curves.easeInSine,
+          duration: _animDuration,
+          opacity: isInvalid && cell.number != null ? 1 : 0,
+          child: Container(
+            decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(100)),
               color: AppColors.red.withOpacity(cell.isClickable ? 0.75 : 0.5),
-            )
-          : null,
-      child: Center(
-        child: Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context))),
-      ),
+            ),
+            child: Center(child: _textWidget('')), // To get the correct space
+          ),
+        ),
+        Center(child: _textWidget(copy))
+      ],
     );
   }
 
