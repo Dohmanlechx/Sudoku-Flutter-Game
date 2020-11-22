@@ -125,6 +125,11 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     });
   }
 
-  String _getFormattedTimerText(int newTick) =>
-      '${((newTick / 60) % 60).floor().toString().padLeft(2, '0')}:${(newTick % 60).floor().toString().padLeft(2, '0')}';
+  String _getFormattedTimerText(int newTick) {
+    final String h = (newTick >= 3600) ? '${(newTick / 3600).floor().toString()}:' : '';
+    final String m = '${((newTick / 60) % 60).floor().toString().padLeft(2, '0')}:';
+    final String s = (newTick % 60).floor().toString().padLeft(2, '0');
+
+    return '$h$m$s';
+  }
 }
