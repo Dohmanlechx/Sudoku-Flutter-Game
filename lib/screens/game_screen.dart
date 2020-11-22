@@ -49,18 +49,23 @@ class GameScreen extends StatelessWidget {
                 )
               ],
             ),
-            context.watch<SettingsProvider>().isSundayModeEnabled
-                ? const SizedBox(height: 16)
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: context.watch<SettingsProvider>().isSundayModeEnabled
+                  ? Row(
+                      children: [
+                        Expanded(flex: 1, child: _buildDifficultyText(context)),
+                        Expanded(flex: 1, child: _buildSundayText()),
+                      ],
+                    )
+                  : Row(
                       children: [
                         Expanded(flex: 1, child: _buildDifficultyText(context)),
                         Expanded(flex: 1, child: _buildLives(context)),
                         const Expanded(flex: 1, child: StopWatchView()),
                       ],
                     ),
-                  ),
+            ),
             _buildNumbersKeyboard(context),
           ],
         ),
@@ -135,21 +140,33 @@ class GameScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSundayText() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Icon(Icons.all_inclusive, color: AppColors.black),
+        const SizedBox(width: 8),
+        Text(
+          AppTranslations.sundaySudoku,
+          style: AppTypography.body,
+        ),
+      ],
+    );
+  }
+
   Widget _buildLives(BuildContext context) {
     final int _lives = context.watch<GameProvider>().lives;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...List.generate(
-            3,
-            (int index) => Icon(index < _lives ? Icons.favorite : Icons.favorite_outline),
-          )
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ...List.generate(
+          3,
+          (int index) => Icon(index < _lives ? Icons.favorite : Icons.favorite_outline),
+        )
+      ],
     );
   }
 

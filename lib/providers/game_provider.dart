@@ -126,6 +126,8 @@ class GameProvider with ChangeNotifier {
   Future<void> setMaybeNumber({int maybeNumberInput, isDelete = false}) async {
     final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
 
+    if (_clickedCell.number != null) return;
+
     if (_clickedCell.maybeNumbers.contains(maybeNumberInput)) {
       _clickedCell.maybeNumbers.remove(maybeNumberInput);
       notifyListeners();
