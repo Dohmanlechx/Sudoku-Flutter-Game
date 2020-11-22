@@ -19,8 +19,10 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _provider = context.watch<GameProvider>();
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         iconTheme: IconThemeData(color: AppColors.appBarText),
         title: Text(
@@ -30,44 +32,54 @@ class GameScreen extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
       backgroundColor: Theme.of(context).primaryColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            Stack(
-              children: [
-                _buildSudokuGrid(context),
-                Stack(
-                  children: [
-                    _provider.isWonRound
-                        ? _buildCongratsOverlay(context)
-                        : _provider.isGameOver
-                            ? _buildGameOverOverlay(context)
-                            : const SizedBox(),
-                    if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
-                  ],
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: context.watch<SettingsProvider>().isSundayModeEnabled
-                  ? Row(
-                      children: [
-                        Expanded(flex: 1, child: _buildDifficultyText(context)),
-                        Expanded(flex: 1, child: _buildSundayText()),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(flex: 1, child: _buildDifficultyText(context)),
-                        Expanded(flex: 1, child: _buildLives(context)),
-                        const Expanded(flex: 1, child: StopWatchView()),
-                      ],
-                    ),
-            ),
-            _buildNumbersKeyboard(context),
-          ],
+      body: WillPopScope(
+        onWillPop: () {
+          if (!_scaffoldKey.currentState.isDrawerOpen) {
+            _scaffoldKey.currentState.openDrawer();
+            return Future.value(false);
+          } else {
+            return Future.value(true);
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Stack(
+                children: [
+                  _buildSudokuGrid(context),
+                  Stack(
+                    children: [
+                      _provider.isWonRound
+                          ? _buildCongratsOverlay(context)
+                          : _provider.isGameOver
+                              ? _buildGameOverOverlay(context)
+                              : const SizedBox(),
+                      if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
+                    ],
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: context.watch<SettingsProvider>().isSundayModeEnabled
+                    ? Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(flex: 1, child: _buildSundayText()),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(flex: 1, child: _buildLives(context)),
+                          const Expanded(flex: 1, child: StopWatchView()),
+                        ],
+                      ),
+              ),
+              _buildNumbersKeyboard(context),
+            ],
+          ),
         ),
       ),
     );
