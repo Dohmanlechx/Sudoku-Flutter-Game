@@ -20,54 +20,57 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final _provider = context.watch<GameProvider>();
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.appBarText),
-        title: Text(
-          AppTranslations.appTitle,
-          style: AppTypography.body.copyWith(color: AppColors.appBarText),
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: AppColors.appBarText),
+          title: Text(
+            AppTranslations.appTitle,
+            style: AppTypography.body.copyWith(color: AppColors.appBarText),
+          ),
         ),
-      ),
-      drawer: const AppDrawer(),
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            Stack(
-              children: [
-                _buildSudokuGrid(context),
-                Stack(
-                  children: [
-                    _provider.isWonRound
-                        ? _buildCongratsOverlay(context)
-                        : _provider.isGameOver
-                            ? _buildGameOverOverlay(context)
-                            : const SizedBox(),
-                    if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
-                  ],
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: context.watch<SettingsProvider>().isSundayModeEnabled
-                  ? Row(
-                      children: [
-                        Expanded(flex: 1, child: _buildDifficultyText(context)),
-                        Expanded(flex: 1, child: _buildSundayText()),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(flex: 1, child: _buildDifficultyText(context)),
-                        Expanded(flex: 1, child: _buildLives(context)),
-                        const Expanded(flex: 1, child: StopWatchView()),
-                      ],
-                    ),
-            ),
-            _buildNumbersKeyboard(context),
-          ],
+        drawer: const AppDrawer(),
+        backgroundColor: Theme.of(context).primaryColor,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Stack(
+                children: [
+                  _buildSudokuGrid(context),
+                  Stack(
+                    children: [
+                      _provider.isWonRound
+                          ? _buildCongratsOverlay(context)
+                          : _provider.isGameOver
+                              ? _buildGameOverOverlay(context)
+                              : const SizedBox(),
+                      if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
+                    ],
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: context.watch<SettingsProvider>().isSundayModeEnabled
+                    ? Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(flex: 1, child: _buildSundayText()),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(flex: 1, child: _buildLives(context)),
+                          const Expanded(flex: 1, child: StopWatchView()),
+                        ],
+                      ),
+              ),
+              _buildNumbersKeyboard(context),
+            ],
+          ),
         ),
       ),
     );
