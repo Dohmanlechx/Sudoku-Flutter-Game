@@ -75,6 +75,8 @@ class CellView extends StatelessWidget {
   Color _getDigitColor(BuildContext context) {
     if (cell.number == 0) {
       return Colors.transparent;
+    } else if (isInvalid) {
+      return AppColors.boardAccent;
     } else if (cell.isClickable && cell.number == cell.solutionNumber) {
       return Theme.of(context).accentColor;
     } else {
