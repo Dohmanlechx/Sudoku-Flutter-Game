@@ -35,7 +35,7 @@ class CellView extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: cell.isSelected ? AppColors.red : Colors.transparent, width: 2),
+        border: Border.all(color: cell.isSelected ? Theme.of(context).accentColor : Colors.transparent, width: 2),
       ),
       child: _cellNumber.isNotEmpty
           ? _buildTextInNumber(context, _cellNumber)
