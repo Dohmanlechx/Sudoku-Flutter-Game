@@ -135,9 +135,11 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildDifficultyText(BuildContext context) {
+    final _selectedDifficulty = context.watch<GameProvider>().selectedDifficulty;
+
     return Center(
       child: Text(
-        context.watch<GameProvider>().selectedDifficulty.asString().capitalize(),
+        _selectedDifficulty != null ? _selectedDifficulty.asString().capitalize() : '',
         style: AppTypography.body,
       ),
     );
