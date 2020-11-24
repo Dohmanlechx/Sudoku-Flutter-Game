@@ -6,7 +6,7 @@ import 'package:sudoku_game/util/device_util.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 
 class CellView extends StatelessWidget {
-  static const _animDuration = Duration(milliseconds: 250);
+  static const _animDuration = Duration(milliseconds: 75);
 
   const CellView({
     this.cell,
@@ -23,7 +23,6 @@ class CellView extends StatelessWidget {
     return GestureDetector(
       onTap: onSubmit,
       child: AnimatedContainer(
-        curve: Curves.easeInOutCubic,
         duration: _animDuration,
         decoration: BoxDecoration(
           color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
@@ -68,7 +67,6 @@ class CellView extends StatelessWidget {
     return Stack(
       children: [
         AnimatedOpacity(
-          curve: Curves.easeInSine,
           duration: _animDuration,
           opacity: isInvalid && cell.number != null ? 1 : 0,
           child: Container(

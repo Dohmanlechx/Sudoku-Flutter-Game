@@ -12,9 +12,9 @@ class DeviceUtil {
     return limit >= _physicalHeight;
   }
 
-  static Future<void> vibrate() async {
+  static Future<void> vibrate({int ms}) async {
     if (await Vibration.hasVibrator() && await InternalStorage.retrieveRumbleEnabled()) {
-      Vibration.vibrate(duration: 100);
+      Vibration.vibrate(duration: ms);
     }
   }
 }

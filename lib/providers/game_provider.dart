@@ -142,6 +142,8 @@ class GameProvider with ChangeNotifier {
 
     if (_clickedCell.number != null) return;
 
+    DeviceUtil.vibrate(ms: 10);
+
     if (_clickedCell.maybeNumbers.contains(maybeNumberInput)) {
       _clickedCell.maybeNumbers.remove(maybeNumberInput);
       notifyListeners();
@@ -149,8 +151,6 @@ class GameProvider with ChangeNotifier {
     }
 
     _clickedCell.maybeNumbers.add(maybeNumberInput);
-
-    DeviceUtil.vibrate();
 
     InternalStorage.storeBoard(_board);
     notifyListeners();
@@ -165,7 +165,7 @@ class GameProvider with ChangeNotifier {
     _clickedCell.maybeNumbers.clear();
 
     if (_clickedCell.solutionNumber != numberInput && !isDelete) {
-      DeviceUtil.vibrate();
+      DeviceUtil.vibrate(ms: 100);
 
       if (!InternalStorage.isSundayModeEnabled) {
         _lives--;

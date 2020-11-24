@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
