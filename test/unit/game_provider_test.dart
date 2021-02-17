@@ -34,7 +34,7 @@ void main() {
     BoardFactory.setBoard(TestResources.mockedValidBoard);
 
     final randomizer = Random();
-    int testCount = 0;
+    var testCount = 0;
 
     while (testCount <= 100) {
       final row = randomizer.nextInt(3);
@@ -59,7 +59,7 @@ void main() {
     BoardFactory.setBoard(TestResources.mockedValidBoard);
 
     final randomizer = Random();
-    int testCount = 0;
+    var testCount = 0;
 
     while (testCount <= 100) {
       final column = randomizer.nextInt(3);
@@ -81,7 +81,7 @@ void main() {
   });
 
   test('getGroupIndexOf tests', () {
-    final Map<int, int> tests = {
+    final tests = <int, int>{
       0: BoardFactory.getGroupIndexOf(1, 2),
       1: BoardFactory.getGroupIndexOf(2, 4),
       2: BoardFactory.getGroupIndexOf(0, 8),
@@ -99,7 +99,7 @@ void main() {
   });
 
   test('boardByGroup tests', () {
-    for (int i = 0; i < 9; i++) {
+    for (var i = 0; i < 9; i++) {
       final actual = BoardFactory.cellsByGroup(TestResources.mockedValidBoard)[i];
       final expected = TestResources.getExpectedBoardByGroup(groupIndex: i);
 
@@ -177,7 +177,7 @@ void main() {
   });
 
   test('getCoordinates test', () {
-    for (int i = 0; i < 9; i++) {
+    for (var i = 0; i < 9; i++) {
       expect(
         BoardFactory.getGroupCoordinates(i),
         TestResources.getExpectedOf(groupIndex: i),

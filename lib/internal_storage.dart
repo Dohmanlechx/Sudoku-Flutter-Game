@@ -32,13 +32,13 @@ class InternalStorage {
   }
 
   static Future<void> storeBoard(Board board) async {
-    final Map<String, dynamic> _boardSerialized = board.toJson();
-    final String _boardJson = jsonEncode(_boardSerialized);
+    final _boardSerialized = board.toJson();
+    final _boardJson = jsonEncode(_boardSerialized);
     await _prefs.setString(_keySession, _boardJson);
   }
 
   static Future<Board> retrieveBoard() async {
-    final String _boardJson = await _prefs.getString(_keySession);
+    final _boardJson = await _prefs.getString(_keySession);
     if (_boardJson == null) return null;
 
     final Map<String, dynamic> _boardDeserialized = jsonDecode(_boardJson);

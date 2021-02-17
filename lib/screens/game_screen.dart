@@ -151,7 +151,7 @@ class GameScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: const [
         Icon(Icons.all_inclusive, color: AppColors.black),
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
         Text(
           AppTranslations.sundaySudoku,
           style: AppTypography.body,
@@ -161,7 +161,7 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildLives(BuildContext context) {
-    final int _lives = context.watch<GameProvider>().lives;
+    final _lives = context.watch<GameProvider>().lives;
 
     return Row(
       mainAxisSize: MainAxisSize.max,

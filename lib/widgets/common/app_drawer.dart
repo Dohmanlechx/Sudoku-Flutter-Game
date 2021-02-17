@@ -16,7 +16,7 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  var versionText = "";
+  var versionText = '';
 
   final _difficultyTranslations = {
     Difficulty.easy: AppTranslations.easy,
@@ -31,7 +31,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     PackageInfo.fromPlatform().then((PackageInfo pkgInfo) {
       setState(() {
-        versionText = "v${pkgInfo.version}";
+        versionText = 'v${pkgInfo.version}';
       });
     });
   }
@@ -175,7 +175,7 @@ class _AppDrawerState extends State<AppDrawer> {
             }
           }
 
-          context.read<SettingsProvider>().toggleSundayMode(isToggled);
+          await context.read<SettingsProvider>().toggleSundayMode(isToggled);
           setState(() {});
         },
       ),
@@ -203,7 +203,7 @@ class _AppDrawerState extends State<AppDrawer> {
       trailing: Switch.adaptive(
         value: isNightModeEnabled,
         onChanged: (bool isToggled) async {
-          context.read<SettingsProvider>().toggleNightMode(isToggled);
+          await context.read<SettingsProvider>().toggleNightMode(isToggled);
           setState(() {});
         },
       ),

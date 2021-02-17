@@ -14,16 +14,16 @@ void main() {
 
   test('Board serialization and de-serialization', () {
     List.generate(100, (_) => _getNewBoard()).forEach((Board board) {
-      final Board _boardBeforeSerialization = board;
-      final Map<String, dynamic> _boardSerialized = _boardBeforeSerialization.toJson();
+      final _boardBeforeSerialization = board;
+      final _boardSerialized = _boardBeforeSerialization.toJson();
 
-      final String _boardJson = jsonEncode(_boardSerialized);
+      final _boardJson = jsonEncode(_boardSerialized);
 
       final Map<String, dynamic> _boardDeserialized = jsonDecode(_boardJson);
-      final Board _boardAfterSerialization = Board.fromJson(_boardDeserialized);
+      final _boardAfterSerialization = Board.fromJson(_boardDeserialized);
 
-      for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+      for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
           expect(
             _boardBeforeSerialization.cells[i][j].number,
             _boardAfterSerialization.cells[i][j].number,

@@ -44,7 +44,7 @@ abstract class BoardFactory {
 
   @visibleForTesting
   static bool isBoardFilled() {
-    for (final List<Cell> row in _board.cells) {
+    for (final row in _board.cells) {
       for (final cell in row) {
         if (cell.isNotFilled) return false;
       }
@@ -77,15 +77,15 @@ abstract class BoardFactory {
       }
     }
 
-    final List<Cell> _boardCopy = List.of(_board.cells.expand((List<Cell> e) => e))..shuffle();
+    final _boardCopy = List.of(_board.cells.expand((List<Cell> e) => e))..shuffle();
 
     while (_boardCopy.isNotEmpty) {
-      int _oldNumber = _board.cells[_boardCopy[0].i][_boardCopy[0].j].number;
+      var _oldNumber = _board.cells[_boardCopy[0].i][_boardCopy[0].j].number;
       _board.cells[_boardCopy[0].i][_boardCopy[0].j].number = null;
 
-      int _solutionCount = 0;
+      var _solutionCount = 0;
 
-      for (int k = 1; k < 10; k++) {
+      for (var k = 1; k < 10; k++) {
         if (!isConflict(k, _boardCopy[0].i, _boardCopy[0].j, _board)) {
           _solutionCount++;
         }
@@ -132,8 +132,8 @@ abstract class BoardFactory {
       final _firstDigit = getRandomDigitOf(9);
       final _secondDigit = getRandomDigitOf(9);
 
-      for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+      for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
           final _cell = _board.cells[i][j];
 
           if (_cell.solutionNumber == _firstDigit) {
@@ -173,9 +173,9 @@ abstract class BoardFactory {
   }
 
   static bool isConflict(int num, int i, int j, Board board) {
-    return cellsByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (row) => board.cells[i][row]).where((cell) => cell.number == num).length >= 1 ||
-        List.generate(9, (col) => board.cells[col][j]).where((cell) => cell.number == num).length >= 1;
+    return cellsByGroup(board)[getGroupIndexOf(i, j)].where((cell) => cell.number == num).isNotEmpty ||
+        List.generate(9, (row) => board.cells[i][row]).where((cell) => cell.number == num).isNotEmpty ||
+        List.generate(9, (col) => board.cells[col][j]).where((cell) => cell.number == num).isNotEmpty;
   }
 
   static List<List<Cell>> cellsByGroup(Board board) {
@@ -252,68 +252,68 @@ abstract class BoardFactory {
   }
 
   static List<List<int>> getGroupCoordinates(int groupIndex) {
-    var res = List<List<int>>();
+    var res = <List<int>>[];
 
     switch (groupIndex) {
       case 0:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 0; j < 3; j++) {
+        for (var i = 0; i < 3; i++) {
+          for (var j = 0; j < 3; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 1:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 3; j < 6; j++) {
+        for (var i = 0; i < 3; i++) {
+          for (var j = 3; j < 6; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 2:
-        for (int i = 0; i < 3; i++) {
-          for (int j = 6; j < 9; j++) {
+        for (var i = 0; i < 3; i++) {
+          for (var j = 6; j < 9; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 3:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 0; j < 3; j++) {
+        for (var i = 3; i < 6; i++) {
+          for (var j = 0; j < 3; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 4:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 3; j < 6; j++) {
+        for (var i = 3; i < 6; i++) {
+          for (var j = 3; j < 6; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 5:
-        for (int i = 3; i < 6; i++) {
-          for (int j = 6; j < 9; j++) {
+        for (var i = 3; i < 6; i++) {
+          for (var j = 6; j < 9; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 6:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 0; j < 3; j++) {
+        for (var i = 6; i < 9; i++) {
+          for (var j = 0; j < 3; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 7:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 3; j < 6; j++) {
+        for (var i = 6; i < 9; i++) {
+          for (var j = 3; j < 6; j++) {
             res.add([i, j]);
           }
         }
         break;
       case 8:
-        for (int i = 6; i < 9; i++) {
-          for (int j = 6; j < 9; j++) {
+        for (var i = 6; i < 9; i++) {
+          for (var j = 6; j < 9; j++) {
             res.add([i, j]);
           }
         }
@@ -398,11 +398,11 @@ abstract class BoardFactory {
     '000030065460950200000086004003070006004090100500010300200140000007065028630020000',
   ];
 
-  static final List<String> _extremeBoards = [
-    '030000000000007510940000000000000091000526004007010005000300700000400000020000100',
-    '500000804000060500009145000800002000000000061090000000316000000004000000000000907',
-    '400018000000000090000000610300050002070800000000100000003086004090000000201000005',
-  ];
+  // static final List<String> _extremeBoards = [
+  //   '030000000000007510940000000000000091000526004007010005000300700000400000020000100',
+  //   '500000804000060500009145000800002000000000061090000000316000000004000000000000907',
+  //   '400018000000000090000000610300050002070800000000100000003086004090000000201000005',
+  // ];
 
   /*
   * Those boards were solved by my BoardSolver class.

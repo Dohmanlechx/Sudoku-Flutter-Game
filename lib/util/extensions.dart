@@ -10,7 +10,7 @@ const _difficultyMap = {
 };
 
 extension IntListExtensions on Cell {
-  void refillAvailableNumbers() => this.availableNumbers
+  void refillAvailableNumbers() => availableNumbers
     ..clear()
     ..addAll([1, 2, 3, 4, 5, 6, 7, 8, 9])
     ..shuffle();
@@ -33,7 +33,7 @@ extension StringExtensions on String {
       });
   }
 
-  String capitalize() => this[0].toUpperCase() + this.substring(1).toLowerCase();
+  String capitalize() => this[0].toUpperCase() + substring(1).toLowerCase();
 
   Difficulty toDifficultyEnum() {
     Difficulty res;

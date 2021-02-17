@@ -5,7 +5,7 @@ import 'package:sudoku_game/util/extensions.dart';
 
 abstract class BoardSolver {
   static Board getSolvedBoard(Board board) {
-    final List<Cell> _emptyCells =
+    final _emptyCells =
         board.cells.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
 
     var _iterator = 0;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/board/board_factory.dart';
-import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
 import 'package:sudoku_game/styles/theme.dart';
 import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
@@ -24,8 +23,8 @@ class CellGroupView extends StatelessWidget {
   }
 
   Widget _buildTileGroupGrid(BuildContext context) {
-    final GameProvider _provider = context.watch<GameProvider>();
-    final List<Cell> _cells = BoardFactory.cellsByGroup(_provider.board)[groupIndex];
+    final _provider = context.watch<GameProvider>();
+    final _cells = BoardFactory.cellsByGroup(_provider.board)[groupIndex];
 
     return NonScrollableGridView(
       children: List<Widget>.generate(9, (int index) {

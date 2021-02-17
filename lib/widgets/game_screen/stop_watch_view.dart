@@ -28,7 +28,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   Stream<bool> _isRoundDoneStream;
   StreamSubscription<bool> _isRoundDoneSubscription;
 
-  var _formattedTimerText = "";
+  var _formattedTimerText = '';
 
   int _ongoingTick = 0;
 
@@ -40,7 +40,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
       await InternalStorage.storeTimeTick(_ongoingTick);
       _disposeTimer();
     } else if (state == AppLifecycleState.resumed) {
-      _restoreTimerAndSetupListener();
+      await _restoreTimerAndSetupListener();
     }
   }
 
@@ -64,20 +64,20 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _isNewGameStream = context.watch<GameProvider>().isNewGameStream;
     _isRoundDoneStream = context.watch<GameProvider>().isRoundDoneStream;
 
-    if (_isNewGameSubscription == null) {
-      _isNewGameSubscription = _isNewGameStream.listen((bool isNewGame) {
+    _isNewGameSubscription ??= _isNewGameStream.listen(
+      (bool isNewGame) {
         if (isNewGame) {
           _disposeTimer();
           _restoreTimerAndSetupListener();
         }
-      });
-    }
+      },
+    );
 
-    if (_isRoundDoneSubscription == null) {
-      _isRoundDoneSubscription = _isRoundDoneStream.listen((bool isRoundDone) {
+    _isRoundDoneSubscription ??= _isRoundDoneStream.listen(
+      (bool isRoundDone) {
         if (isRoundDone) _disposeTimer();
-      });
-    }
+      },
+    );
 
     return Center(child: Text(_formattedTimerText, style: AppTypography.timer));
   }
@@ -102,11 +102,11 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   Future<void> _restoreTimerAndSetupListener() async {
     _ongoingTick = 0;
 
-    final int _savedTick = await InternalStorage.retrieveTimeTick() ?? 0;
+    final _savedTick = await InternalStorage.retrieveTimeTick() ?? 0;
     _updateTimerText(_savedTick + _ongoingTick);
 
     if (_timerSubscription != null) {
-      _timerSubscription.cancel();
+      await _timerSubscription.cancel();
     }
 
     _stopWatch = StopWatch();
@@ -126,9 +126,9 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   }
 
   String _getFormattedTimerText(int newTick) {
-    final String h = (newTick >= 3600) ? '${(newTick / 3600).floor().toString()}:' : '';
-    final String m = '${((newTick / 60) % 60).floor().toString().padLeft(2, '0')}:';
-    final String s = (newTick % 60).floor().toString().padLeft(2, '0');
+    final h = (newTick >= 3600) ? '${(newTick / 3600).floor().toString()}:' : '';
+    final m = '${((newTick / 60) % 60).floor().toString().padLeft(2, '0')}:';
+    final s = (newTick % 60).floor().toString().padLeft(2, '0');
 
     return '$h$m$s';
   }

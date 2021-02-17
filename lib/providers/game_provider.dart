@@ -25,16 +25,16 @@ class GameProvider with ChangeNotifier {
 
   Difficulty get selectedDifficulty => _selectedDifficulty;
 
-  var _isNewGameStream = BehaviorSubject<bool>();
-  var _isRoundDoneStream = BehaviorSubject<bool>();
+  final _isNewGameStream = BehaviorSubject<bool>();
+  final _isRoundDoneStream = BehaviorSubject<bool>();
 
   Stream<bool> get isNewGameStream => _isNewGameStream.stream.asBroadcastStream();
 
   Stream<bool> get isRoundDoneStream => _isRoundDoneStream.stream.asBroadcastStream();
 
   Cell get selectedCell {
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
         final cell = _board.cells[i][j];
         if (cell.isSelected) {
           return cell;
@@ -52,8 +52,8 @@ class GameProvider with ChangeNotifier {
   }
 
   bool get isWonRound {
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
         if (_board.cells[i][j].number != _board.cells[i][j].solutionNumber) {
           return false;
         }
@@ -127,7 +127,7 @@ class GameProvider with ChangeNotifier {
     }
 
     if (!isTesting) {
-      InternalStorage.storeBoard(_board);
+      await InternalStorage.storeBoard(_board);
     }
 
     notifyListeners();
@@ -142,7 +142,7 @@ class GameProvider with ChangeNotifier {
 
     if (_clickedCell.number != null) return;
 
-    DeviceUtil.vibrate(ms: 10);
+    await DeviceUtil.vibrate(ms: 10);
 
     if (_clickedCell.maybeNumbers.contains(maybeNumberInput)) {
       _clickedCell.maybeNumbers.remove(maybeNumberInput);
@@ -152,7 +152,7 @@ class GameProvider with ChangeNotifier {
 
     _clickedCell.maybeNumbers.add(maybeNumberInput);
 
-    InternalStorage.storeBoard(_board);
+    await InternalStorage.storeBoard(_board);
     notifyListeners();
   }
 
@@ -165,7 +165,7 @@ class GameProvider with ChangeNotifier {
     _clickedCell.maybeNumbers.clear();
 
     if (_clickedCell.solutionNumber != numberInput && !isDelete) {
-      DeviceUtil.vibrate(ms: 100);
+      await DeviceUtil.vibrate(ms: 100);
 
       if (!InternalStorage.isSundayModeEnabled) {
         _lives--;
@@ -174,7 +174,7 @@ class GameProvider with ChangeNotifier {
     }
 
     _board.hasBeenStartedPlaying = true;
-    InternalStorage.storeBoard(_board);
+    await InternalStorage.storeBoard(_board);
     notifyListeners();
   }
 
@@ -192,8 +192,8 @@ class GameProvider with ChangeNotifier {
         });
       });
 
-      for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+      for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
           _maybeHighlightThisCell(groupIndex, index, i, j);
         }
       }

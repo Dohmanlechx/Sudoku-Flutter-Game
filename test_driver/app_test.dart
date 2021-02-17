@@ -1,10 +1,9 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-/**
- * To run, write this in the terminal:
- * flutter drive --target=test_driver/app.dart
- */
+/// To run, write this in the terminal:
+
+/// flutter drive --target=test_driver/app.dart
 
 void main() {
   group('App Integration Tests', () {

@@ -6,7 +6,7 @@ part 'board.g.dart';
 @JsonSerializable()
 class Board {
   Board() {
-    cells = List();
+    cells = [];
     hasBeenStartedPlaying = false;
     clearAllTiles();
   }
@@ -15,7 +15,7 @@ class Board {
   bool hasBeenStartedPlaying;
 
   void clearAllTiles() {
-    this.cells
+    cells
       ..clear()
       ..addAll(
         List<List<Cell>>.generate(9, (_) => List.generate(9, (_) => Cell())),

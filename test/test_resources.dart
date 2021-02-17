@@ -289,6 +289,6 @@ class TestResources {
         ];
     }
 
-    return List();
+    return [];
   }
 }

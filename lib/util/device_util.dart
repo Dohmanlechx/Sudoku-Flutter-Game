@@ -14,7 +14,7 @@ class DeviceUtil {
 
   static Future<void> vibrate({int ms}) async {
     if (await Vibration.hasVibrator() && await InternalStorage.retrieveRumbleEnabled()) {
-      Vibration.vibrate(duration: ms);
+      await Vibration.vibrate(duration: ms);
     }
   }
 }
