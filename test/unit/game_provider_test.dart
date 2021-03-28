@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sudoku_game/board/board_factory.dart';
 import 'package:sudoku_game/models/board.dart';
 import 'package:sudoku_game/models/cell.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
+import 'package:test/test.dart';
 
 import '../test_resources.dart';
 

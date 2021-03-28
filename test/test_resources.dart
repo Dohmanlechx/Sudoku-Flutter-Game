@@ -18,7 +18,7 @@ class TestResources {
     ].map((row) => row.map((int num) => Cell(number: num)).toList()).toList();
 
   static List<Cell> getExpectedBoardByRow(int row, int groupIndex) {
-    List<int> res;
+    var res = <int>[];
 
     if (groupIndex <= 2) {
       switch (row) {
@@ -62,7 +62,7 @@ class TestResources {
   }
 
   static List<Cell> getExpectedBoardByColumn(int column, int groupIndex) {
-    List<int> res;
+    var res = <int>[];
 
     if (groupIndex == 0 || groupIndex == 3 || groupIndex == 6) {
       switch (column) {
@@ -105,8 +105,8 @@ class TestResources {
     return res.map((int num) => Cell(number: num)).toList();
   }
 
-  static List<Cell> getExpectedBoardByGroup({int groupIndex}) {
-    List<int> res;
+  static List<Cell> getExpectedBoardByGroup({required int groupIndex}) {
+    var res = <int>[];
 
     switch (groupIndex) {
       case 0:
@@ -177,7 +177,7 @@ class TestResources {
     return res.map((int num) => Cell(number: num)).toList();
   }
 
-  static List<List<int>> getExpectedOf({int groupIndex}) {
+  static List<List<int>> getExpectedOf({required int groupIndex}) {
     switch (groupIndex) {
       case 0:
         return [

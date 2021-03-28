@@ -47,9 +47,9 @@ class _AppDrawerState extends State<AppDrawer> {
       builder: (BuildContext ctx, AsyncSnapshot<List<bool>> snapshot) {
         if (!snapshot.hasData) return const SizedBox();
 
-        final _isRumbleEnabled = snapshot.data[0];
-        final _isNightModeEnabled = snapshot.data[1];
-        final _isSundayEnabled = snapshot.data[2];
+        final _isRumbleEnabled = snapshot.data?[0] ?? false;
+        final _isNightModeEnabled = snapshot.data?[1] ?? false;
+        final _isSundayEnabled = snapshot.data?[2] ?? false;
 
         return Drawer(
           key: const Key('app_drawer'),
@@ -87,22 +87,22 @@ class _AppDrawerState extends State<AppDrawer> {
     return List.generate(Difficulty.values.length, (int index) {
       return _buildListTile(
         icon: Icons.add,
-        title: _difficultyTranslations[Difficulty.values[index]],
+        title: _difficultyTranslations[Difficulty.values[index]] ?? '',
         onTap: () => _triggerNewGame(context, Difficulty.values[index]),
       );
     });
   }
 
   Widget _buildListTile({
-    IconData icon,
-    String title,
-    Function onTap,
-    Widget trailing,
+    required IconData icon,
+    required String title,
+    Function? onTap,
+    Widget? trailing,
   }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.black),
       title: Text(title, style: AppTypography.body),
-      onTap: onTap,
+      onTap: () => onTap != null ? onTap() : () {},
       trailing: trailing ?? const SizedBox(),
     );
   }
@@ -143,14 +143,14 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                     actions: [
                       TextButton(
-                        child: Text(
-                          AppTranslations.yes.toUpperCase(),
-                          style: AppTypography.body.copyWith(color: AppColors.red),
-                        ),
                         onPressed: () {
                           _userApproved = true;
                           Navigator.of(context).pop();
                         },
+                        child: Text(
+                          AppTranslations.yes.toUpperCase(),
+                          style: AppTypography.body.copyWith(color: AppColors.red),
+                        ),
                       )
                     ],
                   );

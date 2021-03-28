@@ -17,7 +17,7 @@ class GameProvider with ChangeNotifier {
 
   Board get board => _board;
 
-  int _lives;
+  int _lives = 0;
 
   int get lives => _lives;
 
@@ -36,7 +36,7 @@ class GameProvider with ChangeNotifier {
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
         final cell = _board.cells[i][j];
-        if (cell.isSelected) {
+        if (cell.isSelected == true) {
           return cell;
         }
       }
@@ -85,7 +85,7 @@ class GameProvider with ChangeNotifier {
       _isNewGameStream.add(true);
       buildBoard(difficulty);
     } else {
-      Board _retrievedBoard;
+      Board? _retrievedBoard;
 
       if (!isTesting) {
         _retrievedBoard = await InternalStorage.retrieveBoard();
@@ -98,7 +98,7 @@ class GameProvider with ChangeNotifier {
 
         if (!isTesting) {
           _lives = await InternalStorage.retrieveLives();
-          _selectedDifficulty = await InternalStorage.retrieveDifficulty();
+          _selectedDifficulty = await InternalStorage.retrieveDifficulty() ?? Difficulty.easy;
         }
 
         notifyListeners();
@@ -133,36 +133,40 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isOccupiedNumberInGroup({int index, int number, int groupIndex}) {
+  bool isOccupiedNumberInGroup({
+    required int index,
+    required int number,
+    required int groupIndex,
+  }) {
     return BoardFactory.isOccupiedNumberInGroup(index, number, groupIndex);
   }
 
-  Future<void> setMaybeNumber({int maybeNumberInput, isDelete = false}) async {
+  Future<void> setMaybeNumber({required int maybeNumberInput, isDelete = false}) async {
     final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
 
-    if (_clickedCell.number != null) return;
+    if (_clickedCell.isFilled || maybeNumberInput == -1) return;
 
     await DeviceUtil.vibrate(ms: 10);
 
-    if (_clickedCell.maybeNumbers.contains(maybeNumberInput)) {
-      _clickedCell.maybeNumbers.remove(maybeNumberInput);
+    if (_clickedCell.maybeNumbers?.contains(maybeNumberInput) == true) {
+      _clickedCell.maybeNumbers?.remove(maybeNumberInput);
       notifyListeners();
       return;
     }
 
-    _clickedCell.maybeNumbers.add(maybeNumberInput);
+    _clickedCell.maybeNumbers?.add(maybeNumberInput);
 
     await InternalStorage.storeBoard(_board);
     notifyListeners();
   }
 
-  Future<void> setNumber({int numberInput, bool isDelete = false}) async {
+  Future<void> setNumber({required int numberInput, bool isDelete = false}) async {
     final _clickedCell = _board.cells[selectedCell.i][selectedCell.j];
 
-    if (_clickedCell.number == _clickedCell.solutionNumber) return;
+    if (_clickedCell.number == _clickedCell.solutionNumber || numberInput == -1) return;
 
     _clickedCell.number = numberInput;
-    _clickedCell.maybeNumbers.clear();
+    _clickedCell.maybeNumbers?.clear();
 
     if (_clickedCell.solutionNumber != numberInput && !isDelete) {
       await DeviceUtil.vibrate(ms: 100);
@@ -184,7 +188,7 @@ class GameProvider with ChangeNotifier {
 
     if (_clickedCell.number == _clickedCell.solutionNumber) return;
 
-    if (_clickedCell.isClickable) {
+    if (_clickedCell.isClickable == true) {
       _board.cells.forEach((List<Cell> row) {
         return row.forEach((Cell cell) {
           cell.isSelected = false;

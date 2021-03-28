@@ -11,8 +11,8 @@ class Board {
     clearAllTiles();
   }
 
-  List<List<Cell>> cells;
-  bool hasBeenStartedPlaying;
+  List<List<Cell>> cells = [];
+  bool hasBeenStartedPlaying = false;
 
   void clearAllTiles() {
     cells
@@ -21,6 +21,8 @@ class Board {
         List<List<Cell>>.generate(9, (_) => List.generate(9, (_) => Cell())),
       );
   }
+
+  static Board get empty => Board();
 
   factory Board.fromJson(Map<String, dynamic> json) => _$BoardFromJson(json);
 

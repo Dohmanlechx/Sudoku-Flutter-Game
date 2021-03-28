@@ -16,7 +16,7 @@ dependencies:
 
   provider: ^5.0.0
 
-  vibration: ^1.7.3
+  vibration: ^1.7.4-nullsafety.0
 
   json_annotation: ^4.0.1
 

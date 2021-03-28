@@ -8,25 +8,23 @@ import 'package:sudoku_game/styles/typography.dart';
 import 'package:sudoku_game/util/stop_watch.dart';
 
 class StopWatchView extends StatefulWidget {
-  const StopWatchView({this.isNewGame});
-
-  final bool isNewGame;
+  const StopWatchView();
 
   @override
   _StopWatchViewState createState() => _StopWatchViewState();
 }
 
 class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserver {
-  StopWatch _stopWatch;
+  StopWatch? _stopWatch;
 
-  Stream<int> _timerStream;
-  StreamSubscription<int> _timerSubscription;
+  Stream<int>? _timerStream;
+  StreamSubscription<int>? _timerSubscription;
 
-  Stream<bool> _isNewGameStream;
-  StreamSubscription<bool> _isNewGameSubscription;
+  Stream<bool>? _isNewGameStream;
+  StreamSubscription<bool>? _isNewGameSubscription;
 
-  Stream<bool> _isRoundDoneStream;
-  StreamSubscription<bool> _isRoundDoneSubscription;
+  Stream<bool>? _isRoundDoneStream;
+  StreamSubscription<bool>? _isRoundDoneSubscription;
 
   var _formattedTimerText = '';
 
@@ -47,12 +45,12 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
     _disposeTimer();
     _disposeStreamsAndSubscriptions();
     _isNewGameSubscription?.cancel();
@@ -64,7 +62,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
     _isNewGameStream = context.watch<GameProvider>().isNewGameStream;
     _isRoundDoneStream = context.watch<GameProvider>().isRoundDoneStream;
 
-    _isNewGameSubscription ??= _isNewGameStream.listen(
+    _isNewGameSubscription ??= _isNewGameStream?.listen(
       (bool isNewGame) {
         if (isNewGame) {
           _disposeTimer();
@@ -73,7 +71,7 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
       },
     );
 
-    _isRoundDoneSubscription ??= _isRoundDoneStream.listen(
+    _isRoundDoneSubscription ??= _isRoundDoneStream?.listen(
       (bool isRoundDone) {
         if (isRoundDone) _disposeTimer();
       },
@@ -102,18 +100,18 @@ class _StopWatchViewState extends State<StopWatchView> with WidgetsBindingObserv
   Future<void> _restoreTimerAndSetupListener() async {
     _ongoingTick = 0;
 
-    final _savedTick = await InternalStorage.retrieveTimeTick() ?? 0;
+    final _savedTick = await InternalStorage.retrieveTimeTick();
     _updateTimerText(_savedTick + _ongoingTick);
 
     if (_timerSubscription != null) {
-      await _timerSubscription.cancel();
+      await _timerSubscription?.cancel();
     }
 
     _stopWatch = StopWatch();
 
-    _timerStream = _stopWatch.stopWatchStream(startCounter: _savedTick + _ongoingTick);
+    _timerStream = _stopWatch?.stopWatchStream(startCounter: _savedTick + _ongoingTick);
 
-    _timerSubscription = _timerStream.listen((int newTick) {
+    _timerSubscription = _timerStream?.listen((int newTick) {
       _ongoingTick = newTick;
       _updateTimerText(_ongoingTick);
     });

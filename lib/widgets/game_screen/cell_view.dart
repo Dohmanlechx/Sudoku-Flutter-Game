@@ -9,9 +9,9 @@ class CellView extends StatelessWidget {
   static const _animDuration = Duration(milliseconds: 75);
 
   const CellView({
-    this.cell,
-    this.isInvalid,
-    this.onSubmit,
+    required this.cell,
+    required this.isInvalid,
+    required this.onSubmit,
   });
 
   final Cell cell;
@@ -21,11 +21,11 @@ class CellView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onSubmit,
+      onTap: () => onSubmit(),
       child: AnimatedContainer(
         duration: _animDuration,
         decoration: BoxDecoration(
-          color: cell.isHighlighted ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
+          color: cell.isHighlighted == true ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
           border: Border.all(width: 0.5, color: AppColors.boardAccent),
         ),
         child: _buildNumber(context),
@@ -38,14 +38,15 @@ class CellView extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: cell.isSelected ? Theme.of(context).accentColor : Colors.transparent, width: 2),
+        border:
+            Border.all(color: cell.isSelected == true ? Theme.of(context).accentColor : Colors.transparent, width: 2),
       ),
       child: _cellNumber.isNotEmpty
           ? _buildTextInNumber(context, _cellNumber)
-          : cell.maybeNumbers.isNotEmpty
+          : cell.maybeNumbers?.isNotEmpty == true
               ? NonScrollableGridView(
                   children: List<Widget>.generate(9, (int index) {
-                    return cell.maybeNumbers.contains(index + 1)
+                    return cell.maybeNumbers?.contains(index + 1) == true
                         ? Text(
                             (index + 1).toString(),
                             textAlign: TextAlign.center,
@@ -68,11 +69,11 @@ class CellView extends StatelessWidget {
       children: [
         AnimatedOpacity(
           duration: _animDuration,
-          opacity: isInvalid && cell.number != null ? 1 : 0,
+          opacity: isInvalid == true && cell.number != null ? 1 : 0,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(100)),
-              color: AppColors.red.withOpacity(cell.isClickable ? 0.75 : 0.5),
+              color: AppColors.red.withOpacity(cell.isClickable == true ? 0.75 : 0.5),
             ),
             child: Center(child: _textWidget('')), // To get the correct space
           ),
@@ -85,9 +86,9 @@ class CellView extends StatelessWidget {
   Color _getDigitColor(BuildContext context) {
     if (cell.number == 0) {
       return Colors.transparent;
-    } else if (isInvalid) {
+    } else if (isInvalid == true) {
       return AppColors.boardAccent;
-    } else if (cell.isClickable && cell.number == cell.solutionNumber) {
+    } else if (cell.isClickable == true && cell.number == cell.solutionNumber) {
       return Theme.of(context).accentColor;
     } else {
       return AppColors.boardAccent;

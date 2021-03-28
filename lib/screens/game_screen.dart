@@ -139,7 +139,7 @@ class GameScreen extends StatelessWidget {
 
     return Center(
       child: Text(
-        _selectedDifficulty != null ? _selectedDifficulty.asString().capitalize() : '',
+        (_selectedDifficulty.asString() ?? '').capitalize(),
         style: AppTypography.body,
       ),
     );
@@ -185,7 +185,7 @@ class GameScreen extends StatelessWidget {
       margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.all(8),
       child: NonScrollableGridView(
-          childAspectRatio: DeviceUtil.isSmallDevice(context) ? 3 / 2 : null,
+          childAspectRatio: DeviceUtil.isSmallDevice(context) ? 3 / 2 : 1 / 1,
           crossAxisCount: 5,
           children: List<Widget>.generate(
             10,
@@ -193,7 +193,7 @@ class GameScreen extends StatelessWidget {
               final _number = ++index;
               final _canGameContinue = !_watchProvider.isWonRound &&
                   !_watchProvider.isGameOver &&
-                  _watchProvider.selectedCell.coordinates.isNotEmpty;
+                  _watchProvider.selectedCell.coordinates!.isNotEmpty;
 
               return Stack(
                 children: [
@@ -249,14 +249,14 @@ class GameScreen extends StatelessWidget {
 
   void _setMaybeNumber(BuildContext context, int number) {
     context.read<GameProvider>().setMaybeNumber(
-          maybeNumberInput: number < 10 ? number : null,
+          maybeNumberInput: number < 10 ? number : -1,
           isDelete: number == 10,
         );
   }
 
   void _setNumber(BuildContext context, int number) {
     context.read<GameProvider>().setNumber(
-          numberInput: number < 10 ? number : null,
+          numberInput: number < 10 ? number : -1,
           isDelete: number == 10,
         );
   }
