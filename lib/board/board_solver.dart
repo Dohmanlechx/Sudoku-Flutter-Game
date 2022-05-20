@@ -6,24 +6,24 @@ import 'package:sudoku_game/util/extensions.dart';
 abstract class BoardSolver {
   static Board getSolvedBoard(Board board) {
     final _emptyCells =
-        board.cells.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber <= 0)).toList();
+        board.cells.expand((List<Cell> cells) => cells.where((Cell cell) => cell.solutionNumber! <= 0)).toList();
 
     var _iterator = 0;
 
     Cell _currentCell() => _emptyCells[_iterator];
 
     do {
-      if (_currentCell().availableNumbers.isEmpty) {
+      if (_currentCell().availableNumbers!.isEmpty) {
         _currentCell().refillAvailableNumbers();
         _currentCell().number = 0;
         _currentCell().solutionNumber = 0;
         _iterator--;
       } else {
-        if (BoardFactory.isConflict(_currentCell().availableNumbers[0], _currentCell().i, _currentCell().j, board)) {
-          _currentCell().availableNumbers.remove(_currentCell().availableNumbers[0]);
+        if (BoardFactory.isConflict(_currentCell().availableNumbers![0], _currentCell().i, _currentCell().j, board)) {
+          _currentCell().availableNumbers!.remove(_currentCell().availableNumbers![0]);
         } else {
-          board.cells[_currentCell().i][_currentCell().j].number = _currentCell().availableNumbers[0];
-          board.cells[_currentCell().i][_currentCell().j].solutionNumber = _currentCell().availableNumbers[0];
+          board.cells[_currentCell().i][_currentCell().j].number = _currentCell().availableNumbers![0];
+          board.cells[_currentCell().i][_currentCell().j].solutionNumber = _currentCell().availableNumbers![0];
           _iterator++;
         }
       }

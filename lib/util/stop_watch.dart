@@ -3,24 +3,24 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 class StopWatch {
-  Stream<int> stopWatchStream({int startCounter}) {
-    BehaviorSubject<int> _streamController;
-    Timer _timer;
+  Stream<int> stopWatchStream({required int startCounter}) {
+    BehaviorSubject<int>? _streamController;
+    Timer? _timer;
     var _timerInterval = const Duration(seconds: 1);
     var _counter = startCounter + 0;
 
     void _stopTimer() {
       if (_timer != null) {
-        _timer.cancel();
+        _timer?.cancel();
         _timer = null;
         _counter = 0;
-        _streamController.close();
+        _streamController?.close();
       }
     }
 
     void _tick(_) {
       _counter++;
-      _streamController.add(_counter);
+      _streamController?.add(_counter);
     }
 
     void _startTimer() {

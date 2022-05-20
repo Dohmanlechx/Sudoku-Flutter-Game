@@ -7,7 +7,7 @@ import 'package:sudoku_game/widgets/common/non_scrollable_grid_view.dart';
 import 'package:sudoku_game/widgets/game_screen/cell_view.dart';
 
 class CellGroupView extends StatelessWidget {
-  const CellGroupView({this.groupIndex});
+  const CellGroupView({required this.groupIndex});
 
   final int groupIndex;
 
@@ -30,7 +30,7 @@ class CellGroupView extends StatelessWidget {
       children: List<Widget>.generate(9, (int index) {
         final _isOccupied = _provider.isOccupiedNumberInGroup(
           index: index,
-          number: _cells[index].number,
+          number: _cells[index].number ?? -1,
           groupIndex: groupIndex,
         );
 

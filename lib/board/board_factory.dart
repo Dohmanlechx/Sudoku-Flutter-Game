@@ -58,15 +58,15 @@ abstract class BoardFactory {
     i = 0;
     j = 0;
 
-    int _currentNumber() => _board.cells[i][j].availableNumbers[0];
+    int _currentNumber() => _board.cells[i][j].availableNumbers![0];
 
     while (!isBoardFilled()) {
-      if (_board.cells[i][j].availableNumbers.isEmpty) {
+      if (_board.cells[i][j].availableNumbers!.isEmpty) {
         _board.cells[i][j].refillAvailableNumbers();
         clearCurrentTileAndGoPrevious();
       } else {
         if (isConflict(_currentNumber(), i, j, _board)) {
-          _board.cells[i][j].availableNumbers.remove(_currentNumber());
+          _board.cells[i][j].availableNumbers!.remove(_currentNumber());
         } else {
           _board.cells[i][j]
             ..number = _currentNumber()
@@ -225,7 +225,7 @@ abstract class BoardFactory {
   }
 
   static int getGroupIndexOf(int a, int b) {
-    int res;
+    var res = -1;
 
     if (a >= 0 && a <= 2 && b >= 0 && b <= 2) {
       res = 0;
@@ -247,7 +247,7 @@ abstract class BoardFactory {
       res = 8;
     }
 
-    assert(res != null);
+    assert(res >= 0);
     return res;
   }
 

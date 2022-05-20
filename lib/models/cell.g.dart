@@ -8,16 +8,18 @@ part of 'cell.dart';
 
 Cell _$CellFromJson(Map<String, dynamic> json) {
   return Cell(
-    number: json['number'] as int,
-    solutionNumber: json['solutionNumber'] as int,
-    isClickable: json['isClickable'] as bool,
-    isSelected: json['isSelected'] as bool,
-    isHighlighted: json['isHighlighted'] as bool,
-    coordinates: (json['coordinates'] as List)?.map((e) => e as int)?.toList(),
-    availableNumbers:
-        (json['availableNumbers'] as List)?.map((e) => e as int)?.toList(),
+    number: json['number'] as int?,
+    solutionNumber: json['solutionNumber'] as int?,
+    isClickable: json['isClickable'] as bool?,
+    isSelected: json['isSelected'] as bool?,
+    isHighlighted: json['isHighlighted'] as bool?,
+    coordinates:
+        (json['coordinates'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    availableNumbers: (json['availableNumbers'] as List<dynamic>?)
+        ?.map((e) => e as int)
+        .toList(),
     maybeNumbers:
-        (json['maybeNumbers'] as List)?.map((e) => e as int)?.toList(),
+        (json['maybeNumbers'] as List<dynamic>?)?.map((e) => e as int).toList(),
   );
 }
 

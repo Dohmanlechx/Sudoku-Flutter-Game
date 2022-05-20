@@ -8,12 +8,11 @@ part of 'board.dart';
 
 Board _$BoardFromJson(Map<String, dynamic> json) {
   return Board()
-    ..cells = (json['cells'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Cell.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList()
+    ..cells = (json['cells'] as List<dynamic>)
+        .map((e) => (e as List<dynamic>)
+            .map((e) => Cell.fromJson(e as Map<String, dynamic>))
+            .toList())
+        .toList()
     ..hasBeenStartedPlaying = json['hasBeenStartedPlaying'] as bool;
 }
 

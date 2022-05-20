@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class NonScrollableGridView extends StatelessWidget {
   const NonScrollableGridView({
-    this.children,
+    required this.children,
     this.crossAxisCount = 3,
-    this.childAspectRatio,
+    this.childAspectRatio = 1 / 1,
   });
 
   final List<Widget> children;
@@ -14,7 +14,7 @@ class NonScrollableGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      childAspectRatio: childAspectRatio ?? 1 / 1,
+      childAspectRatio: childAspectRatio,
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

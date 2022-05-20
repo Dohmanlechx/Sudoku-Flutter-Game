@@ -18,20 +18,21 @@ class Cell {
     _initCell();
   }
 
-  int number;
-  int solutionNumber;
-  bool isClickable;
-  bool isSelected;
-  bool isHighlighted;
-  List<int> coordinates;
-  List<int> availableNumbers;
-  List<int> maybeNumbers;
+  int? number;
+  int? solutionNumber;
+  bool? isClickable;
+  bool? isSelected;
+  bool? isHighlighted;
+  List<int>? coordinates;
+  List<int>? availableNumbers;
+  List<int>? maybeNumbers;
 
-  bool get isNotFilled => number <= 0;
+  bool get isNotFilled => (number ?? 0) <= 0;
+  bool get isFilled => (number ?? 0) > 0;
 
-  int get i => coordinates[0];
+  int get i => coordinates![0];
 
-  int get j => coordinates[1];
+  int get j => coordinates![1];
 
   void _initCell() {
     coordinates ??= [];
