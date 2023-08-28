@@ -25,7 +25,9 @@ class CellView extends StatelessWidget {
       child: AnimatedContainer(
         duration: _animDuration,
         decoration: BoxDecoration(
-          color: cell.isHighlighted == true ? AppColors.boardHighlight.withOpacity(0.75) : AppColors.board,
+          color: cell.isHighlighted == true
+              ? AppColors.boardHighlight.withOpacity(0.75)
+              : AppColors.board,
           border: Border.all(width: 0.5, color: AppColors.boardAccent),
         ),
         child: _buildNumber(context),
@@ -38,8 +40,11 @@ class CellView extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border:
-            Border.all(color: cell.isSelected == true ? Theme.of(context).accentColor : Colors.transparent, width: 2),
+        border: Border.all(
+            color: cell.isSelected == true
+                ? Theme.of(context).colorScheme.secondary
+                : Colors.transparent,
+            width: 2),
       ),
       child: _cellNumber.isNotEmpty
           ? _buildTextInNumber(context, _cellNumber)
@@ -52,7 +57,10 @@ class CellView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: AppTypography.body.copyWith(
                               color: AppColors.boardAccent,
-                              fontSize: DeviceUtil.isSmallDevice(context, limit: 1280) ? 8 : 11,
+                              fontSize:
+                                  DeviceUtil.isSmallDevice(context, limit: 1280)
+                                      ? 8
+                                      : 11,
                             ),
                           )
                         : const SizedBox();
@@ -63,7 +71,8 @@ class CellView extends StatelessWidget {
   }
 
   Widget _buildTextInNumber(BuildContext context, String copy) {
-    Widget _textWidget(String copy) => Text(copy, style: AppTypography.timer.copyWith(color: _getDigitColor(context)));
+    Widget _textWidget(String copy) => Text(copy,
+        style: AppTypography.timer.copyWith(color: _getDigitColor(context)));
 
     return Stack(
       children: [
@@ -73,7 +82,8 @@ class CellView extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(100)),
-              color: AppColors.red.withOpacity(cell.isClickable == true ? 0.75 : 0.5),
+              color: AppColors.red
+                  .withOpacity(cell.isClickable == true ? 0.75 : 0.5),
             ),
             child: Center(child: _textWidget('')), // To get the correct space
           ),
@@ -89,7 +99,7 @@ class CellView extends StatelessWidget {
     } else if (isInvalid == true) {
       return AppColors.boardAccent;
     } else if (cell.isClickable == true && cell.number == cell.solutionNumber) {
-      return Theme.of(context).accentColor;
+      return Theme.of(context).colorScheme.secondary;
     } else {
       return AppColors.boardAccent;
     }

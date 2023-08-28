@@ -4,44 +4,66 @@ import 'package:sudoku_game/internal_storage.dart';
 final appTheme = ThemeData(
   fontFamily: 'Coolvetica',
   primaryColor: AppColors.primary,
-  backgroundColor: AppColors.primary,
-  accentColor: AppColors.accent,
-  appBarTheme: const AppBarTheme(
-    textTheme: TextTheme(),
+  colorScheme: const ColorScheme.light()
+    ..copyWith(
+      background: AppColors.primary,
+      primary: AppColors.primary,
+      secondary: AppColors.accent,
+    ),
+  appBarTheme: AppBarTheme(
     color: AppColors.accent,
+    toolbarTextStyle: const TextTheme().bodyMedium,
+    titleTextStyle: const TextTheme().titleLarge,
   ),
 );
 
 final appThemeDark = ThemeData(
   fontFamily: 'Coolvetica',
   primaryColor: AppColors.primaryDark,
-  backgroundColor: AppColors.primaryDark,
-  accentColor: AppColors.accentDark,
-  appBarTheme: const AppBarTheme(
-    textTheme: TextTheme(),
+  colorScheme: const ColorScheme.dark()
+    ..copyWith(
+      background: AppColors.primaryDark,
+      primary: AppColors.primaryDark,
+      secondary: AppColors.accentDark,
+    ),
+  appBarTheme: AppBarTheme(
     color: AppColors.grey,
+    toolbarTextStyle: const TextTheme().bodyMedium,
+    titleTextStyle: const TextTheme().titleLarge,
   ),
 );
 
 abstract class AppColors {
   // Custom colors that don't fit in the ThemeData
-  static Color get appBarText => InternalStorage.isNightModeEnabled ? AppColors.black : AppColors.white;
+  static Color get appBarText =>
+      InternalStorage.isNightModeEnabled ? AppColors.black : AppColors.white;
 
-  static Color get board => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
+  static Color get board =>
+      InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
 
-  static Color get boardAccent => InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
+  static Color get boardAccent =>
+      InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
 
-  static Color get boardHighlight => InternalStorage.isNightModeEnabled ? AppColors.black : AppColors.highlight;
+  static Color get boardHighlight => InternalStorage.isNightModeEnabled
+      ? AppColors.black
+      : AppColors.highlight;
 
-  static Color get keyboard => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.lightGrey;
+  static Color get keyboard => InternalStorage.isNightModeEnabled
+      ? AppColors.darkGrey
+      : AppColors.lightGrey;
 
-  static Color get keyboardButton => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
+  static Color get keyboardButton =>
+      InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.white;
 
-  static Color get keyboardButtonText => InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
+  static Color get keyboardButtonText =>
+      InternalStorage.isNightModeEnabled ? AppColors.grey : AppColors.black;
 
-  static Color get drawer => InternalStorage.isNightModeEnabled ? AppColors.primaryDark : AppColors.lightGrey;
+  static Color get drawer => InternalStorage.isNightModeEnabled
+      ? AppColors.primaryDark
+      : AppColors.lightGrey;
 
-  static Color get drawerTitle => InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.grey;
+  static Color get drawerTitle =>
+      InternalStorage.isNightModeEnabled ? AppColors.darkGrey : AppColors.grey;
 
   static const primary = Color(0xFFD6E4EE);
   static const primaryDark = Color(0xFFC2C2C2);

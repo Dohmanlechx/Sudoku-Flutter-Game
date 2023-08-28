@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/internal_storage.dart';
@@ -78,7 +78,8 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Future<void> _triggerNewGame(BuildContext context, Difficulty difficulty) async {
+  Future<void> _triggerNewGame(
+      BuildContext context, Difficulty difficulty) async {
     Navigator.of(context).pop();
     context.read<GameProvider>().init(difficulty, isCalledByNewGame: true);
   }
@@ -115,7 +116,8 @@ class _AppDrawerState extends State<AppDrawer> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Text(title, style: AppTypography.dividerTitle.copyWith(color: _color)),
+          child: Text(title,
+              style: AppTypography.dividerTitle.copyWith(color: _color)),
         ),
         Divider(thickness: 1, color: _color),
       ],
@@ -149,7 +151,8 @@ class _AppDrawerState extends State<AppDrawer> {
                         },
                         child: Text(
                           AppTranslations.yes.toUpperCase(),
-                          style: AppTypography.body.copyWith(color: AppColors.red),
+                          style:
+                              AppTypography.body.copyWith(color: AppColors.red),
                         ),
                       )
                     ],
