@@ -102,7 +102,10 @@ class _AppDrawerState extends State<AppDrawer> {
   }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.black),
-      title: Text(title, style: AppTypography.body),
+      title: Text(
+        title,
+        style: AppTypography.body.copyWith(color: AppColors.black),
+      ),
       onTap: () => onTap != null ? onTap() : () {},
       trailing: trailing ?? const SizedBox(),
     );

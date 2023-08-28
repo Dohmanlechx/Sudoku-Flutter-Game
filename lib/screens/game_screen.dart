@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/app/strings.dart';
 import 'package:sudoku_game/providers/game_provider.dart';
@@ -46,7 +45,8 @@ class GameScreen extends StatelessWidget {
                           : _provider.isGameOver
                               ? _buildGameOverOverlay(context)
                               : const SizedBox(),
-                      if (_provider.isWonRound || _provider.isGameOver) _buildStartNewGameTutorialText(context),
+                      if (_provider.isWonRound || _provider.isGameOver)
+                        _buildStartNewGameTutorialText(context),
                     ],
                   )
                 ],
@@ -56,13 +56,15 @@ class GameScreen extends StatelessWidget {
                 child: context.watch<SettingsProvider>().isSundayModeEnabled
                     ? Row(
                         children: [
-                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(
+                              flex: 1, child: _buildDifficultyText(context)),
                           Expanded(flex: 1, child: _buildSundayText()),
                         ],
                       )
                     : Row(
                         children: [
-                          Expanded(flex: 1, child: _buildDifficultyText(context)),
+                          Expanded(
+                              flex: 1, child: _buildDifficultyText(context)),
                           Expanded(flex: 1, child: _buildLives(context)),
                           const Expanded(flex: 1, child: StopWatchView()),
                         ],
@@ -100,10 +102,10 @@ class GameScreen extends StatelessWidget {
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
       color: AppColors.green.withOpacity(0.95),
-      child: Column(
+      child: const Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.star, size: 48, color: AppColors.white),
           Text(AppTranslations.congrats, style: AppTypography.roundDone),
           Icon(Icons.star, size: 48, color: AppColors.white),
@@ -118,7 +120,8 @@ class GameScreen extends StatelessWidget {
       child: Row(
         children: [
           const Icon(Icons.arrow_upward, color: AppColors.white, size: 32),
-          Text(AppTranslations.newGameTutorial, style: AppTypography.roundDone.copyWith(fontSize: 16))
+          Text(AppTranslations.newGameTutorial,
+              style: AppTypography.roundDone.copyWith(fontSize: 16))
         ],
       ),
     );
@@ -130,17 +133,20 @@ class GameScreen extends StatelessWidget {
       width: DeviceUtil.width(context),
       height: DeviceUtil.width(context),
       color: AppColors.grey.withOpacity(0.95),
-      child: const Center(child: Text(AppTranslations.gameOver, style: AppTypography.roundDone)),
+      child: const Center(
+          child:
+              Text(AppTranslations.gameOver, style: AppTypography.roundDone)),
     );
   }
 
   Widget _buildDifficultyText(BuildContext context) {
-    final _selectedDifficulty = context.watch<GameProvider>().selectedDifficulty;
+    final _selectedDifficulty =
+        context.watch<GameProvider>().selectedDifficulty;
 
     return Center(
       child: Text(
         (_selectedDifficulty.asString() ?? '').capitalize(),
-        style: AppTypography.body,
+        style: AppTypography.body.copyWith(color: AppColors.black),
       ),
     );
   }
@@ -149,12 +155,12 @@ class GameScreen extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Icon(Icons.all_inclusive, color: AppColors.black),
-        SizedBox(width: 8),
+      children: [
+        const Icon(Icons.all_inclusive, color: AppColors.black),
+        const SizedBox(width: 8),
         Text(
           AppTranslations.sundaySudoku,
-          style: AppTypography.body,
+          style: AppTypography.body.copyWith(color: AppColors.black),
         ),
       ],
     );
@@ -169,7 +175,8 @@ class GameScreen extends StatelessWidget {
       children: [
         ...List.generate(
           3,
-          (int index) => Icon(index < _lives ? Icons.favorite : Icons.favorite_outline),
+          (int index) =>
+              Icon(index < _lives ? Icons.favorite : Icons.favorite_outline),
         )
       ],
     );
@@ -201,13 +208,18 @@ class GameScreen extends StatelessWidget {
                     margin: EdgeInsets.all(_buttonMarginSize),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(6)),
-                      border: Border.all(color: AppColors.keyboardButtonText, width: 3),
+                      border: Border.all(
+                          color: AppColors.keyboardButtonText, width: 3),
                     ),
                     child: Material(
                       color: AppColors.keyboardButton,
                       child: InkWell(
-                        onLongPress: _canGameContinue ? () => _setMaybeNumber(context, _number) : null,
-                        onTap: _canGameContinue ? () => _setNumber(context, _number) : null,
+                        onLongPress: _canGameContinue
+                            ? () => _setMaybeNumber(context, _number)
+                            : null,
+                        onTap: _canGameContinue
+                            ? () => _setNumber(context, _number)
+                            : null,
                         child: Center(
                           child: _number < 10
                               ? Text(
