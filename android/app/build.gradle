@@ -7,7 +7,8 @@ plugins {
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
+def hasUploadKey = keystorePropertiesFile.exists()
+if (hasUploadKey) {
     keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
 }
 
@@ -31,7 +32,7 @@ android {
     }
 
     signingConfigs {
-        if (keystorePropertiesFile.exists()) {
+        if (hasUploadKey) {
             release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
@@ -43,14 +44,37 @@ android {
 
     buildTypes {
         release {
-            // Signs with the upload key when android/key.properties is present,
-            // otherwise falls back to the debug keys so `flutter run --release` works.
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+            // Signs with the upload key from android/key.properties. Without that file
+            // this points at the debug keys only to keep configuration valid; the guard
+            // below stops any release artifact from actually being built with them.
+            signingConfig hasUploadKey ? signingConfigs.release : signingConfigs.debug
         }
     }
 
     lint {
         disable 'InvalidPackage'
+    }
+}
+
+// Play Console rejects debug-signed uploads, and a debug-signed .aab is otherwise
+// indistinguishable from a good one at build time. Fail loudly instead.
+// Checked on the whole task graph rather than in a task's doFirst: the .aab is written
+// and signed by tasks that run before `bundleRelease` itself, so a later check leaves a
+// debug-signed artifact sitting in build/app/outputs looking uploadable.
+if (!hasUploadKey) {
+    gradle.taskGraph.whenReady { graph ->
+        def signsRelease = graph.allTasks.any {
+            it.project == project && it.name in ['assembleRelease', 'bundleRelease']
+        }
+        if (signsRelease) {
+            throw new GradleException(
+                "Cannot sign a release build: android/key.properties is missing.\n" +
+                "Create it next to android/build.gradle with keyAlias, keyPassword, storeFile\n" +
+                "and storePassword pointing at your upload keystore (it is gitignored on purpose):\n" +
+                "  https://docs.flutter.dev/deployment/android#signing-the-app\n" +
+                "Or build with --debug / --profile instead."
+            )
+        }
     }
 }
 
