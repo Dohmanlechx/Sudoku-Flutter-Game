@@ -5,27 +5,27 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.0+13
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.5
 
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
 
   provider: ^6.0.5
 
-  vibration: ^1.8.1
+  vibration: ^3.2.0
 
   json_annotation: ^4.0.1
 
   shared_preferences: ^2.2.0
 
-  package_info_plus: ^4.1.0
+  package_info_plus: ^10.2.1
 
 dev_dependencies:
-  pedantic: ^1.11.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.1.11
   json_serializable: ^6.2.0
 
@@ -34,7 +34,7 @@ dev_dependencies:
   test:
 
   flutter_native_splash: ^2.3.2
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true

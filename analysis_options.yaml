@@ -10,4 +10,9 @@ linter:
     - prefer_const_declarations
     - prefer_const_literals_to_create_immutables
 
-include: package:pedantic/analysis_options.yaml
+include: package:flutter_lints/flutter.yaml
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
